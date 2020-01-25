@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/dope-muzik",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
