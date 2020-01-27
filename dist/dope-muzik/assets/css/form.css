@@ -1,0 +1,16 @@
+html .form {
+    max-width: 960px;
+    border: solid 1px #CCC;
+    box-sizing: border-box;
+    padding: 2rem !important;
+    width: 100%;
+}
+
+html .form .progress {
+    position: relative;
+    visibility: hidden !important;
+}
+
+html .form .progress.active {
+    visibility: visible !important;
+}
