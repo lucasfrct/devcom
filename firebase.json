@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "dope-muzik",
     "public": "dist/dope-muzik",
     "ignore": [
       "firebase.json",
