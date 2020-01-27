@@ -39,11 +39,14 @@ export class FirebaseSignService {
 
         var Sign = this.CallSignEmail(sign.email, sign.password)
         Sign
-            .then((user)=> {
+            .then((response)=> {
+                console.log("NEW USER: ", response)
+                this.user = sign
+                this.user.uid = response.user.uid
+                this.response.user = this.user
                 this.response.code = "201"
                 this.response.message = "Conta Criado com sucesso!"
-                this.user = sign
-                this.user.uid = user.uid
+                this.createUserFiretore(this.user)
             }).catch((error)=> {
                 this.ErrorHandle(error.code)
             }).finally(()=> {
@@ -83,10 +86,7 @@ export class FirebaseSignService {
     }
 
     private createUserFiretore(user: any) {
-        this.db
-            .collection("users")
-            .doc(user.uid)
-            .set(user, {merged: true})
+        this.db.collection("users").doc(user.uid).set(user, {merge: true})
     }
     
 }

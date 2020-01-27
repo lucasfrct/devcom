@@ -15,7 +15,7 @@ export class SignComponent implements OnInit {
     private password = "password"
 
     public control = {
-        mirror: "123456",
+        mirror: "",
         toggleEye: this.ToggleEye,
         password: "password",
         eye: "visibility",
@@ -23,15 +23,17 @@ export class SignComponent implements OnInit {
     }
 
     public user = { 
-        name: "Lucas", 
-        surname: 'Costa',
-        telephone: '(88) 99382-4305',
-        email:"lucas@lucas.com", 
-        password: "123456" 
+        name: "", 
+        surname: '',
+        telephone: '',
+        email:"", 
+        password: "" 
     }
 
     constructor() { 
         this.sign = new FirebaseSignService
+
+        //this.user = { name: "Lucas", surname: 'Costa', telephone: '(88) 99382-4305', email:"lucas@lucas.com-d", password: "123456" }
     }
 
     ngOnInit() { 
