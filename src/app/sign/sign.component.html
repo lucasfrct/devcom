@@ -6,29 +6,29 @@
         <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
         <legend>Sign</legend>
         <div class="row">
-            <div class="input-field col s12 m6">
+            <div class="input-field col s12 m6 {{control.nameAlert}}">
                 <input id="name" type="text" class="validate" name="name" [(ngModel)]="user.name">
                 <label for="name">Nome:</label>
             </div>
-            <div class="input-field col s12 m6">
+            <div class="input-field col s12 m6 {{control.surnameAlert}}">
                 <input id="surname" type="text" class="validate" name="surname" [(ngModel)]="user.surname"> 
                 <label for="surname">Sobrenome:</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m12">
+            <div class="input-field col s12 m12 {{control.telephoneAlert}}">
                 <input id="telephone" type="tel" class="validate" name="telephone" [(ngModel)]="user.telephone">
                 <label for="telephone">Telefone:</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m12">
+            <div class="input-field col s12 m12 {{control.emailAlert}}">
                 <input id="email" type="email" class="validade" name="email" [(ngModel)]="user.email">
                 <label for="email">E-mail</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s10 m5">
+            <div class="input-field col s10 m5 {{control.passwordAlert}}">
                 <input id="password" type="{{control.password}}" class="validate" name="password" [(ngModel)]="user.password">
                 <label for="password">Palavra Passe</label>
             </div>
@@ -41,6 +41,9 @@
             </div>
         </div>
         <div class="row">
+            <span class="alert">
+                <em *ngFor="let alert of control.alerts"> {{alert}}</em>
+            </span>
             <button type="submit" class="btn waves-effect waves-light">Cadastrar</button>
         </div>
     </form>
