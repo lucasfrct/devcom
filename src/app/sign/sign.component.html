@@ -1,0 +1,50 @@
+
+<style>
+</style>
+{{control.bar}}
+<h4>Sign</h4>
+<a routerLink="/">home</a>
+<section class="sign-container row">
+    <form class="form col s12" (ngSubmit)="onSubmit(user)">
+        <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
+        <legend>Sign</legend>
+        <div class="row">
+            <div class="input-field col s12 m6">
+                <input placeholder="Seu Nome" id="name" type="text" class="validate" name="name" [(ngModel)]="user.name">
+                <label for="name">Nome:</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <input placeholder="Sobrenome" id="surname" type="text" class="validate" name="surname" [(ngModel)]="user.surname"> 
+                <label for="surname">Sobrenome:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m12">
+                <input placeholder="Telefone" id="telephone" type="tel" class="validate" name="telephone" [(ngModel)]="user.telephone">
+                <label for="telephone">Telefone:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m12">
+                <input placeholder="email" id="email" type="email" class="validade" name="email" [(ngModel)]="user.email">
+                <label for="email">E-mail</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s10 m5">
+                <input placeholder="Password" id="password" type="{{control.password}}" class="validate" name="password" [(ngModel)]="user.password">
+                <label for="password">Palavra Passe</label>
+            </div>
+            <div class="input-field col s10 m5">
+                <input placeholder="Repetir a senha" id="mirror" type="{{control.password}}" class="validade" name="mirror" [(ngModel)]="control.mirror">
+                <label for="mirror">Repetir a Senha</label>
+            </div>
+            <div class="input-field col s2 m2" (click)="control.toggleEye()">
+                <i class="material-icons prefix">{{control.eye}}</i>
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="btn waves-effect waves-light">Cadastrar</button>
+        </div>
+    </form>
+</section>
