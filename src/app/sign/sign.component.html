@@ -48,14 +48,14 @@
         </div>
     </form>
 
-  <div class="modal" [modalControl]="control.modal">
-    <div class="modal-content">
-      <h4>Cadastro</h4>
-      <p>{{control.message}}</p>
+    <div class="modal" [modalControl]="control.modal">
+        <div class="modal-content">
+            <h4>Cadastro</h4>
+            <p>{{control.message}}</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-close waves-effect waves-green btn-flat" (click)="control.modal=false">fechar</a>
+        </div>
     </div>
-    <div class="modal-footer">
-      <a class="modal-close waves-effect waves-green btn-flat" (click)="control.modal=false">fechar</a>
-    </div>
-  </div>
 
 </section>

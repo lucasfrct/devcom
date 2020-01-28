@@ -41,7 +41,7 @@ export class SignComponent implements OnInit {
     constructor(sign: FirebaseSignService) { 
         this.sign = sign
 
-        //this.user = { name: "Lucas", surname: 'Costa', telephone: '(88) 99382-4305', email:"lucas@lucas.com-d", password: "12345678" } 
+        //this.user = { name: "Lucas", surname: 'Costa', telephone: '(88) 99382-4305', email:"lucas@lucas.com-e", password: "12345678" } 
         //this.control.mirror = "12345678"
     }
 

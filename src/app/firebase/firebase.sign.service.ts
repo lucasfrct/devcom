@@ -32,23 +32,23 @@ export class FirebaseSignService {
     }
 
     public create(sign: any, callback: any) {
-        
-        this.Subscribe(callback)
+        var that = this
+        that.Subscribe(callback)
 
-        var Sign = this.CallSignEmail(sign.email, sign.password)
+        var Sign = that.CallSignEmail(sign.email, sign.password)
         Sign
             .then((response)=> {
                 console.log("NEW USER: ", response)
-                this.user = sign
-                this.user.uid = response.user.uid
-                this.response.user = this.user
-                this.response.code = "201"
-                this.response.message = "Conta Criado com sucesso!"
-                this.createUserFiretore(this.user)
+                that.user = sign
+                that.user.uid = response.user.uid
+                that.response.user = that.user
+                that.response.code = "201"
+                that.response.message = "Conta Criado com sucesso!"
+                that.createUserFiretore(that.user)
             }).catch((error)=> {
-                this.ErrorHandle(error.code)
+                that.ErrorHandle(error.code)
             }).finally(()=> {
-                this.NotifyAll(this.response)
+                that.NotifyAll(that.response)
             })
     }
 
@@ -65,18 +65,20 @@ export class FirebaseSignService {
     }
 
     private ErrorHandle(error: any) {
+        var that = this
+        
         switch(error) {
             case "auth/invalid-email":
-                this.response.code = "400"
-                this.response.message = "Formatação do e-mail inválida, favor inserir um email válido."
+                that.response.code = "400"
+                that.response.message = "Formatação do e-mail inválida, favor inserir um email válido."
                 break
             case "auth/weak-password":
-                this.response.code = "400"
-                this.response.message = "Senha fraca ou insuficiente, favor utilizar mais de 8 caracteres."
+                that.response.code = "400"
+                that.response.message = "Senha fraca ou insuficiente, favor utilizar mais de 8 caracteres."
                 break
             case "auth/email-already-in-use":
-                this.response.code = "400"
-                this.response.message = "Este email está em uso, favor inserir outro email para cadastro."
+                that.response.code = "400"
+                that.response.message = "Este email está em uso, favor inserir outro email para cadastro."
                 break
             default:
                 break
