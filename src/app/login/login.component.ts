@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
 
     constructor(login: FirebaseLoginService) {
         this.login = login
-        this.user = { email:"lucas@lucas.com-e", password: "12345678" } 
+        //this.user = { email:"lucas@lucas.com-e", password: "12345678" } 
      }
 
     ngOnInit() {
