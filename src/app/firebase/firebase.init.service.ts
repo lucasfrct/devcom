@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core'
 declare var firebase: any
 
 @Injectable({
-    providedIn: "root",
+    providedIn: "root"
 })
 
 export class FirebaseInitService {
