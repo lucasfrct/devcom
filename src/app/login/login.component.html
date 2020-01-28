@@ -1,8 +1,11 @@
 <a routerLink="/">home</a>
 <hr>
+<button type="button" (click)="logOut()" >logout</button>
+<hr>
 <section class="container">
     <div class="row">
         <form class="form col s12 md9" (ngSubmit)="onSubmit(user)">
+            <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
              <legend>Login</legend>
              <div class="row">
                  <div class="input-field col s12">
@@ -23,5 +26,15 @@
                  <button class="btn waves-effects waves-light" type="submit">Entrar</button>
              </div>
         </form>
+    </div>
+    
+    <div class="modal" [modalControl]="control.modal">
+        <div class="modal-content">
+            <h4>Cadastro</h4>
+            <p>{{control.message}}</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-close waves-effect waves-green btn-flat" (click)="control.modal=false">fechar</a>
+        </div>
     </div>
 </section>

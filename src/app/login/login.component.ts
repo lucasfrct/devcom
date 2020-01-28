@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseInitService } from './../firebase/firebase.init.service'
 import { FirebaseLoginService } from './../firebase/firebase.login.service' 
 
 
@@ -11,7 +10,7 @@ import { FirebaseLoginService } from './../firebase/firebase.login.service'
 
 export class LoginComponent implements OnInit {
 
-    private login: FirebaseLoginService
+    private login: any
 
     private eye = "visibility"
     private password = "password"
@@ -33,24 +32,27 @@ export class LoginComponent implements OnInit {
         password: "",
     }
 
-    constructor() {
-        this.login = new FirebaseLoginService(FirebaseInitService)
-        //console.log("LOGIN COMPONENT - FIREBASE SERVICE CLASS: ", this.login)
-
-        this.user = { email:"lucas@lucas.com-d", password: "12345678" } 
+    constructor(login: FirebaseLoginService) {
+        this.login = login
+        this.user = { email:"lucas@lucas.com-e", password: "12345678" } 
      }
 
     ngOnInit() {
     }
 
     public onSubmit(user: any) {
-        console.log("LOGIN USER:", user)
+        var that = this
         var valid = this.validate(user)
         
         if (valid.check) {
-
+            that.control.bar = true
+            
+            that.login.access(user, (response)=>{
+                that.control.bar = false
+                that.control.modal = true;
+                that.control.message = response.message
+            })
         }
-        
     }
 
     private ToggleEye() {
@@ -87,6 +89,10 @@ export class LoginComponent implements OnInit {
         function password(password: String) {
             return (password.length >= 8) ? true : false
         }
+    }
+
+    public logOut() {
+        this.login.denied()
     }
 
 }
