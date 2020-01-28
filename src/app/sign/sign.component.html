@@ -32,7 +32,7 @@
                 <input id="password" type="{{control.password}}" class="validate" name="password" [(ngModel)]="user.password">
                 <label for="password">Palavra Passe</label>
             </div>
-            <div class="input-field col s10 m5">
+            <div class="input-field col s10 m5 {{control.passwordAlert}}">
                 <input id="mirror" type="{{control.password}}" class="validade" name="mirror" [(ngModel)]="control.mirror">
                 <label for="mirror">Repetir a Senha</label>
             </div>
@@ -47,5 +47,15 @@
             <button type="submit" class="btn waves-effect waves-light">Cadastrar</button>
         </div>
     </form>
+
+  <div class="modal" [modalControl]="control.modal">
+    <div class="modal-content">
+      <h4>Cadastro</h4>
+      <p>{{control.message}}</p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-close waves-effect waves-green btn-flat" (click)="control.modal=false">fechar</a>
+    </div>
+  </div>
 
 </section>

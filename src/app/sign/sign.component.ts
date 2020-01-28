@@ -4,12 +4,12 @@ import { FirebaseSignService } from './../firebase/firebase.sign.service'
 @Component({
     selector: 'app-sign',
     templateUrl: './sign.component.html',
-    styleUrls: ['./sign.component.css']
+    styleUrls: ['./sign.component.css'],
 })
 
 export class SignComponent implements OnInit {
 
-    private sign: FirebaseSignService
+    private sign: any
     
     private eye = "visibility"
     private password = "password"
@@ -26,6 +26,8 @@ export class SignComponent implements OnInit {
         telephoneAlert: "",
         emailAlert: "",
         passwordAlert: "",
+        modal: false,
+        message: ""
     }
 
     public user = { 
@@ -36,10 +38,11 @@ export class SignComponent implements OnInit {
         password: "" 
     }
 
-    constructor() { 
-        this.sign = new FirebaseSignService
+    constructor(sign: FirebaseSignService) { 
+        this.sign = sign
 
-        //this.user = { name: "Lucas", surname: 'Costa', telephone: '(88) 99382-4305', email:"lucas@lucas.com-d", password: "123456" }
+        //this.user = { name: "Lucas", surname: 'Costa', telephone: '(88) 99382-4305', email:"lucas@lucas.com-d", password: "12345678" } 
+        //this.control.mirror = "12345678"
     }
 
     ngOnInit() { 
@@ -54,56 +57,56 @@ export class SignComponent implements OnInit {
     public onSubmit(user: any){
         console.log("USER: ", user)
         var valid = this.validator(user)
-        console.log(valid)
         
         if (valid.check) {
             this.control.bar = true
 
             this.sign.create(user, (response)=> {
                 this.control.bar = false
+                this.control.modal = true
+                this.control.message = response.message
                 console.log("SIGN COMPONENT: ", response)
             })
-        } else {
-            this.control.alerts = valid.alerts
-            console.log(this.control.alerts)
+
         }
     }
 
     private validator(user: any) {
+        const that = this
 
-        var valid = {
-            alerts: [],
-            check: false,
-        }
+        const valid = { check: false }
 
-        this.control.nameAlert = ""
+        that.control.alerts = []
+        that.control.nameAlert = ""
+        that.control.surnameAlert = ""
+        that.control.telephoneAlert = ""
+        that.control.emailAlert = ""
+        that.control.passwordAlert = ""
+
         if(!name(user.name)) {
-            valid.alerts.push("O nome precisa ter no mínimo 5 letras")
-            this.control.nameAlert = "alert"
+            that.control.alerts.push("O nome precisa ter no mínimo 5 letras")
+            that.control.nameAlert = "alert"
         }
-
-        this.control.surnameAlert = ""
+        
         if(!surname(user.surname)) {
-            valid.alerts.push("O sobrenome precisa ter no mínimo 3 letras.")
-            this.control.surnameAlert = "alert"
+            that.control.alerts.push("O sobrenome precisa ter no mínimo 3 letras.")
+            that.control.surnameAlert = "alert"
         }
 
-        this.control.telephoneAlert = ""
         if(!telephone(user.telephone)) {
-            valid.alerts.push("O telfone precisa ter no mínimo 11 números.")
-            this.control.telephoneAlert = "alert"
+            that.control.alerts.push("O telfone precisa ter no mínimo 11 números.")
+            that.control.telephoneAlert = "alert"
         }
 
-        this.control.emailAlert = ""
         if(!email(user.email)) {
-            valid.alerts.push("Email inválido favor corrigir.")
-            this.control.emailAlert = "alert"
+            that.control.alerts.push("Email inválido favor corrigir.")
+            that.control.emailAlert = "alert"
         }
 
-        this.control.passwordAlert = ""
-        if(!password(user.password)) {
-            valid.alerts.push("A senha precisa ter no mínimo 8 caracterres.")
-            this.control.passwordAlert = "alert"
+        if(!password(user.password, that.control.mirror)) {
+            that.control.alerts.push("A senha precisa ter no mínimo 8 caracterres.")
+            that.control.alerts.push("As senhas precisam ser iguais")
+            that.control.passwordAlert = "alert"
         }
 
         valid.check = (
@@ -111,13 +114,13 @@ export class SignComponent implements OnInit {
             && surname(user.surname) 
             && telephone(user.telephone) 
             && email(user.email) 
-            && password(user.password)
+            && password(user.password, that.control.mirror)
         ) ? true : false
 
         return valid
           
         function name(name: String) {
-            return (name.length >= 6) ? true : false
+            return (name.length >= 3) ? true : false
         }
 
         function surname(surname: String) {
@@ -132,8 +135,8 @@ export class SignComponent implements OnInit {
             return (email.length >= 6 && email.indexOf("@") && email.indexOf(".com")) ? true : false 
         }
 
-        function password(password: String) {
-            return (password.length >= 8) ? true : false
+        function password(password: String, mirror: String) {
+            return (password.length >= 8 && password == mirror) ? true : false
         }
     }
 

@@ -3,26 +3,33 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms'
 
 import { AppRoutingModule } from './app-routing.module';
+import { ModalDirective } from './modal/modal.directive'
+
 import { HeaderComponent } from './header/header.component';
 import { MainComponent } from './main/main.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { SignComponent } from './sign/sign.component';
+import { LoginComponent } from './login/login.component';
+
+import { FirebaseInitService } from './firebase/firebase.init.service'
 
 @NgModule({
   declarations: [
+    ModalDirective,
     HeaderComponent,
     MainComponent,
     FooterComponent,
     HomeComponent,
     SignComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     FormsModule,
+    AppRoutingModule,
   ],
-  providers: [],
+  providers: [FirebaseInitService],
   bootstrap: [HeaderComponent, MainComponent, FooterComponent]
 })
 
