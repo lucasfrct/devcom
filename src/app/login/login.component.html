@@ -1,0 +1,27 @@
+<a routerLink="/">home</a>
+<hr>
+<section class="container">
+    <div class="row">
+        <form class="form col s12 md9" (ngSubmit)="onSubmit(user)">
+             <legend>Login</legend>
+             <div class="row">
+                 <div class="input-field col s12">
+                     <input name="email" type="email" id="email" [(ngModel)]="user.email">
+                     <label for="email">Email</label>
+                 </div>
+             </div>
+             <div class="row">
+                 <div class="input-field col s12">
+                     <input name="password" type="password" id="password" [(ngModel)]="user.password">
+                     <label for="password">Palavra passe</label>
+                 </div>
+             </div>
+             <div class="row">
+                <span class="alert">
+                    <em *ngFor="let alert of control.alerts"> {{alert}}</em>
+                </span>
+                 <button class="btn waves-effects waves-light" type="submit">Entrar</button>
+             </div>
+        </form>
+    </div>
+</section>
