@@ -3,16 +3,16 @@
  * Autor: Lucas Costa
  * Data: Janeiro de 2020
  */
-import { Directive, ElementRef, Input } from '@angular/core'
+import { Directive, ElementRef, Input, OnInit } from '@angular/core'
 
-declare const M: any
+declare let M: any
 
 @Directive({
     selector: ".modal",
     jit: true,
 })
 
-export class ModalDirective {
+export class ModalDirective implements OnInit{
 
     private instanceModal: any
     private element: any
@@ -26,6 +26,10 @@ export class ModalDirective {
         this.element = el
         this.native = el.nativeElement
         this.instanceModal = M.Modal.init(this.native, { preventScrolling: true, dismissible: true })
+    }
+
+    ngOnInit() {
+        
     }
 
 }

@@ -62,7 +62,7 @@ export class FirebaseLoginService {
     public NotifyAll(command: any) {
         this.observers.forEach(ObserverFuncion => {
             ObserverFuncion(command)
-        });
+        })
 
         this.observers = []
     }
