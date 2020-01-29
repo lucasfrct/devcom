@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PurchaseService } from './../purchase/purchase.service'
+import { PurchaseService } from '../purchase/purchase.service'
 
 declare var M: any
 
@@ -65,8 +65,6 @@ export class ShopComponent implements OnInit {
                 this.calTotal(this.purchase)
                 M.toast({html: 'Ingresso adicionado'})
             })
-
-            
 
         }
 
