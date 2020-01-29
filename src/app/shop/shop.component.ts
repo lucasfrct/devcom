@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PurchaseService } from './../purchase/purchase.service'
 
+declare var M: any
+
 @Component({
     selector: 'app-shop',
     templateUrl: './shop.component.html',
@@ -12,9 +14,21 @@ export class ShopComponent implements OnInit {
     private uid: any
     private counter = 0
     private observers = []
-    public events = []
 
-    public sessions = []
+    public control = {
+        modal: null,
+        total: 0,
+    }
+
+    public ticket = {
+        owner: "",
+        event: {},
+        seat: { session: "", type: "" },
+        edition: {},
+        price: "0"
+    }
+
+    public purchase = []
 
     public event = {
         name: "Castelos dos Filhos das Ruas",
@@ -25,48 +39,84 @@ export class ShopComponent implements OnInit {
         address: "Cine Atlantico",
     }
 
-    public seat = {
-        session: "A",
-        number: "01",  // número do assento
-        type: "VIP",
-    }
-
-    public ticket = {
-		owner: "Lucas Ferreira Costa",
-		event: { },
-		seat: { },
-		edition: {
-			circulation: "01", // número da tiragem
-			serial: "0001", 	// número de série
-		},
-    }  
-    
-    public tickets = []
-
     constructor() {
         
      }
 
-    ngOnInit() { 
-        this.ticket.event = this.event
-        this.ticket.seat = this.seat
-        this.sessions = ["A 01", "A 02", "B 01", "B 02"]
-    }
+    ngOnInit() { }
 
-    public registerEvencts(evencts: any) {
-        var that = this
-        that.counter = 0
-        evencts.array.forEach((event)=> {
-            that.counter = (that.counter + 1)
-            event.eid = that.counter
-            //*that.evencts.push(event)
-        });
+    public onChange() {
+        this.ticket.price = (this.ticket.seat.type == "VIP") ? "5000" : "3000"
     }
 
     public addTicked(){
-        console.log("CLICK")
-        this.tickets.push(this.ticket)
-        console.log("CLICK", this.tickets)
+
+        if (this.validate(this.ticket).check) {
+
+            this.control.modal = true
+
+            this.ticket.event = this.event
+            this.getTicketEdition((edition)=> {
+
+                this.control.modal = false
+
+                this.ticket.edition = edition
+                this.purchase.push(this.copy(this.ticket))
+                this.calTotal(this.purchase)
+                M.toast({html: 'Ingresso adicionado'})
+            })
+
+            
+
+        }
+
+    }
+
+    private calTotal(purchase: any) {
+        var that = this
+        var calc = 0
+        purchase.forEach((tk)=> {
+            calc = (calc + Number(tk.price))
+        })
+        return this.control.total = calc
+    }
+
+    private getTicketEdition(callback: any){
+        console.log("GET EDITION")
+        callback({ circulation: "01", serial: "000001" })
+    }
+
+    private validate(ticket: any) {
+        var valid = { check: false }
+
+        
+        if (!name(ticket.owner)) {
+            M.toast({html: 'Favor digitar um nome com mais de 3 letras'})
+        }
+
+        if (!seatSession(ticket.seat.session)) {
+            M.toast({html: 'Favor Selecionar um assento.'})
+        }
+        
+        if(!seatType(ticket.seat.type)) {
+            M.toast({html: 'Favor Selecionar um tipo de ingresso.'})
+        }
+
+        valid.check = (name(ticket.owner) && seatSession(ticket.seat.session) && seatType(ticket.seat.type)) ? true : false
+
+        return valid
+
+        function name(name: String) {
+            return (name.length >= 3) ? true : false
+        }
+
+        function seatSession(session: any) {
+            return  (session.length >= 3) ? true : false
+        }
+
+        function seatType(type: any) {
+            return ("VIP" == type || "Normal" == type) ? true : false
+        }
     }
 
     public Subscribe(command) {
@@ -79,6 +129,10 @@ export class ShopComponent implements OnInit {
         })
 
         this.observers = []
+    }
+
+    private copy(obj: any) {
+        return JSON.parse(JSON.stringify(obj))
     }
 
 }

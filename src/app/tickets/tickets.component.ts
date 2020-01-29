@@ -21,6 +21,7 @@ export class TicketsComponent implements OnInit {
 		owner: "Lucas Costa",
 		event: {
 			name: "Castelos dos Filhos das Ruas",
+			FolderUrl: "",
 			logoUrl: "assets/images/sources/logo-1.jpeg",
 			date:"08 de Fev de 2020",
 			hour: "20h00",

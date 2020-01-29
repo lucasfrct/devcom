@@ -9,6 +9,7 @@
         border-right: solid 1px #DDD;
     }
 
+/*========== EVENT =================*/
     .sidebar .event {
         overflow: hidden;
     }
@@ -27,46 +28,76 @@
         float: left;
     }
 
-    .sidebar .event .title {
+    .sidebar .event .details {
         padding: 0 1em;
         box-sizing: border-box;
     }
 
-    .sidebar .event .title > * {
+    .sidebar .event .details > * {
         display: block;
-        padding: 0.3em 0;
+        padding: 0 0 0.9rem 0;
+        margin: 0;
+        text-align: left;
     }
 
-    .sidebar .event .title > h5 {
-        margin: 0 0 1rem 0;
-        padding: 0;
+    .sidebar .event .details > .title {
+        margin: 0 0 0.5rem 0;
     }
 
-    .sidebar .event .title .material-icons {
-        margin-right: 0.3em;
+    .sidebar .event .details .material-icons {
+        margin-right: 0.2em;
     }
+
+/*============= PRUCHASE ===============*/
+    .sidebar .total {
+        padding: 0 1rem;
+    }
+/*============= PRUCHASE ===============*/
 
     .sidebar .purchase {
         padding: 0;
     }
 
-    .sidebar .purchase .details {
+    .sidebar .purchase {
         background-color: transparent;
+        border: solid 1px #DDD;
+        padding: 1rem;
+        margin: 0.1rem;
     }
 
-    .sidebar .purchase .details > * {
+    .sidebar .purchase .title {
+        margin-bottom: 1rem;
+        display: block;
+        font-size: 1.5em;
+        text-align: center;
+    }
+
+    .sidebar .purchase .price {
+        text-align: right;
+        display: block;
+        font-size: 1.3em;
+        padding: 0.5rem 0 1rem 0;
+    }
+
+    .sidebar .purchase .add {
+        display: block;
+        width: 100%;
+    }
+
+    .sidebar .purchase > li {
         border: solid 1px #EEE;
         border-left: solid 8px #00F;
         margin: 0 0 2px 0;
         padding: 0.6rem 0 0 0;
-        background-color: rgba(0,0,0,0.02);
+        background-color: rgba(0,0,0,0.01);
     }
 
-    .sidebar .purchase .details > *:hover {
-        background-color: rgba(0,0,0,0.08);
+    .sidebar .purchase > li:hover {
+        background-color: rgba(0,0,0,0.06);
         border-left-color: teal;
     }
 
+/*========== GENERAL CSS ======*/
     .sidebar .input-field > label:not(.label-icon).active {
         transform: translateY(4px) scale(0.8);
     }
@@ -82,7 +113,7 @@
         box-sizing: border-box;
     }
 
-   .sidebar .l-select label {
+   .sidebar .in-select label {
         top: -10px !important;
         color: inherit;
     }
@@ -91,57 +122,79 @@
         object-fit: cover;
         height: 100%;
     }
+
 </style>
 <a routerLink="/">Home</a><br>
 <hr>
 <section class="row">
     <aside class="sidebar col s12 m6 l5 xl4">
-        <div class="event">
+        
+        <div class="event row">
             <figure class="image col s12 m5 l4"> <img src="assets/images/sources/arte-1.jpeg" ></figure>
-            <div class="title col s12 m7 l8">
-                <h5>{{event.name}}</h5>
+            <div class="details col s12 m7 l8">
+                <h5 class="title">{{event.name}}</h5>
                 <strong><i class="material-icons left">location_on</i> {{event.address}}</strong>
                 <strong><i class="material-icons left">perm_contact_calendar</i> {{event.date}}</strong>
                 <strong><i class="material-icons left">access_time</i> {{event.hour}}</strong>
             </div>
         </div>
+
         <hr>
-        <div class="purchase">
-            <div class="">
-                <button class="btn" (click)="addTicked()" >
-                    <i class="material-icons left">add</i> Add ingresso
-                </button>
-            </div>
-            <hr class="">
-            <ul class="details">
-                <li class="input-field">
-                    <i class="material-icons prefix">account_box</i>
-                    <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
-                    <label for="owner">Seu Nome</label>
-                </li>
-                <li class="input-field l-select">
-                    <i class="material-icons prefix">event_seat</i>
-                    <select class="select" id="session" name="session" (change)="seat.session = $event.target.value">
-                        <option disabled >selecione um assento</option>
-                        <option value="A01">A01</option>
-                        <option value="B01">B01</option>
-                    </select>
-                    <label for="session">Seu assento</label>
-                </li>
-                <li class="input-field l-select">
-                    <i class="material-icons prefix">stars</i>
-                    <select class="select" id="type" name="type" (change)="seat.type = $event.target.value">
-                        <option disabled selected>selecione um tipo de ingresso</option>
-                        <option value="Normal">Normal</option>
-                        <option value="VIP">VIP</option>
-                    </select>
-                    <label for="type">Tipo de Ingresso</label>
-                </li>
-            </ul>
+        
+        <div class="total row">
+            <h5 class="right">Total: <b>{{control.total}} KZ</b></h5>
         </div>
+
+        <hr>
+
+        <ul class="purchase row">
+            <span class="title">Ingresso</span>
+            <li class="input-field">
+                <i class="material-icons prefix">account_box</i>
+                <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
+                <label for="owner">Seu Nome</label>
+            </li>
+            <li class="input-field in-select">
+                <i class="material-icons prefix">event_seat</i>
+                <select class="select" id="session" name="session" (change)="ticket.seat.session = $event.target.value">
+                    <option disabled >selecione um assento</option>
+                    <option value="A01">A01</option>
+                    <option value="B01">B01</option>
+                </select>
+                <label for="session">Seu assento</label>
+            </li>
+            <li class="input-field in-select">
+                <i class="material-icons prefix">stars</i>
+                <select class="select" id="type" name="type" (change)="ticket.seat.type = $event.target.value; onChange()">
+                    <option disabled selected>selecione um tipo de ingresso</option>
+                    <option value="Normal">Normal</option>
+                    <option value="VIP">VIP</option>
+                </select>
+                <label for="type">Tipo de Ingresso</label>
+            </li>
+            <span class="price">Valor unitário: <b>{{ticket.price}} KZ</b></span>
+            <button class="add btn right" (click)="addTicked()" >
+                <i class="material-icons left">add</i> Add ingresso
+            </button>
+        </ul>
+
+        <!-- Modal Structure -->
+        <div  class="modal bottom-sheet" [modalControl]="control.modal">
+          <div class="modal-content">
+            <h4>Novo Ingresso</h4>
+            <p>Verificando a disponibilidade dos ingressos</p>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+
     </aside>
     <section class="panel col s12 m6 l7 xl8"> 
-        <h4>Ingressos Adquiridos</h4>      
-        <app-tickets [currentTicket]="ticket"></app-tickets>
+        <h4>Ingressos Adquiridos</h4> 
+        {{purchase}}
+        <div *ngFor="let tck of purchase">
+            <app-tickets [currentTicket]="tck"></app-tickets>
+        </div>     
+        
     </section>
 </section>
