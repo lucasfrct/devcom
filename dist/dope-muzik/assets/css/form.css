@@ -40,5 +40,11 @@ html .form .material-icons {
     top: auto !important;
     right: auto !important;
     bottom: 10%;
-    left: 7%;
+    left: 5%;
 }
+
+@media (max-width: 576px) { 
+    #toast-container {
+        left: 0;
+    }
+ }

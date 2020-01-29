@@ -27,14 +27,15 @@ export class ShopComponent implements OnInit {
     
     public purchase = []
     
-    public event = {}
+    public event: any
     
     public constructor() {
         //this.uid = user.uid
+        this.event = this.getEvent()
     }
     
     ngOnInit() { 
-        this.event = this.getEvent()
+        
     }
     
     public onChange() {
@@ -75,7 +76,7 @@ export class ShopComponent implements OnInit {
         this.deleteTicket(index)
     }
 
-    private getEvent() {
+    public getEvent() {
         return  {
             name: "Castelos dos Filhos das Ruas",
             folderUrl: "assets/images/sources/art-1.jpeg",
