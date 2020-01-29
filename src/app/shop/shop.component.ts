@@ -32,7 +32,7 @@ export class ShopComponent implements OnInit {
     }
 
     public ticket = {
-		owner: "Lucas Ferreira Costa",
+		owner: "Mobizno Show",
 		event: { },
 		seat: { },
 		edition: {
