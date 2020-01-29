@@ -14,7 +14,7 @@ import { SignComponent } from './sign/sign.component';
 import { LoginComponent } from './login/login.component';
 
 import { FirebaseInitService } from './firebase/firebase.init.service';
-import { TicketsComponent } from './tickets/tickets.component';
+import { TicketComponent } from './ticket/ticket.component';
 import { ShopComponent } from './shop/shop.component'
 
 @NgModule({
@@ -27,7 +27,7 @@ import { ShopComponent } from './shop/shop.component'
     HomeComponent,
     SignComponent,
     LoginComponent,
-    TicketsComponent,
+    TicketComponent,
     ShopComponent,
   ],
   imports: [
