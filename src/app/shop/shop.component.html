@@ -97,7 +97,59 @@
         border-left-color: teal;
     }
 
-/*========== GENERAL CSS ======*/
+    /*========== PANEL CSS ======*/
+
+    .panel .container-tickets {
+        max-width: 540px;
+    }
+
+    .panel .delete-tk {
+        cursor: pointer;
+        padding: 1rem;
+        box-sizing: border-box;
+        z-index: 1 !important;
+        right: 2rem;
+    }
+
+      /*========== PAY CSS ======*/
+
+    .pay {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #434334;
+        color: #FFF;
+        text-align: right;
+        padding: 0;
+        z-index: 10;
+    }
+
+    @media (max-width: 576px) { 
+        .pay {
+            position: relative;
+        }
+    }
+
+    .pay > * {
+        padding: 1rem 2rem 1rem 1rem;
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    .pay .badge {
+        height: auto;
+        padding: 0.3rem 0.6rem;
+        font-size: 1em;
+    }
+
+    .pay .btn {
+        height: auto;
+        font-size: 1em;
+        padding: 1rem;
+    }
+
+    /*========== GENERAL CSS ======*/
     .sidebar .input-field > label:not(.label-icon).active {
         transform: translateY(4px) scale(0.8);
     }
@@ -178,23 +230,32 @@
             </button>
         </ul>
 
-        <!-- Modal Structure -->
-        <div  class="modal bottom-sheet" [modalControl]="control.modal">
-          <div class="modal-content">
-            <h4>Novo Ingresso</h4>
-            <p>Verificando a disponibilidade dos ingressos</p>
-          </div>
-          <div class="modal-footer">
-          </div>
+        <div class="modal bottom-sheet" [modalControl]="control.modal">
+            <div class="modal-content">
+                <h4>Novo Ingresso</h4>
+                <p>Verificando a disponibilidade dos ingressos</p>
+            </div>
         </div>
 
     </aside>
     <section class="panel col s12 m6 l7 xl8"> 
-        <h4>Ingressos Adquiridos</h4> 
-        {{purchase}}
-        <div *ngFor="let tck of purchase">
-            <app-tickets [currentTicket]="tck"></app-tickets>
+        
+        <h5>Veja abaixo seus ingressos e confira se os nomes estão de acordo.<br>
+            <small>*Tenha muita atenção  no nome e no tipo de ingresso</small>
+        </h5>
+
+        <div class="container-tickets" *ngFor="let tck of purchase; index as i">
+            <app-ticket [onTicket]="tck" [onRegister]="i" (onRemove)="onDelete($event)"></app-ticket>
         </div>     
         
+    </section>
+    <section class="pay col s12">
+        <span class="col s12 m6 l5 xl6">Ingressos adquiridos
+            <span class="new badge blue" data-badge-caption="">{{purchase.length}}</span>
+        </span>
+        <span class="col s12 m6 l4 xl4">Valor total da compra: 
+            <span class="new badge red" data-badge-caption=" KZ">{{control.total}}</span>
+        </span>
+        <button class="col s12 m12 l3 xl2 btn" type="button" (click)="finallyPurchase(purchase)">Finalizar a Compra</button>
     </section>
 </section>
