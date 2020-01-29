@@ -1,0 +1,147 @@
+<style>
+    .sidebar,
+    .panel {
+        min-height: 60px;
+        padding: 1rem;
+    }
+
+    .sidebar {
+        border-right: solid 1px #DDD;
+    }
+
+    .sidebar .event {
+        overflow: hidden;
+    }
+
+    .sidebar .event > * {
+        display: inline;
+        vertical-align: top;
+        left: 0;
+        margin: 0;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .sidebar .event .image {
+        height: 180px;
+        float: left;
+    }
+
+    .sidebar .event .title {
+        padding: 0 1em;
+        box-sizing: border-box;
+    }
+
+    .sidebar .event .title > * {
+        display: block;
+        padding: 0.3em 0;
+    }
+
+    .sidebar .event .title > h5 {
+        margin: 0 0 1rem 0;
+        padding: 0;
+    }
+
+    .sidebar .event .title .material-icons {
+        margin-right: 0.3em;
+    }
+
+    .sidebar .purchase {
+        padding: 0;
+    }
+
+    .sidebar .purchase .details {
+        background-color: transparent;
+    }
+
+    .sidebar .purchase .details > * {
+        border: solid 1px #EEE;
+        border-left: solid 8px #00F;
+        margin: 0 0 2px 0;
+        padding: 0.6rem 0 0 0;
+        background-color: rgba(0,0,0,0.02);
+    }
+
+    .sidebar .purchase .details > *:hover {
+        background-color: rgba(0,0,0,0.08);
+        border-left-color: teal;
+    }
+
+    .sidebar .input-field > label:not(.label-icon).active {
+        transform: translateY(4px) scale(0.8);
+    }
+
+    .sidebar .input-field .material-icons {
+        font-size: 2.8em;
+    }
+
+    .sidebar .input-field input,
+    .sidebar .input-field select option {
+        padding-left: 0.5rem;
+        color: inherit;
+        box-sizing: border-box;
+    }
+
+   .sidebar .l-select label {
+        top: -10px !important;
+        color: inherit;
+    }
+
+    figure img {
+        object-fit: cover;
+        height: 100%;
+    }
+</style>
+<a routerLink="/">Home</a><br>
+<hr>
+<section class="row">
+    <aside class="sidebar col s12 m6 l5 xl4">
+        <div class="event">
+            <figure class="image col s12 m5 l4"> <img src="assets/images/sources/arte-1.jpeg" ></figure>
+            <div class="title col s12 m7 l8">
+                <h5>{{event.name}}</h5>
+                <strong><i class="material-icons left">location_on</i> {{event.address}}</strong>
+                <strong><i class="material-icons left">perm_contact_calendar</i> {{event.date}}</strong>
+                <strong><i class="material-icons left">access_time</i> {{event.hour}}</strong>
+            </div>
+        </div>
+        <hr>
+        <div class="purchase">
+            <div class="">
+                <button class="btn" (click)="addTicked()" >
+                    <i class="material-icons left">add</i> Add ingresso
+                </button>
+            </div>
+            <hr class="">
+            <ul class="details">
+                <li class="input-field">
+                    <i class="material-icons prefix">account_box</i>
+                    <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
+                    <label for="owner">Seu Nome</label>
+                </li>
+                <li class="input-field l-select">
+                    <i class="material-icons prefix">event_seat</i>
+                    <select class="select" id="session" name="session" (change)="seat.session = $event.target.value">
+                        <option disabled >selecione um assento</option>
+                        <option value="A01">A01</option>
+                        <option value="B01">B01</option>
+                    </select>
+                    <label for="session">Seu assento</label>
+                </li>
+                <li class="input-field l-select">
+                    <i class="material-icons prefix">stars</i>
+                    <select class="select" id="type" name="type" (change)="seat.type = $event.target.value">
+                        <option disabled selected>selecione um tipo de ingresso</option>
+                        <option value="Normal">Normal</option>
+                        <option value="VIP">VIP</option>
+                    </select>
+                    <label for="type">Tipo de Ingresso</label>
+                </li>
+            </ul>
+        </div>
+    </aside>
+    <section class="panel col s12 m6 l7 xl8"> 
+        <h4>Ingressos Adquiridos</h4>      
+        <app-tickets [currentTicket]="ticket"></app-tickets>
+    </section>
+</section>
