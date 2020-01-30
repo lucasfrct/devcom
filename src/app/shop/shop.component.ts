@@ -40,13 +40,8 @@ export class ShopComponent implements OnInit {
     
     ngOnInit() { 
         var that = this
-        that.login.scope((user)=> {
-            if (null !== user) {
-                that.uid = user.uid
-            } else {
-                that.login.redirect('login') 
-            }
-        })
+        that.login.scope((user)=> { if (null !== user) { that.uid = user.uid } })
+        that.login.check(null, 'login')
     }
     
     public onChange() {
