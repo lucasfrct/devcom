@@ -200,7 +200,7 @@
         <hr>
 
         <ul class="purchase row">
-            <span class="title">Ingresso</span>
+            <span class="title">Preencher Ingresso</span>
             <li class="input-field">
                 <i class="material-icons prefix">account_box</i>
                 <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
@@ -258,4 +258,12 @@
         </span>
         <button class="col s12 m12 l3 xl2 btn" type="button" (click)="finallyPurchase(purchase)">Finalizar a Compra</button>
     </section>
+
+    <div class="modal" [modalControl]="control.modalPurchase">
+        <div class="modal-content">
+            <div class="progress"> <div class="indeterminate"></div></div>
+            <h4>Efetuando Transação</h4>
+            <p>Reservando seus ingressos no sistema!</p>
+        </div>
+    </div>
 </section>

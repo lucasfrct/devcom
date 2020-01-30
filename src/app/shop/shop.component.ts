@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PurchaseService } from './../purchase/purchase.service'
+import { FirebaseLoginService } from './../firebase/firebase.login.service'
 
 declare var M: any
 
@@ -11,9 +13,14 @@ declare var M: any
 export class ShopComponent implements OnInit {
     
     private uid: any
+    private pay: any
+    private login: any
+    public event: any
+    public purchase = []
 
     public control = {
         modal: null,
+        modalPurchase: null,
         total: 0,   
     }
     
@@ -22,20 +29,24 @@ export class ShopComponent implements OnInit {
         event: {},
         seat: { session: "", type: "" },
         edition: {},
-        price: "0"
+        price: "0",
     }
     
-    public purchase = []
-    
-    public event: any
-    
-    public constructor() {
-        //this.uid = user.uid
+    public constructor(pay: PurchaseService, login: FirebaseLoginService) {
+        this.pay = pay
+        this.login = login
         this.event = this.getEvent()
     }
     
     ngOnInit() { 
-        
+        var that = this
+        that.login.scope((user)=> {
+            if (null !== user) {
+                that.uid = user.uid
+            } else {
+                that.login.redirect('login') 
+            }
+        })
     }
     
     public onChange() {
@@ -102,22 +113,36 @@ export class ShopComponent implements OnInit {
     }
 
     public finallyPurchase(purchase) {
-        console.log("Finally: ", purchase)
+
+        if (this.validPurchase(purchase, this.uid)) {
+            
+            this.control.modalPurchase = true;
+            
+            this.pay.setUid(this.uid)
+            
+            this.pay.setCart(purchase)
+            
+            this.pay.makeTransaction((response)=> {
+                this.control.modalPurchase = false;
+                this.notify("Ingressos reservados com sucesso")
+            })
+        }
+        
     }
     
     private validate(ticket: any) {
         var valid = { check: false };
         
         if (!name(ticket.owner)) {
-            M.toast({ html: 'Favor digitar um nome com mais de 3 letras' });
+            this.notify('Favor digitar um nome com mais de 3 letras')
         }
         
         if (!seatSession(ticket.seat.session)) {
-            M.toast({ html: 'Favor Selecionar um assento.' });
+            this.notify('Favor Selecionar um assento.')
         }
         
         if (!seatType(ticket.seat.type)) {
-            M.toast({ html: 'Favor Selecionar um tipo de ingresso.' });
+            this.notify('Favor Selecionar um tipo de ingresso.')
         }
         
         valid.check = (
@@ -140,8 +165,33 @@ export class ShopComponent implements OnInit {
             return ("VIP" == type || "Normal" == type) ? true : false;
         }
     }
+
+    private validPurchase(purchase: any, uid: any) {
+
+        if (!purchaseValid(purchase)) {
+            this.notify("Não há ingresso no carrinho.")
+        }
+
+        if (!uidValid(uid)) {
+            this.notify("Você precisa logar para finalizar  a compra")
+        }
+
+        return (purchaseValid(purchase) && uidValid(uid)) ? true : false
+
+        function purchaseValid(purchase: any) {
+            return (purchase.length > 0 && typeof purchase == "object") ? true : false
+        }
+
+        function uidValid(uid: String) {
+            return (uid.length > 0 && typeof uid == "string") ? true : false
+        }
+    }
     
     private copy(obj: any) {
         return JSON.parse(JSON.stringify(obj));
+    }
+
+    private notify(message: String, time = 4000) {
+        M.toast({ html: message, displayLength: time });
     }
 }
