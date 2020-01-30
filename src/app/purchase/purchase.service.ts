@@ -15,7 +15,6 @@ export class PurchaseService {
     private uid: String
     private purchase: any
     private cart: any
-    private db = null
     private responses = []
 
     public constructor(purchase: FirebasePurchaseService) {
@@ -49,10 +48,13 @@ export class PurchaseService {
                 if (counter == total) {
                     callback(that.responses)
                 }
-
-                console.log("SAVED PRODUCT: ", response, "COUNTER: ", counter, "TOTAL: ", total)
             })
 
         })
+    }
+
+    public getList(callback: any) {
+        this.purchase.setUid(this.uid)
+        this.purchase.list(callback)
     }
 }

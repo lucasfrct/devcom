@@ -5,6 +5,7 @@ import { SignComponent } from './sign/sign.component'
 import { LoginComponent } from './login/login.component'
 import { TicketComponent } from './ticket/ticket.component'
 import { ShopComponent } from './shop/shop.component'
+import { BuyComponent } from './buy/buy.component'
 
 
 const routes: Routes = [
@@ -14,7 +15,7 @@ const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "tickets", component: TicketComponent },
   { path: "shop", component: ShopComponent },
-  { path: "shop", component: ShopComponent },
+  { path: "buy", component: BuyComponent },
   { path: "**", component: HomeComponent },
 ];
 
