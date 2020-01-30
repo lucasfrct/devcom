@@ -13,22 +13,39 @@ import { Injectable } from '@angular/core'
 export class PurchaseService {
 
     private uid: String
-    private purchase: any
-    private cart: any
-    private responses = []
+    private Purchase: any
+    public cart = []
+    public responses = []
 
-    public constructor(purchase: FirebasePurchaseService) {
-        this.purchase = purchase
+    public constructor(Purchase: FirebasePurchaseService) {
+        this.Purchase = Purchase
+        this.cart = []
     }
 
     public setUid(uid: String) {
         this.uid = uid
     }
 
-    public setCart(purchase: any) {
-        this.cart = []
-        this.cart = this.cart.concat(purchase)
+    public add(purchase: any) {
+        this.cart.push(purchase)
     }
+
+    public remove(index) {
+        this.cart.splice(index, 1)
+    }
+
+    get() {
+        return this.cart
+    }
+
+    public total() {
+        var result = 0;
+        this.cart.forEach((ticket) => {
+            if (ticket.price) { result = Number(result + Number(ticket.price)) }
+        })
+        return result;
+    }
+   
 
     public makeTransaction(callback: any) {
         
@@ -36,11 +53,11 @@ export class PurchaseService {
         var total = that.cart.length
         var counter = 0
         
-        that.purchase.setUid(this.uid)
+        that.Purchase.setUid(this.uid)
 
         that.cart.forEach((product)=> {
 
-            that.purchase.save(product, (response)=>{
+            that.Purchase.save(product, (response)=>{
 
                 that.responses.push(response)
                 counter = (counter + 1)
@@ -54,7 +71,7 @@ export class PurchaseService {
     }
 
     public getList(callback: any) {
-        this.purchase.setUid(this.uid)
-        this.purchase.list(callback)
+        this.Purchase.setUid(this.uid)
+        this.Purchase.list(callback)
     }
 }

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { PurchaseService } from './../purchase/purchase.service'
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
+import { EventService } from './../event/event.service'
+import { TicketService } from './../ticket/ticket.service'
+import { PurchaseService } from './../purchase/purchase.service'
+import { tick } from '@angular/core/testing';
 
 declare var M: any
 
@@ -13,59 +16,85 @@ declare var M: any
 export class ShopComponent implements OnInit {
     
     private uid: any
-    private pay: any
-    private login: any
+    private Login: any
+    private Event: any
+    private Ticket: any
+    private Purchase: any
+    
     public event: any
+    public ticket: any
     public purchase = []
 
     public control = {
         modal: null,
         modalPurchase: null,
-        total: 0,   
+        total: 0,  
     }
     
-    public ticket = {
-        owner: "",
-        event: {},
-        seat: { session: "", type: "" },
-        edition: {},
-        price: "0",
-    }
-    
-    public constructor(pay: PurchaseService, login: FirebaseLoginService) {
-        this.pay = pay
-        this.login = login
-        this.event = this.getEvent()
+    public constructor(
+        Login: FirebaseLoginService, 
+        Event: EventService, 
+        Ticket: TicketService,
+        Purchase: PurchaseService
+    ) {
+        this.Login = Login
+        this.Event = Event
+        this.Ticket = Ticket
+        this.Purchase = Purchase
+
+        this.event = Event.currentEvent
+        this.ticket = Ticket.currentTicket
     }
     
     ngOnInit() { 
         var that = this
-        that.login.scope((user)=> { if (null !== user) { that.uid = user.uid } })
-        that.login.check(null, 'login')
+        
+        that.Login.scope((user)=> { 
+            if (null !== user) { that.uid = user.uid } 
+            this.eventLoad()
+        })
+
+        that.Login.check(null, 'login')
+    }
+
+    private eventLoad(callback: any = null){
+        this.Event.setUid(this.uid)
+        this.Event.read((response)=> { 
+            this.event = this.Login.extend(this.event, response.events[0]) 
+            if (callback) {
+                callback(this.event)
+            }
+        })
     }
     
     public onChange() {
-        this.ticket.price = (this.ticket.seat.type == "VIP") ? "5000" : "3000";
+        this.ticket.price = 
+            (this.ticket.seat.type == "VIP") 
+            ? this.event.tickets.vip.price 
+            : this.event.tickets.normal.price
     }
     
-    public addTicked() {
+    public addTicket(ticket) {
 
         var that = this
         
-        if (that.validate(that.ticket).check) {
+        if (that.Ticket.validate(ticket).check) {
             
             that.control.modal = true
             
-            that.ticket.event = that.event
-            
-            that.getTicketEdition((edition) => {
-                
-                that.control.modal = false;
-                that.ticket.edition = edition;
-                
-                that.purchase.push(that.copy(that.ticket))
+            ticket.uid = that.uid
+            ticket.eid = that.event.id
 
-                that.control.total = that.calcTotal(that.purchase)
+            console.log("ADD RUN", ticket)
+            
+            that.getTicketEdition(ticket, (edition) => {
+
+                that.control.modal = false
+                that.ticket.edition = edition
+                
+                that.Purchase.add(that.Login.copy(that.ticket))
+                that.purchase = that.Purchase.get()
+                that.control.total = that.Purchase.total()
 
                 M.toast({ html: 'Ingresso adicionado' })
 
@@ -73,38 +102,40 @@ export class ShopComponent implements OnInit {
         }
     }
 
-    public deleteTicket(index: any) {
-        this.purchase.splice(index, 1)
-        this.control.total = this.calcTotal(this.purchase)
+    public removeTicket(index: any) {
+        this.Purchase.remove(index)
+        this.purchase = this.Purchase.get()
+        this.control.total = this.Purchase.total()
     }
 
     public onDelete(index: any) {
-        this.deleteTicket(index)
-    }
-
-    public getEvent() {
-        return  {
-            name: "Castelos dos Filhos das Ruas",
-            folderUrl: "assets/images/sources/art-1.jpeg",
-            logoUrl: "assets/images/sources/logo-1.jpeg",
-            date: "08 de Fev de 2020",
-            hour: "20h00",
-            address: "Cine Atlantico",
-        }
-    }
-    
-    private calcTotal(purchase: any) {
-        var result = 0;
-        purchase.forEach((ticket) => {
-            if (ticket.price) {
-                result = (result + Number(ticket.price))
-            }
-        })
-        return result;
+        this.removeTicket(index)
     }
    
-    private getTicketEdition(callback: any) {
-        callback({ circulation: "01", serial: "000001" })
+    private getTicketEdition(ticket: any, callback: any) {
+
+        this.eventLoad((event)=> {
+
+            var normal = event.tickets.normal
+            var vip = event.tickets.vip
+            var edition = { circulation: "", serial: "" }
+
+            if(ticket.seat.type =="Normal") {
+                edition.circulation = "A01"
+                edition.serial = serial(normal.sold)
+            }
+
+            if(ticket.seat.type =="VIP" ) {
+                edition.circulation = "V01"
+                edition.serial = serial(vip.sold)
+            }
+
+            callback(edition)
+        })
+
+        function serial(str) {
+            return String(Math.floor(Math.random() * 100) + String((Number(str) + 1)))
+        }
     }
 
     public finallyPurchase(purchase) {
@@ -113,55 +144,19 @@ export class ShopComponent implements OnInit {
             
             this.control.modalPurchase = true;
             
-            this.pay.setUid(this.uid)
+            this.Purchase.setUid(this.uid)
             
-            this.pay.setCart(purchase)
+            this.Purchase.setCart(purchase)
             
-            this.pay.makeTransaction((response)=> {
+            this.Purchase.makeTransaction((response)=> {
                 this.control.modalPurchase = false;
                 this.notify("Ingressos reservados com sucesso")
-                this.login.redirect("payment")
+                this.Login.redirect("payment")
             })
         }
         
     }
     
-    private validate(ticket: any) {
-        var valid = { check: false };
-        
-        if (!name(ticket.owner)) {
-            this.notify('Favor digitar um nome com mais de 3 letras')
-        }
-        
-        if (!seatSession(ticket.seat.session)) {
-            this.notify('Favor Selecionar um assento.')
-        }
-        
-        if (!seatType(ticket.seat.type)) {
-            this.notify('Favor Selecionar um tipo de ingresso.')
-        }
-        
-        valid.check = (
-            name(ticket.owner) 
-            && seatSession(ticket.seat.session) 
-            && seatType(ticket.seat.type)
-        ) ? true : false;
-        
-        return valid;
-        
-        function name(name: String) {
-            return (name.length >= 3) ? true : false;
-        }
-        
-        function seatSession(session: any) {
-            return (session.length >= 3) ? true : false;
-        }
-       
-        function seatType(type: any) {
-            return ("VIP" == type || "Normal" == type) ? true : false;
-        }
-    }
-
     private validPurchase(purchase: any, uid: any) {
 
         if (!purchaseValid(purchase)) {
