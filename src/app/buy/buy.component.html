@@ -1,1 +1,16 @@
-<p>buy works!</p>
+
+<div class="container-tickets" *ngFor="let tck of list; index as i">
+    <app-ticket [onTicket]="tck" [onRegister]="i"></app-ticket>
+</div>
+
+<div class="preloader-wrapper big active" *ngIf="control.bar">
+    <div class="spinner-layer spinner-blue-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div><div class="gap-patch">
+            <div class="circle"></div>
+        </div><div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>
