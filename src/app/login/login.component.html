@@ -1,4 +1,9 @@
 <section class="container">
+    
+    <div class="row">
+        <h5 class="center">Para adquirir um ingresso ou consultar sua compra é necessário fazer o login</h5>
+    </div>
+    
     <div class="row">
         <form class="form col s12 md9" (ngSubmit)="onSubmit(user)">
             <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
@@ -24,18 +29,17 @@
              </div>
              <div class="row">
                 <hr>
-                 <a routerLink="/sign" class="btn btn-small green waves-effects waves-light" >Criar uma conta</a>
+                    <a class="btn btn-small green waves-effects waves-light" >Esquecia senha</a>
+                    <a routerLink="/sign" class="btn btn-small green waves-effects waves-light" >Criar uma conta</a>
              </div>
         </form>
     </div>
     
     <div class="modal" [modalControl]="control.modal">
         <div class="modal-content">
-            <h4>Cadastro</h4>
-            <p>{{control.message}}</p>
+            <h4 class="center">{{control.message}}</h4>
         </div>
         <div class="modal-footer">
-            <a class="modal-close waves-effect waves-green red btn" (click)="control.modal=false">fechar</a>
         </div>
     </div>
 </section>

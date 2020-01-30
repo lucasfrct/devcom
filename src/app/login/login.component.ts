@@ -10,10 +10,12 @@ import { FirebaseLoginService } from './../firebase/firebase.login.service'
 
 export class LoginComponent implements OnInit {
 
-    private login: any
-
+    private Login: any
     private eye = "visibility"
     private password = "password"
+
+    public extend: any
+    public copy: any
 
     public control = {
         toggleEye: this.ToggleEye,
@@ -32,13 +34,15 @@ export class LoginComponent implements OnInit {
         password: "",
     }
 
-    constructor(login: FirebaseLoginService) {
-        this.login = login
+    constructor(Login: FirebaseLoginService) {
+        this.Login = Login
+        this.extend = Login.extend
+        this.copy = Login.copy
         this.user = { email:"lucas@lucas.com-e", password: "12345678" } 
      }
 
     ngOnInit() {
-        this.login.check(null, 'login')
+        this.Login.check(null, 'login')
     }
 
     public onSubmit(user: any) {
@@ -48,10 +52,13 @@ export class LoginComponent implements OnInit {
         if (valid.check) {
             that.control.bar = true
             
-            that.login.access(user, (response)=>{
+            that.Login.access(user, (response)=>{
                 that.control.bar = false
                 that.control.modal = true;
                 that.control.message = response.message
+                setTimeout(()=> {
+                    that.Login.redirect('buy')
+                }, 1000)
             })
         }
     }
@@ -93,7 +100,7 @@ export class LoginComponent implements OnInit {
     }
 
     public logOut() {
-        this.login.denied()
+        this.Login.denied()
     }
 
 }
