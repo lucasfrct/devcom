@@ -46,7 +46,7 @@ export class SignComponent implements OnInit {
     }
 
     ngOnInit() { 
-
+        this.sign.check(null, 'sign')
     }
 
     private ToggleEye() {
