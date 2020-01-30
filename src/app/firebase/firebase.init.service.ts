@@ -24,24 +24,19 @@ export class FirebaseInitService {
         measurementId: "G-70QMM4HJCK"
     }
 
-    public fisebase = null;
+    private firebase: any;
+    private reply = { code: "", message: "", user: null, error: null}
+
+    public constructor() { this.firebase = onInitFirebase(this.firebaseConfig) }
     
-    public response = { code: "", message: "", user: null, error: null}
+    public scope(callback) { this.firebase.auth().onAuthStateChanged(callback) }
+    
+    public on() { return this.firebase }
 
-    constructor() {
-        this.fisebase = onInitFirebase(this.firebaseConfig)
-    }
+    public db() { return this.firebase.firestore() }
 
-    scope(callback) {
-        return this.fisebase.auth().onAuthStateChanged(callback)
-    }
-
-    on() {
-        return this.fisebase
-    }
-
-    db() {
-        return this.fisebase.firestore()
+    public response(resposnse = {}) {
+        return JSON.parse(JSON.stringify(Object.assign(this.reply, resposnse)))
     }
     
 }
@@ -59,6 +54,6 @@ function onInitFirebase(firebaseConfig) {
         firebase = null;                                                                // Set null SGBD
     }
 
-    console.log("MODULE FIREBASE: ",state);
+    console.log("MODULE FIREBASE: ", state);
     return firebase
 }

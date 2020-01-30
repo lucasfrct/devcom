@@ -5,6 +5,8 @@
  */
 import { FirebaseInitService } from './../firebase/firebase.init.service'
 import { Injectable } from '@angular/core'
+import { Router } from '@angular/router'
+
 
 @Injectable({
     providedIn: "root"
@@ -13,21 +15,29 @@ import { Injectable } from '@angular/core'
 export class FirebaseLoginService {
 
     private init: any
+    private scope: any
     private firebase: any
     private db: any
     private response: any
-    private user: any
+    private router: any
 
     private observers = []
 
-    public constructor(init: FirebaseInitService) {
+    public constructor(init: FirebaseInitService, router: Router) {
         this.init = init
+        this.scope = this.init.scope
         this.firebase = this.init.on()
+        this.db = this.init.db()
         this.response = this.init.response
+        this.router = router
     }
 
     private CallSignEmail(email: string, password: string) {
         return this.firebase.auth().signInWithEmailAndPassword(email, password)
+    }
+
+    public check(callback: any) {
+        this.scope((user)=> { callback((null != user)) })
     }
 
     public access(user: any, callback) {
@@ -53,6 +63,24 @@ export class FirebaseLoginService {
             that.response.message = "Sessão atualizada com sucesso"
             that.NotifyAll(that.response)
         }  
+    }
+
+    public denied(callback = ()=>{ }){
+        
+        this.Subscribe(callback)
+
+        if ( null != this.firebase.auth().currentUser) { 
+            this.firebase.auth().signOut()
+            this.response.user = null
+            this.response.code = "400"
+            this.response.message = "Sessão terminada pelo usuário"
+        }
+        
+        this.NotifyAll(this.response)
+    }
+
+    public redirect(path) {
+        this.router.navigate([path])
     }
 
     public Subscribe(command: any) {
@@ -87,18 +115,5 @@ export class FirebaseLoginService {
                 break
         }
     }
-
-    public denied(callback = ()=>{ }){
-        
-        this.Subscribe(callback)
-
-        if ( null != this.firebase.auth().currentUser) { 
-            this.firebase.auth().signOut()
-            this.response.user = null
-            this.response.code = "400"
-            this.response.message = "Sessão terminada pelo usuário"
-        }
-        
-        this.NotifyAll(this.response)
-    }
+   
 }

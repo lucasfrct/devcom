@@ -12,33 +12,50 @@ import { Injectable } from '@angular/core'
 
 export class FirebasePurchaseService {
     
-    private init = null
-    private db = null
-    private response = null
     public uid: any
-
+    private init: any
+    private scope: any
+    private firebase: any
+    private db: any
+    private response: any
     private observers = []
 
     public constructor(init: FirebaseInitService){
         this.init = init
+        this.scope = this.init.scope
+        this.firebase = this.init.on()
         this.db = this.init.db()
-        this.response = this.init.response
+        this.response = this.init.response()
+    }
+
+    public setUid(uid: String) {
+        this.uid = uid
     }
 
     public save(product: any, callback: any) {
         var that = this
         that.Subscribe(callback)
 
-        if (that.uid) {
-            that.db.collection("users").doc(that.uid).set({}, {merge: true})
-                .then((prod)=>{
-                    console.log("PRODUICT: ", prod)
-                }).catch((error)=>{
+        if (that.uid.length > 5) {
+            
+            product = Object.assign(product, {uid: that.uid})
 
+            that.db.collection("products").doc().set(product, {merge: true})
+                .then(()=>{
+                    that.response.code = "200"
+                    that.response.message = "Produco cadastrado com sucesso"
+                    that.response.product = product
+                }).catch((error)=>{
+                    console.log("ERROR: ", error)
+                    that.response.code = "400"
+                    that.response.message = "Ocorreu algum erro"
+                    that.response.error = error
                 }).finally(()=> {
                     that.NotifyAll(that.response)
                 })
         } else {
+            that.response.code = "400"
+            that.response.message = "Usuário não registrado, favor logar no painel"
             that.NotifyAll(that.response)
         }
     }
