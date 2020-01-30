@@ -19,7 +19,12 @@
                 <span class="alert">
                     <em *ngFor="let alert of control.alerts"> {{alert}}</em>
                 </span>
-                 <button class="btn waves-effects waves-light" type="submit">Entrar</button>
+                 <button class="btn btn-large waves-effects waves-light" type="submit">Entrar</button>
+                 
+             </div>
+             <div class="row">
+                <hr>
+                 <a routerLink="/sign" class="btn btn-small green waves-effects waves-light" >Criar uma conta</a>
              </div>
         </form>
     </div>
@@ -30,7 +35,7 @@
             <p>{{control.message}}</p>
         </div>
         <div class="modal-footer">
-            <a class="modal-close waves-effect waves-green btn-flat" (click)="control.modal=false">fechar</a>
+            <a class="modal-close waves-effect waves-green red btn" (click)="control.modal=false">fechar</a>
         </div>
     </div>
 </section>
