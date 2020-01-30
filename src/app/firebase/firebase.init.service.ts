@@ -47,11 +47,11 @@ export class FirebaseInitService {
     }
     
     public NotifyAll(response = {}) {
-        
-        this.observers.forEach(ObserverFn => {
-            ObserverFn(response)
-        })
-        
+        if (this.observers) {
+            this.observers.forEach(ObserverFn => {
+                ObserverFn(response)
+            })
+        }
         this.observers = []
     }
 

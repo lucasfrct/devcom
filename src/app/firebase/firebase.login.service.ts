@@ -14,29 +14,25 @@ import { FirebaseInitService } from './../firebase/firebase.init.service'
 
 export class FirebaseLoginService {
 
-    private init: any
     private scope: any
     private firebase: any
-    private db: any
     private response: any
-    private router: any
+    private Router: any
     
     public Subscribe: any
     public NotifyAll: any
     public copy: any
     public extend: any
 
-    public constructor(init: FirebaseInitService, router: Router) {
-        this.init = init
-        this.scope = this.init.scope
-        this.firebase = this.init.on()
-        this.db = this.init.db()
-        this.response = this.init.response()
-        this.Subscribe = this.init.Subscribe
-        this.NotifyAll = this.init.NotifyAll
-        this.copy = this.init.copy
-        this.extend = this.init.extend
-        this.router = router
+    public constructor(Init: FirebaseInitService, Router: Router) {
+        this.scope = Init.scope
+        this.firebase = Init.on()
+        this.response = Init.response()
+        this.Subscribe = Init.Subscribe
+        this.NotifyAll = Init.NotifyAll
+        this.copy = Init.copy
+        this.extend = Init.extend
+        this.Router = Router
     }
 
     private CallSignEmail(email: string, password: string) {
@@ -90,7 +86,7 @@ export class FirebaseLoginService {
     }
 
     public redirect(path) {
-        this.router.navigate([path])
+        this.Router.navigate([path])
     }
 
     private ErrorHandle(error: any) {
