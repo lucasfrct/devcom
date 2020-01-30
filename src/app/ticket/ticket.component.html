@@ -52,7 +52,7 @@
 </style>
 
 <section class="ticket col s12">
-    <i class="del material-icons right" (click)="deleteTicket()">delete</i>
+    <i class="del material-icons right" *ngIf="control.displayDelete" (click)="deleteTicket()">delete</i>
     <h5 class="title">{{ticket.event.name}} <small class="right">
         <span>Assento: <b>{{ticket.seat.session}}</b></span>
         <span>Tipo: <b>{{ticket.seat.type}}</b></span>

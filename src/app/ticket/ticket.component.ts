@@ -13,12 +13,19 @@ export class TicketComponent implements OnInit {
 	}
 
 	@Input() set onRegister(index: any) {
-		if (index >= 0) { this.index = index }
+		if (index >= 0) { 
+			this.index = index
+			this.control.displayDelete = true
+		}
 	}
 
 	@Output() onRemove = new EventEmitter()
 
 	public index: any
+
+	public control = {
+		displayDelete: false,
+	}
 
 	public ticket = {
 		owner: "",
