@@ -3,8 +3,9 @@
  * Autor: Lucas
  * Data: Janeiro de 2020
  */
-import { FirebaseInitService } from './../firebase/firebase.init.service'
 import { Injectable  } from '@angular/core'
+import { FirebaseInitService } from './../firebase/firebase.init.service'
+import { FirebaseLoginService } from './../firebase/firebase.login.service'
 
 @Injectable({
     providedIn: "root"
@@ -13,22 +14,36 @@ import { Injectable  } from '@angular/core'
 export class FirebaseSignService {
 
     private init: any
-    private firebase = null
-    private db = null
-    private response = null
-    private user = null
+    private scope: any
+    private firebase: any
+    private db: any
+    private response: any
+    private Subscribe: any
+    private NotifyAll: any
+    private copy: any
+    private extend: any
+    private login: any
+    private user: any
     
-    private observers = []
-
-    public constructor(init: FirebaseInitService) {
+    public constructor(init: FirebaseInitService, login: FirebaseLoginService) {
         this.init = init
+        this.scope = this.init.scope
         this.firebase = this.init.on()
         this.db = this.init.db()
-        this.response = this.init.response
+        this.response = this.init.response()
+        this.Subscribe = this.init.Subscribe
+        this.NotifyAll = this.init.NotifyAll
+        this.copy = this.init.copy
+        this.extend = this.init.extend
+        this.login = login
     }
 
     private CallSignEmail(email: string, password: string) {
         return this.firebase.auth().createUserWithEmailAndPassword(email, password)
+    }
+
+    public check(callback: any, path: String) {
+        this.login.check(callback, path)
     }
 
     public create(sign: any, callback: any) {
@@ -50,18 +65,6 @@ export class FirebaseSignService {
             }).finally(()=> {
                 that.NotifyAll(that.response)
             })
-    }
-
-    public Subscribe(command:any) {
-        this.observers.push(command)
-    }
-
-    public NotifyAll(command: any) {
-        this.observers.forEach(ObserverFuncion => {
-            ObserverFuncion(command)
-        });
-
-        this.observers = []
     }
 
     private ErrorHandle(error: any) {

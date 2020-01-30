@@ -48,3 +48,11 @@ html .form .material-icons {
         left: 0;
     }
  }
+
+.sidenav {
+    z-index: 1000 !important;
+}
+
+.sidenav-overlay {
+    z-index: 900   !important;
+}

@@ -30,7 +30,7 @@
     </div>
     <div class="col s12 m7 l8 xl9">
         <div class="container-tickets" *ngFor="let tck of list; index as i">
-            <app-ticket [onTicket]="tck" [onRegister]="i"></app-ticket>
+            <app-ticket [onTicket]="tck"></app-ticket>
         </div>
 
         <div class="preloader-wrapper big active" *ngIf="control.bar">
