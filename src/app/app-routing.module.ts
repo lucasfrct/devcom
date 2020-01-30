@@ -9,6 +9,7 @@ import { BuyComponent } from './buy/buy.component'
 import { AboutComponent } from './about/about.component'
 import { PlaceComponent } from './place/place.component'
 import { PaymentComponent } from './payment/payment.component'
+import { CheckinComponent } from './checkin/checkin.component'
 
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: "about", component: AboutComponent },
   { path: "place", component: PlaceComponent },
   { path: "payment", component: PaymentComponent },
+  { path: "checkin", component: CheckinComponent },
   { path: "**", component: HomeComponent },
 ];
 
