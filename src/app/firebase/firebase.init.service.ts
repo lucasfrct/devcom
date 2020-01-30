@@ -12,6 +12,8 @@ declare var firebase: any
 })
 
 export class FirebaseInitService {
+
+    private observers: any
     
     private firebaseConfig = {
         apiKey: "AIzaSyCr0VNqcrCUpn_O_9mn67GdxyTs9XSUJwQ",
@@ -38,7 +40,28 @@ export class FirebaseInitService {
     public response(resposnse = {}) {
         return JSON.parse(JSON.stringify(Object.assign(this.reply, resposnse)))
     }
+
+    public Subscribe(fn: any) {
+        if (typeof this.observers != "object" ) { this.observers = [] }
+        if (typeof fn == "function") { this.observers.push(fn) }
+    }
     
+    public NotifyAll(response = {}) {
+        
+        this.observers.forEach(ObserverFn => {
+            ObserverFn(response)
+        })
+        
+        this.observers = []
+    }
+
+    public copy(obj: any) {
+        return JSON.parse(JSON.stringify(obj))
+    }
+
+    public extend(objA: any, objB: any) {
+        return Object.assign(this.copy(objA),this.copy(objB))
+    }
 }
 
 
