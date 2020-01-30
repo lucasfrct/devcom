@@ -18,6 +18,9 @@ import { LoginComponent } from './login/login.component';
 import { TicketComponent } from './ticket/ticket.component';
 import { ShopComponent } from './shop/shop.component';
 import { BuyComponent } from './buy/buy.component';
+import { AboutComponent } from './about/about.component';
+import { PlaceComponent } from './place/place.component';
+import { PaymentComponent } from './payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +35,9 @@ import { BuyComponent } from './buy/buy.component';
     TicketComponent,
     ShopComponent,
     BuyComponent,
+    AboutComponent,
+    PlaceComponent,
+    PaymentComponent,
   ],
   imports: [
     BrowserModule,

@@ -120,6 +120,7 @@ export class ShopComponent implements OnInit {
             this.pay.makeTransaction((response)=> {
                 this.control.modalPurchase = false;
                 this.notify("Ingressos reservados com sucesso")
+                this.login.redirect("payment")
             })
         }
         

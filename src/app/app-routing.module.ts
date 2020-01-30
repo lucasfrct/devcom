@@ -6,6 +6,9 @@ import { LoginComponent } from './login/login.component'
 import { TicketComponent } from './ticket/ticket.component'
 import { ShopComponent } from './shop/shop.component'
 import { BuyComponent } from './buy/buy.component'
+import { AboutComponent } from './about/about.component'
+import { PlaceComponent } from './place/place.component'
+import { PaymentComponent } from './payment/payment.component'
 
 
 const routes: Routes = [
@@ -16,6 +19,9 @@ const routes: Routes = [
   { path: "tickets", component: TicketComponent },
   { path: "shop", component: ShopComponent },
   { path: "buy", component: BuyComponent },
+  { path: "about", component: AboutComponent },
+  { path: "place", component: PlaceComponent },
+  { path: "payment", component: PaymentComponent },
   { path: "**", component: HomeComponent },
 ];
 

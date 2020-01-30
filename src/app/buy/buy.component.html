@@ -1,16 +1,48 @@
 
-<div class="container-tickets" *ngFor="let tck of list; index as i">
-    <app-ticket [onTicket]="tck" [onRegister]="i"></app-ticket>
-</div>
+<style>
+    .controls .menu {
+    }
 
-<div class="preloader-wrapper big active" *ngIf="control.bar">
-    <div class="spinner-layer spinner-blue-only">
-        <div class="circle-clipper left">
-            <div class="circle"></div>
-        </div><div class="gap-patch">
-            <div class="circle"></div>
-        </div><div class="circle-clipper right">
-            <div class="circle"></div>
+    .controls .menu > * {
+        margin: 8px 0;
+        padding: 0;
+        display: block;
+    }
+
+    .controls .menu > * > * {
+        padding: 1rem;
+        height: auto;
+        display: block;
+    }
+</style>
+<section class="row">
+    <div class="controls col s12 m5 l4 xl3">
+        <div class="col s12">
+
+        </div>
+        <div class="col s12">
+            <ul class="menu">
+                <li><a class="btn waves-effect purple">Pagamentos Aprovados</a></li>
+                <li><a class="btn waves-effect purple">Pagamentos Pendentes</a></li>
+                <li><a class="btn waves-effect purple">Gerar QR Code</a></li>
+            </ul>
         </div>
     </div>
-</div>
+    <div class="col s12 m7 l8 xl9">
+        <div class="container-tickets" *ngFor="let tck of list; index as i">
+            <app-ticket [onTicket]="tck" [onRegister]="i"></app-ticket>
+        </div>
+
+        <div class="preloader-wrapper big active" *ngIf="control.bar">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                    <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
