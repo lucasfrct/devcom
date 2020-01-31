@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
-import { PurchaseService } from './../purchase/purchase.service'
-import { TicketComponent } from './../ticket/ticket.component'
+import { TicketService } from './../ticket/ticket.service'
+
 
 @Component({
     selector: 'app-buy',
@@ -11,43 +11,51 @@ import { TicketComponent } from './../ticket/ticket.component'
 
 export class BuyComponent implements OnInit {
 
-    private uid: any
-    private login: any
-    private purchase: any
+    private Login: any
+    private Ticket: any
+    private uid: String
 
     public list: any
+
     public control = {
         bar: false
     }
 
-    public constructor(login: FirebaseLoginService, purchase: PurchaseService) { 
-        this.login = login
-        this.purchase = purchase
+    public constructor(Login: FirebaseLoginService, Ticket: TicketService) { 
+        this.Login = Login
+        this.Ticket = Ticket
+
+        this.list = []
     }
 
     ngOnInit() {
         var that = this
-        that.login.scope((user)=> { if (null !== user) { that.uid = user.uid } })
-        that.login.check(null, 'login')
+        
+        that.Login.check(null, 'login')
+        
+        that.Login.scope((user)=> { 
+            if (null !== user) { that.uid = user.uid } 
+            that.loadTickets()
+        })
+        
         that.list = []
 
-        that.load()
     }
 
-    public load() {
+    public loadTickets() {
         var that = this
 
         that.control.bar = true
 
-        setTimeout(()=> {
-            that.purchase.setUid(that.uid)
-            that.purchase.getList((response)=> {
-                that.control.bar = false
-                if ("200" == response.code) {
-                    that.list = that.list.concat(response.list)
-                }
-            })
-        }, 1500)
+        that.Ticket.setUid(that.uid)
+
+        that.Ticket.list((response)=> {
+            that.control.bar = false
+            
+            if ("200" == response.code) {
+                that.list = that.list.concat(response.list)
+            }
+        })
     }
 
 }
