@@ -12,21 +12,21 @@ import { FirebaseInitService } from './../firebase/firebase.init.service'
 
 export class FirebaseEventService {
 
+    private collection = "events"
     private uid: any
     private Firebase: any
     private DB: any
-    private collection = "events"
+    private response: any
     
     public scope: any
-    public response: any
     public Subscribe: any
     public NotifyAll: any
     public copy: any
     public extend: any
 
     public constructor(Init: FirebaseInitService) {
+        
         this.scope = Init.scope
-        this.Firebase = Init.on()
         this.DB = Init.db()
         this.response = Init.response()
         this.Subscribe = Init.Subscribe
@@ -43,7 +43,7 @@ export class FirebaseEventService {
         return this.DB.collection(this.collection)
     }
 
-    public set(event: any, callback: any) {
+    public set(event: any, callback: Object = null) {
         
         this.Subscribe(callback)
         
@@ -85,14 +85,21 @@ export class FirebaseEventService {
         
     }
 
-    public get(callback) {
+    public get(id: any = null, callback: Object = null) {
         var that = this
+        var collection = null
 
         that.Subscribe(callback)
 
         if (that.uid) {
             
-            that.callCollectionEvent()
+            if (id) {
+                collection = that.callCollectionEvent().where("id", "==", id)
+            } else {
+                collection = that.callCollectionEvent()
+            }
+
+            collection
                 .get()
                 .then((query)=> {
                     var data = []

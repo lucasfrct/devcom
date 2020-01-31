@@ -4,6 +4,7 @@
  * Data: Janeiro de 2020
  */
 import { Injectable } from '@angular/core'
+import { FirebaseTicketService } from './../firebase/firebase.ticket.service'
 
 declare var M: any
 
@@ -13,22 +14,47 @@ declare var M: any
 
 export class TicketService {
 
+    private Ticket: any
+    private uid: any
+
+    public scope: any
+    public Subscribe: any
+    public NotifyAll: any
+    public copy: any
+    public extend: any
+
     public currentTicket = {
         uid: "",
         eid:"",
+        pid:"",
         id: "",
         owner: "",
         seat: { session: "", type: "" },
-        edition: { circulation: "", serial: "" },
+        edition: { },
         price: "0",
     }
+
+    public edition = { circulation: "", serial: "" }
 
     public eventTicket = { 
         vip: { price: "", total: "", sold: "", approved: "",}, // total - vendidos - aprovados
         normal: { price: "", total: "", sold: "", approved: "", } 
     }
 
-    public constructor() {
+    public constructor(Ticket: FirebaseTicketService) {
+        this.Ticket = Ticket
+
+        this.scope = Ticket.scope
+        this.Subscribe = Ticket.Subscribe
+        this.NotifyAll = Ticket.NotifyAll
+        this.copy = Ticket.copy
+        this.extend = Ticket.extend 
+
+        this.currentTicket.edition = this.edition
+    }
+
+    public setUid(uid: String) {
+        this.uid = uid
     }
 
     public validate(ticket: any) {
@@ -65,6 +91,16 @@ export class TicketService {
         function seatType(type: any) {
             return ("VIP" == type || "Normal" == type) ? true : false;
         }
+    }
+
+    public save(ticket, callback) {
+        this.Ticket.setUid(this.uid)
+        this.Ticket.create(ticket, callback)
+    }
+
+    public list(callback: any) {
+        this.Ticket.setUid(this.uid)
+        this.Ticket.get(callback)
     }
 
     private notify(message: String, time = 4000) {

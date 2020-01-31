@@ -242,6 +242,8 @@
             <small>*Tenha muita atenção  no nome e no tipo de ingresso</small>
         </h5>
 
+        <hr>
+
         <div class="container-tickets" *ngFor="let tck of purchase; index as i">
             <app-ticket [onTicket]="tck" [onRegister]="i" (onRemove)="onDelete($event)"></app-ticket>
         </div>     
@@ -254,7 +256,7 @@
         <span class="col s12 m6 l4 xl4">Valor total da compra: 
             <span class="new badge red" data-badge-caption=" KZ">{{control.total}}</span>
         </span>
-        <button class="col s12 m12 l3 xl2 btn" type="button" (click)="finallyPurchase(purchase)">Finalizar a Compra</button>
+        <button class="col s12 m12 l3 xl2 btn" type="button" (click)="finallyPurchase()">Finalizar a Compra</button>
     </section>
 
     <div class="modal" [modalControl]="control.modalPurchase">

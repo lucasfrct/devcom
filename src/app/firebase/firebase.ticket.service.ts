@@ -1,64 +1,67 @@
 /*
- * firebase.purchase.service.ts
+ * firebase.ticket.service
  * Autor: Lucas Costa
  * Data: Janeiro de 2020
  */
 import { Injectable } from '@angular/core'
 import { FirebaseInitService } from './../firebase/firebase.init.service'
+import { FirebaseEventService } from './../firebase/firebase.event.service'
 
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 
-export class FirebasePurchaseService {
-    
-    public uid: any
-    private init: any
-    private scope: any
-    private firebase: any
-    private db: any
-    private response: any
-    private collection = "products"
+export class FirebaseTicketService {
 
+    private collection = "tickets"
+    private Event: any
+    private uid:any 
+    private DB: any
+    private response: any
+
+    public scope: any
     public Subscribe: any
     public NotifyAll: any
     public copy: any
     public extend: any
 
-    public constructor(init: FirebaseInitService){
-        this.init = init
-        this.scope = this.init.scope
-        this.firebase = this.init.on()
-        this.db = this.init.db()
-        this.response = this.init.response()
-        this.Subscribe = this.init.Subscribe
-        this.NotifyAll = this.init.NotifyAll
-        this.copy = this.init.copy
-        this.extend = this.init.extend
-    }
+    public constructor(Init: FirebaseInitService, Event: FirebaseEventService) {
 
-    private getCollection() {
-        return this.db.collection(this.collection)
+        this.Event = Event
+        
+        this.DB = Init.db()
+        this.response = Init.response()
+        
+        this.scope = Init.scope
+        this.Subscribe = Init.Subscribe
+        this.NotifyAll = Init.NotifyAll
+        this.copy = Init.copy
+        this.extend = Init.extend 
     }
 
     public setUid(uid: String) { this.uid = uid }
 
-    public save(product: any, callback: any) {
+    private getCollection() {
+        return this.DB.collection(this.collection)
+    }
+
+    public create(ticket: any, callback: any) {
         var that = this
         that.Subscribe(callback)
 
-        if (that.uid.length > 5) {
+        if (that.uid.length > 5 && ticket.eid.length > 5) {
             
-            product = Object.assign(product, {uid: that.uid})
+            ticket = that.extend(ticket, {uid: that.uid})
 
-            that.getCollection().doc().set(product, {merge: true})
+            that.getCollection().doc().set(ticket, {merge: true})
                 .then(()=>{
                     that.response.code = "200"
                     that.response.message = "Produco cadastrado com sucesso"
-                    that.response.product = product
+                    that.response.ticket = ticket
                 }).catch((error)=>{
                     that.response.code = "400"
                     that.response.message = "Ocorreu algum erro"
+                    that.response.ticket = ticket
                     that.response.error = error
                 }).finally(()=> {
                     that.NotifyAll(that.response)
@@ -66,18 +69,21 @@ export class FirebasePurchaseService {
         } else {
             that.response.code = "400"
             that.response.message = "Usuário não registrado, favor logar no painel"
+            that.response.ticket = ticket
             that.NotifyAll(that.response)
         }
     }
 
-    public list(callback: any) {
+    public get(callback: Object) {
         var that = this
+
+        that.Subscribe(callback)
         
-        if (that.uid) {
+        if (that.uid.length > 5) {
 
-            that.Subscribe(callback)
-
-            that.getCollection().where("uid", "==", that.uid).get()
+            that.getCollection()
+                .where("uid", "==", that.uid)
+                .get()
                 .then((query)=>{  
                     var data = []
                     
@@ -101,5 +107,4 @@ export class FirebasePurchaseService {
             that.NotifyAll(that.response)
         }
     }
-
 }
