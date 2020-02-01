@@ -7,23 +7,23 @@ import { TicketComponent } from './ticket/ticket.component'
 import { ShopComponent } from './shop/shop.component'
 import { BuyComponent } from './buy/buy.component'
 import { AboutComponent } from './about/about.component'
-import { PlaceComponent } from './place/place.component'
 import { PaymentComponent } from './payment/payment.component'
 import { CheckinComponent } from './checkin/checkin.component'
+import { PerfilComponent } from './perfil/perfil.component'
 
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
-  { path: "home", component: HomeComponent },
+  { path: " ", component: HomeComponent },
   { path: "sign", component: SignComponent },
   { path: "login", component: LoginComponent },
   { path: "tickets", component: TicketComponent },
   { path: "shop", component: ShopComponent },
   { path: "buy", component: BuyComponent },
   { path: "about", component: AboutComponent },
-  { path: "place", component: PlaceComponent },
   { path: "payment", component: PaymentComponent },
   { path: "checkin", component: CheckinComponent },
+  { path: "perfil", component: PerfilComponent },
   { path: "**", component: HomeComponent },
 ];
 
