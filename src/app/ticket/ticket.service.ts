@@ -29,8 +29,16 @@ export class TicketService {
         pid:"",
         id: "",
         owner: "",
+        event: {
+            name: "",
+            folderUrl: "",
+            logoUrl: "",
+            date: "",
+            hour: "",
+            address: "",
+        },
         seat: { session: "", type: "" },
-        edition: { },
+        edition: { circulation: "", serial: "" },
         price: "0",
     }
 

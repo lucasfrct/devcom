@@ -28,6 +28,10 @@ export class TicketComponent implements OnInit {
 	}
 
 	public ticket = {
+		uid: "",
+		eid: "",
+		pid: "",
+		id: "",
 		owner: "",
 		event: {
 			name: "",
@@ -39,13 +43,13 @@ export class TicketComponent implements OnInit {
 		},
 		seat: {
 			session: "",
-			number: "", 
 			type: "",
 		},
 		edition: {
 			circulation: "",
 			serial: "",
 		},
+		price: "",
 	}  
 
   	constructor() { }

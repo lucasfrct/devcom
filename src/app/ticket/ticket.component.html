@@ -2,32 +2,27 @@
     .ticket {
         border: solid 1px #CCC;
         box-sizing: border-box;
-        padding: 1rem;
-        max-width: 540px;
-        margin: 4px 2px;
+        padding: 0.2rem;
+        max-width: 340px;
+        margin: 4px !important;
     }
 
-    .ticket .del {
-        cursor: pointer;
-        padding: 0.5rem;
-    }
-
-    .ticket .title small {
-
-    }
-
-    .ticket .title small > * {
-        display: block;
-        font-size: 0.7em;
-        margin: 0;
-        padding: 0;
-        line-height: 1.4em;
-        text-align: right;
-    }
-
+    .ticket .ticket-del, 
     .ticket .ticket-logo,
-    .ticket .ticket-date {
+    .ticket .ticket-title,
+    .ticket .ticket-seat,
+    .ticket .ticket-owner,
+    .ticket .ticket-date,
+    .ticket .ticket-edition,
+    .ticket .ticket-address {
         margin: 0;
+        padding-top: 0.2rem;
+        padding-bottom: 0.3rem;
+    }
+
+    .ticket .ticket-del {
+        cursor: pointer;
+        padding: 0.1rem;
     }
 
     .ticket .ticket-logo {
@@ -41,36 +36,70 @@
         margin: 0;
     }
 
-    .ticket .owner {
-        font-size: 1.5em;
+    .ticket .ticket-title {
+        padding-top: 0.3rem;
+        font-size: 1.2rem;
     }
 
-    .ticket .edition {
+    .ticket .ticket-seat > * {
+        display: block; 
         text-align: right;
-        font-size: 0.8em;
     }
+
+    .ticket .ticket-owner {
+        font-size: 1.1em;
+    }
+
+    .ticket .ticket-date {
+        font-size: 0.9em;
+    }
+
+    .ticket .ticket-date > * {
+        display: block;
+    }
+
+    .ticket .ticket-edition {
+        text-align: right;
+        font-size: 0.7em;
+    }
+
+    .ticket .ticket-address {
+        font-size: 0.8 em;
+        padding-bottom: 0.4rem;
+    }
+
 </style>
 
 <section class="ticket col s12">
-    <i class="del material-icons right" *ngIf="control.displayDelete" (click)="deleteTicket()">delete</i>
-    <h5 class="title">{{ticket.event.name}} <small class="right">
-        <span>Assento: <b>{{ticket.seat.session}}</b></span>
-        <span>Tipo: <b>{{ticket.seat.type}}</b></span>
-    </small></h5>
-    <figure class="ticket-logo col s12 m4">
+
+    <i class="ticket-del col s1 material-icons right" *ngIf="control.displayDelete" (click)="deleteTicket()">delete</i>
+
+    <figure class="ticket-logo col s4">
         <img style="object-fit: cover;" class="rigth" src="{{ticket.event.logoUrl}}">
     </figure>
-    <div class="ticket-date col s12 m8">
-        <h6>{{ticket.event.date}}</h6>
-        <h6>Início: <b>{{ticket.event.hour}}</b></h6>
-    </div>
-    <div class="owner col s12 m12">
+
+    <h6 class="ticket-title col s7">{{ticket.event.name}}</h6>
+    
+    <small class="ticket-seat col s4 right">
+        <span>Assento: <b>{{ticket.seat.session}}</b></span>
+        <span>Tipo: <b>{{ticket.seat.type}}</b></span>
+    </small>
+
+    <div class="ticket-owner col s12">
         <strong>Nome: {{ticket.owner}}</strong>
     </div>
-    <div class="col s8 m8">
-        <p>Local: {{ticket.event.address}}</p>
+
+    <div class="ticket-date col s8">
+        <span>{{ticket.event.date}}</span>
+        <span>Início: <b>{{ticket.event.hour}}</b></span>
     </div>
-    <div class="edition col s4 m4">
+
+    <div class="ticket-edition col s4">
         <p>TR: <b>{{ticket.edition.circulation}}</b> | N: <b>{{ticket.edition.serial}}</b></p>
     </div>
+
+    <div class="ticket-address col s12">
+        <span>Local: {{ticket.event.address}}</span>
+    </div>
+    
 </section>
