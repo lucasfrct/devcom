@@ -3,33 +3,37 @@
         <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
         <legend>Sign</legend>
         <div class="row">
-            <div class="input-field col s12 m6 {{control.nameAlert}}">
+            <div class="input-field col s12 m6 {{(control.alerts.name) ? 'alert' : ''}}">
                 <input id="name" type="text" class="validate" name="name" [(ngModel)]="user.name">
                 <label for="name">Nome:</label>
             </div>
-            <div class="input-field col s12 m6 {{control.surnameAlert}}">
+            <div class="input-field col s12 m6 {{(control.alerts.surname) ? 'alert' : ''}}">
                 <input id="surname" type="text" class="validate" name="surname" [(ngModel)]="user.surname"> 
                 <label for="surname">Sobrenome:</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m12 {{control.telephoneAlert}}">
+            <div class="input-field col s6 m6 {{(control.alerts.telephone) ? 'alert' : ''}}">
                 <input id="telephone" type="tel" class="validate" name="telephone" [(ngModel)]="user.telephone">
                 <label for="telephone">Telefone:</label>
             </div>
+            <div class="input-field col s6 m6 {{(control.alerts.bi) ? 'alert' : ''}}">
+                <input id="bi" type="text" class="validate" name="bi" [(ngModel)]="user.bi">
+                <label for="bi">Bibliete de Identificação:</label>
+            </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m12 {{control.emailAlert}}">
+            <div class="input-field col s12 m12 {{(control.alerts.email) ? 'alert' : ''}}">
                 <input id="email" type="email" class="validade" name="email" [(ngModel)]="user.email">
                 <label for="email">E-mail</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s10 m5 {{control.passwordAlert}}">
+            <div class="input-field col s10 m5 {{(control.alerts.password) ? 'alert' : ''}}">
                 <input id="password" type="{{control.password}}" class="validate" name="password" [(ngModel)]="user.password">
                 <label for="password">Palavra Passe</label>
             </div>
-            <div class="input-field col s10 m5 {{control.passwordAlert}}">
+            <div class="input-field col s10 m5 {{(control.alerts.password) ? 'alert' : ''}}">
                 <input id="mirror" type="{{control.password}}" class="validade" name="mirror" [(ngModel)]="control.mirror">
                 <label for="mirror">Repetir a Senha</label>
             </div>
@@ -39,7 +43,7 @@
         </div>
         <div class="row">
             <span class="alert">
-                <em *ngFor="let alert of control.alerts"> {{alert}}</em>
+                <em *ngFor="let alert of control.notifications"> {{alert}}</em>
             </span>
             <button type="submit" class="btn btn-large waves-effect waves-light">Cadastrar</button>
         </div>
