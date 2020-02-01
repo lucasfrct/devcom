@@ -24,34 +24,31 @@
     }
 
     .sidebar .event .image {
-        height: 180px;
+        height: 140px;
         float: left;
+        margin: 0;
     }
 
     .sidebar .event .details {
-        padding: 0 1em;
+        padding: 0 0.8em;
         box-sizing: border-box;
     }
 
     .sidebar .event .details > * {
         display: block;
-        padding: 0 0 0.9rem 0;
+        padding: 0 0 0.7rem 0;
         margin: 0;
         text-align: left;
     }
 
     .sidebar .event .details > .title {
-        margin: 0 0 0.5rem 0;
+        margin: 0 0 0.4rem 0;
     }
 
     .sidebar .event .details .material-icons {
         margin-right: 0.2em;
     }
 
-/*============= PRUCHASE ===============*/
-    .sidebar .total {
-        padding: 0 1rem;
-    }
 /*============= PRUCHASE ===============*/
 
     .sidebar .purchase {
@@ -66,17 +63,17 @@
     }
 
     .sidebar .purchase .title {
-        margin-bottom: 1rem;
+        margin: 0 0 0.5rem 0;
         display: block;
-        font-size: 1.5em;
+        font-size: 1.2em;
         text-align: center;
     }
 
     .sidebar .purchase .price {
         text-align: right;
         display: block;
-        font-size: 1.3em;
-        padding: 0.5rem 0 1rem 0;
+        font-size: 1em;
+        padding: 0.5rem 1rem 1rem 0;
     }
 
     .sidebar .purchase .add {
@@ -86,9 +83,9 @@
 
     .sidebar .purchase > li {
         border: solid 1px #EEE;
-        border-left: solid 8px #00F;
+        border-left: solid 8px blueviolet;
         margin: 0 0 2px 0;
-        padding: 0.6rem 0 0 0;
+        padding: 0.2rem 0;
         background-color: rgba(0,0,0,0.01);
     }
 
@@ -97,23 +94,35 @@
         border-left-color: teal;
     }
 
+    .sidebar .purchase > li i {
+        font-size: 2.4em;
+    }
+
+    .sidebar .purchase > li input  {
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 2px !important;
+    }
+
+    .sidebar .purchase > li label.active  {
+        transform: translateY(-2px) scale(0.8);
+    }
+
+    .sidebar .in-select label {
+        top: -12px !important;
+        color: inherit;
+    }
+
     /*========== PANEL CSS ======*/
 
     .panel .container-tickets {
-        max-width: 540px;
+        margin: 0;
+        padding: 0;
     }
 
-    .panel .delete-tk {
-        cursor: pointer;
-        padding: 1rem;
-        box-sizing: border-box;
-        z-index: 1 !important;
-        right: 2rem;
-    }
+    /*========== PAY CSS ======*/
 
-      /*========== PAY CSS ======*/
-
-    .pay {
+    .pay-container {
         position: fixed;
         left: 0;
         bottom: 0;
@@ -122,57 +131,26 @@
         color: #FFF;
         text-align: right;
         padding: 0;
-        z-index: 10;
+        z-index: 100;
     }
 
-    @media (max-width: 576px) { 
-        .pay {
-            position: relative;
-        }
-    }
-
-    .pay > * {
-        padding: 1rem 2rem 1rem 1rem;
+    .pay-container > * {
+        padding: 0.8rem;
+        padding-right: 2rem;
         margin: 0;
         font-size: 1.2em;
     }
 
-    .pay .badge {
+    .pay-container .badge {
         height: auto;
         padding: 0.3rem 0.6rem;
         font-size: 1em;
     }
 
-    .pay .btn {
+    .pay-container .btn {
         height: auto;
-        font-size: 1em;
-        padding: 1rem;
-    }
-
-    /*========== GENERAL CSS ======*/
-    .sidebar .input-field > label:not(.label-icon).active {
-        transform: translateY(4px) scale(0.8);
-    }
-
-    .sidebar .input-field .material-icons {
-        font-size: 2.8em;
-    }
-
-    .sidebar .input-field input,
-    .sidebar .input-field select option {
-        padding-left: 0.5rem;
-        color: inherit;
-        box-sizing: border-box;
-    }
-
-   .sidebar .in-select label {
-        top: -10px !important;
-        color: inherit;
-    }
-
-    figure img {
-        object-fit: cover;
-        height: 100%;
+        font-size: 1.3em;
+        padding: 0.8rem;
     }
 
 </style>
@@ -180,25 +158,19 @@
     <aside class="sidebar col s12 m6 l5 xl4">
         
         <div class="event row" *ngIf="event.name">
-            <figure class="image col s12 m5 l4"> <img src="{{event.folderUrl}}" ></figure>
-            <div class="details col s12 m7 l8">
-                <h5 class="title">{{event.name}}</h5>
-                <strong><i class="material-icons left">location_on</i> {{event.address}}</strong>
-                <strong><i class="material-icons left">perm_contact_calendar</i> {{event.date}}</strong>
+            <figure class="image col s4 m5 l4"> <img src="{{event.folderUrl}}" ></figure>
+            <div class="details col s8 m7 l8">
+                <h6 class="title"><b>{{event.name}}</b></h6>
+                <span><i class="material-icons left">location_on</i> {{event.address}}</span>
+                <span><i class="material-icons left">perm_contact_calendar</i> {{event.date}}</span>
                 <strong><i class="material-icons left">access_time</i> {{event.hour}}</strong>
             </div>
         </div>
 
         <hr>
-        
-        <div class="total row">
-            <h5 class="right">Total: <b>{{control.total}} KZ</b></h5>
-        </div>
-
-        <hr>
 
         <ul class="purchase row">
-            <span class="title">Preencher Ingresso</span>
+            <strong class="title">Preencher Ingresso</strong>
             <li class="input-field">
                 <i class="material-icons prefix">account_box</i>
                 <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
@@ -222,44 +194,48 @@
                 </select>
                 <label for="type">Tipo de Ingresso</label>
             </li>
-            <span class="price">Valor unitário: <b>{{ticket.price}} KZ</b></span>
-            <button class="add btn right" (click)="addTicket(ticket)" >
-                <i class="material-icons left">add</i> Add ingresso
+            <span class="price">Valor do ingresso: <b>{{ticket.price}} KZ</b></span>
+            <button class="add btn right waves-effect waves-light" (click)="addTicket(ticket)" >
+                <i class="material-icons left">add_shopping_cart</i> Adicionar ingresso
             </button>
         </ul>
 
-        <div class="modal bottom-sheet" [modalControl]="control.modal">
+        <div class="purchase-modal modal bottom-sheet" [modalControl]="control.modal.purchase">
             <div class="modal-content">
                 <h4>Novo Ingresso</h4>
-                <p>Verificando a disponibilidade dos ingressos</p>
+                <p>Verificando a disponibilidade dos ingressos no sistema</p>
             </div>
         </div>
 
     </aside>
     <section class="panel col s12 m6 l7 xl8"> 
         
-        <h5>Veja abaixo seus ingressos e confira se os nomes estão de acordo.<br>
-            <small>*Tenha muita atenção  no nome e no tipo de ingresso</small>
-        </h5>
+        <span>Veja abaixo seus ingressos e confira se os nomes estão de acordo.<br>
+            <small class="yellow">*Tenha muita atenção  no nome e no tipo de ingresso</small>
+        </span>
 
         <hr>
 
-        <div class="container-tickets" *ngFor="let tck of purchase; index as i">
+        <div class="container-tickets col s12 m6 l6 xl4" *ngFor="let tck of purchase; index as i">
             <app-ticket [onTicket]="tck" [onRegister]="i" (onRemove)="onDelete($event)"></app-ticket>
-        </div>     
+        </div> 
         
     </section>
-    <section class="pay col s12">
+    <section class="pay-container col s12">
+        
         <span class="col s12 m6 l5 xl6">Ingressos adquiridos
             <span class="new badge blue" data-badge-caption="">{{purchase.length}}</span>
         </span>
+        
         <span class="col s12 m6 l4 xl4">Valor total da compra: 
             <span class="new badge red" data-badge-caption=" KZ">{{control.total}}</span>
         </span>
+        
         <button class="col s12 m12 l3 xl2 btn" type="button" (click)="finallyPurchase()">Finalizar a Compra</button>
+
     </section>
 
-    <div class="modal" [modalControl]="control.modalPurchase">
+    <div class="pay-modal modal" [modalControl]="control.modal.pay">
         <div class="modal-content">
             <div class="progress"> <div class="indeterminate"></div></div>
             <h4>Efetuando Transação</h4>
@@ -267,11 +243,4 @@
         </div>
     </div>
 
-    <div class="method modal" [modalControl]="control.modalPurchase">
-        <div class="modal-content">
-            <div class="progress"> <div class="indeterminate"></div></div>
-            <h4>Efetuando Transação</h4>
-            <p>Reservando seus ingressos no sistema!</p>
-        </div>
-    </div>
 </section>
