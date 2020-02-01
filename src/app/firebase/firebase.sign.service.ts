@@ -6,6 +6,7 @@
 import { Injectable  } from '@angular/core'
 import { FirebaseInitService } from './../firebase/firebase.init.service'
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
+import { FirebaseUserService } from './../firebase/firebase.user.service'
 
 @Injectable({
     providedIn: "root"
@@ -13,29 +14,27 @@ import { FirebaseLoginService } from './../firebase/firebase.login.service'
 
 export class FirebaseSignService {
 
-    private init: any
-    private scope: any
+    private Login: any
+    private User: any
     private firebase: any
-    private db: any
     private response: any
-    private Subscribe: any
-    private NotifyAll: any
-    private copy: any
-    private extend: any
-    private login: any
-    private user: any
+
+    public Subscribe: any
+    public NotifyAll: any
+    public copy: any
+    public extend: any
     
-    public constructor(init: FirebaseInitService, login: FirebaseLoginService) {
-        this.init = init
-        this.scope = this.init.scope
-        this.firebase = this.init.on()
-        this.db = this.init.db()
-        this.response = this.init.response()
-        this.Subscribe = this.init.Subscribe
-        this.NotifyAll = this.init.NotifyAll
-        this.copy = this.init.copy
-        this.extend = this.init.extend
-        this.login = login
+    public constructor(Init: FirebaseInitService, Login: FirebaseLoginService, User: FirebaseUserService) {
+        
+        this.Login = Login
+        this.User = User
+
+        this.firebase = Init.on()
+        this.response = Init.response()
+        this.Subscribe = Init.Subscribe
+        this.NotifyAll = Init.NotifyAll
+        this.copy = Init.copy
+        this.extend = Init.extend
     }
 
     private CallSignEmail(email: string, password: string) {
@@ -43,7 +42,7 @@ export class FirebaseSignService {
     }
 
     public check(callback: any, path: String) {
-        this.login.check(callback, path)
+        this.Login.check(callback, path)
     }
 
     public create(sign: any, callback: any) {
@@ -53,14 +52,17 @@ export class FirebaseSignService {
         var Sign = that.CallSignEmail(sign.email, sign.password)
         Sign
             .then((response)=> {
-                console.log("NEW USER: ", response)
-                that.user = sign
-                that.user.uid = response.user.uid
-                that.response.user = that.user
+
+                sign.uid = response.user.uid
+                that.response.user = sign
                 that.response.code = "201"
                 that.response.message = "Conta Criado com sucesso!"
-                that.createUserFiretore(that.user)
+                
+                that.User.setUid(sign.uid)
+                that.User.set(sign)
+
             }).catch((error)=> {
+                that.response.error = error
                 that.ErrorHandle(error.code)
             }).finally(()=> {
                 that.NotifyAll(that.response)
@@ -88,7 +90,4 @@ export class FirebaseSignService {
         }
     }
 
-    private createUserFiretore(user: any) {
-        this.db.collection("users").doc(user.uid).set(user, {merge: true})
-    }
 }

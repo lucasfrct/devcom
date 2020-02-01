@@ -39,7 +39,7 @@ export class FirebaseLoginService {
         return this.firebase.auth().signInWithEmailAndPassword(email, password)
     }
 
-    public check(callback: any, path= 'home') {
+    public check(callback: any, path= '') {
         var that = this
         that.scope((user)=> { 
             if (null == user) { that.redirect(path) }

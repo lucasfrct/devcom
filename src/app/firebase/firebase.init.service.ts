@@ -37,6 +37,10 @@ export class FirebaseInitService {
 
     public db() { return this.firebase.firestore() }
 
+    public collection(collection: String) {
+        return this.db().collection(collection)
+    }
+
     public response(resposnse = {}) {
         return JSON.parse(JSON.stringify(Object.assign(this.reply, resposnse)))
     }

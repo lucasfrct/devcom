@@ -79,7 +79,7 @@ export class FirebaseTicketService {
 
         that.Subscribe(callback)
         
-        if (that.uid.length > 5) {
+        if (that.uid && that.uid.length > 5) {
 
             that.getCollection()
                 .where("uid", "==", that.uid)
