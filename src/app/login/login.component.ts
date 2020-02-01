@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
         this.Login = Login
         this.extend = Login.extend
         this.copy = Login.copy
-        this.user = { email:"lucas@lucas.com-e", password: "12345678" } 
+        this.user = { email:"cliente@cliente.com", password: "12345678" } 
      }
 
     ngOnInit() {
@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
                 that.control.modal = true;
                 that.control.message = response.message
                 setTimeout(()=> {
-                    that.Login.redirect('buy')
+                    that.Login.redirect('perfil')
                 }, 1000)
             })
         }
