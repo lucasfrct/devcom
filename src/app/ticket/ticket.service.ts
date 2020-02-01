@@ -23,7 +23,7 @@ export class TicketService {
     public copy: any
     public extend: any
 
-    public currentTicket = {
+    public current = {
         uid: "",
         eid:"",
         pid:"",
@@ -44,7 +44,7 @@ export class TicketService {
 
     public edition = { circulation: "", serial: "" }
 
-    public eventTicket = { 
+    public event = { 
         vip: { price: "", total: "", sold: "", approved: "",}, // total - vendidos - aprovados
         normal: { price: "", total: "", sold: "", approved: "", } 
     }
@@ -58,14 +58,14 @@ export class TicketService {
         this.copy = Ticket.copy
         this.extend = Ticket.extend 
 
-        this.currentTicket.edition = this.edition
+        this.current.edition = this.edition
     }
 
     public setUid(uid: String) {
         this.uid = uid
     }
 
-    public validate(ticket: any) {
+    public valid(ticket: any) {
         var valid = { check: false };
         
         if (!name(ticket.owner)) {
@@ -103,7 +103,7 @@ export class TicketService {
 
     public save(ticket, callback) {
         this.Ticket.setUid(this.uid)
-        this.Ticket.create(ticket, callback)
+        this.Ticket.set(ticket, callback)
     }
 
     public list(callback: any) {

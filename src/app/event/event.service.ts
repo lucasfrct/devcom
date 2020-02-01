@@ -24,7 +24,7 @@ export class EventService {
     public copy: any
     public extend: any
 
-    public currentEvent = {
+    public current = {
         uid: "",
         id: "",
         name: "",
@@ -46,7 +46,7 @@ export class EventService {
         this.copy = Event.copy
         this.extend = Event.extend
 
-        this.currentEvent.tickets = Ticket.eventTicket
+        this.current.tickets = Ticket.event
     }
 
     public setUid(uid: String) {
@@ -54,12 +54,12 @@ export class EventService {
     }
 
     public set(event) {
-        this.currentEvent = this.Event.extend(this.currentEvent, event)
+        this.current = this.Event.extend(this.current, event)
     }
 
     public create(callback) {
         this.Event.setUid(this.uid)
-        this.Event.set(this.currentEvent, callback)
+        this.Event.set(this.current, callback)
     }
 
     public update(callback) {

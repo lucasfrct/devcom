@@ -6,6 +6,8 @@
 import { Injectable } from '@angular/core'
 import { FirebaseUserService } from './../firebase/firebase.user.service'
 
+declare var M: any 
+
 @Injectable({
     providedIn: 'root'
 })
@@ -13,8 +15,15 @@ import { FirebaseUserService } from './../firebase/firebase.user.service'
 export class UserService {
 
     private User: any
+    private uid: String
 
-    public user = { 
+    public scope: any
+    public Subscribe: any
+    public NotifyAll: any
+    public copy: any
+    public extend: any
+
+    public current = { 
         uid: "",
         name: "", 
         surname: '',
@@ -26,6 +35,16 @@ export class UserService {
 
     public constructor(User: FirebaseUserService) {
         this.User = User
+
+        this.scope = User.scope
+        this.Subscribe = User.Subscribe
+        this.NotifyAll = User.NotifyAll
+        this.copy = User.copy
+        this.extend = User.extend
+    }
+
+    public setUid(uid: String) {
+        this.uid = uid
     }
 
     public valid(user: any, mirror: String = "") {
@@ -112,6 +131,20 @@ export class UserService {
         }
 
         return valid
+    }
+
+    public load(callback: Object = null) {
+        this.User.setUid(this.uid)
+        this.User.get(callback)
+    }
+
+    public update(user: any, callback: Object = null) {
+        this.User.setUid(this.uid)
+        this.User.set(user, callback)
+    }
+
+    private notify(message: String, time = 4000) {
+        M.toast({ html: message, displayLength: time });
     }
 
 }
