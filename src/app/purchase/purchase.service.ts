@@ -4,6 +4,7 @@
  * Data: Janeiro de 2020
  */
 import { Injectable } from '@angular/core'
+import { FirebasePurchaseService } from './../firebase/firebase.purchase.service'
 import { TicketService } from './../ticket/ticket.service'
 
 declare var M: any
@@ -14,8 +15,10 @@ declare var M: any
 
 export class PurchaseService {
 
+    private Purchase: any
     private Ticket: any
     private uid: String
+    private user: any
     private cart = []
     private responses = []
     
@@ -26,18 +29,17 @@ export class PurchaseService {
     public copy: any
 
     private purchase = {
-        uid:"",
+        uid: "",
         pid: "",
-        total: "",
+        name: "",
+        telephone: "",
+        bi: "",
         method: "",
-        profile: {
-            name: "",
-            bi: "",
-            telephone:""
-        }
+        total: "",
     }
 
-    public constructor(Ticket: TicketService) {
+    public constructor(Purchase: FirebasePurchaseService, Ticket: TicketService) {
+        this.Purchase = Purchase
         this.Ticket = Ticket
 
         this.scope= Ticket.scope
@@ -51,6 +53,17 @@ export class PurchaseService {
 
     public setUid(uid: String) {
         this.uid = uid
+    }
+
+    public setUser(user: Object = null) {
+        this.user = user
+    }
+
+    load() {
+        this.purchase.name = this.user.name
+        this.purchase.telephone = this.user.telephone
+        this.purchase.bi = this.user.bi
+        this.purchase.total = this.total()
     }
 
     public add(purchase: any) {
@@ -100,25 +113,46 @@ export class PurchaseService {
     }
 
     public transaction(callback: any) {
-        
         var that = this
+        var response = { code: "", message: "" }
+        that.Subscribe(callback)
+
+        that.load()
+        that.Purchase.setUid(that.uid)
         
-        that.Ticket.setUid(this.uid)
+        that.Purchase.register(that.purchase, (resp)=> {
 
-        that.cart.forEach((ticket)=> {
+            if (resp.code != "400" && resp.purchase.pid && resp.purchase.pid.length > 5) {
+       
+                that.Ticket.setUid(this.uid)
 
-            that.Ticket.save(ticket, (response)=>{
+                that.cart.forEach((ticket)=> {
 
+                    ticket.pid = resp.purchase.pid
+
+                    that.Ticket.save(ticket, (res)=>{
+
+                        res.ticket = ticket
+                        that.responses.push(res)
+                        that.notify("Ingresso de "+ticket.owner+" salvo!")
+                        
+                        if (that.responses.length == that.cart.length) {
+                            that.NotifyAll(that.responses)
+                        }
+                    })
+
+                })
+
+            } else {
+                response.code = "400"
+                response.message = "Compora não pode ser registrada"
                 that.responses.push(response)
-                that.notify("Ingresso de "+ticket.owner+" salvo!")
-                
-                if (that.responses.length == that.cart.length) {
-                    callback(that.responses)
-                }
-            })
+                that.NotifyAll(that.responses)
+            }
 
         })
     }
+
 
     public getList(callback: any) {
         this.Ticket.setUid(this.uid)
