@@ -17,7 +17,7 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li class="waves-effect waves-light"><a routerLink="">Home</a></li>
                 <li class="waves-effect waves-light"><a routerLink="/about">Evento</a></li>
-                <li class="waves-effect waves-light"><a routerLink="/perfil">Perfil</a></li>
+                <li class="waves-effect waves-light" *ngIf="control.state"><a routerLink="/perfil">Perfil</a></li>
                 <li class="waves-effect waves-light" waves-light><a routerLink="/shop">Comprar Ingressos</a></li>
                 <li class="waves-effect waves-light" *ngIf="control.state"><a routerLink="/buy">Meus Ingressos</a></li>
                 <li class="waves-effect waves-light" *ngIf="control.state"><a routerLink="/checkin">Checkin</a></li>

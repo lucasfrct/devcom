@@ -22,7 +22,14 @@ export class SignComponent implements OnInit {
         password: "password",
         eye: "visibility",
         bar: false,
-        alerts: {},
+        alerts: {
+            name: false,
+            surname: false,
+            telephone: false,
+            bi: false,
+            email: false,
+            password: false,
+        },
         notifications: [],
         nameAlert: "",
         surnameAlert: "",
@@ -37,9 +44,9 @@ export class SignComponent implements OnInit {
         name: "", 
         surname: '',
         telephone: '',
+        bi: "",
         email:"", 
         password: "",
-        bi: "",
     }
 
     constructor(Sign: FirebaseSignService, User: UserService) { 
@@ -50,9 +57,9 @@ export class SignComponent implements OnInit {
             name: "Cliente", 
             surname: 'cliente', 
             telephone: '935 964 737', 
+            bi: "12345678900",
             email:"cliente@cliente.com", 
             password: "12345678",
-            bi: "12345678900"
         } 
 
         this.control.mirror = "12345678"
