@@ -14,7 +14,6 @@ export class FirebasePurchaseService {
 
     private collection = "purchases"
     private uid: String
-    private DB: any
     private response: any
     private Collection: any
 
@@ -25,7 +24,7 @@ export class FirebasePurchaseService {
     public extend: any
 
     public constructor(Init: FirebaseInitService) {
-        this.DB = Init.db()
+
         this.scope = Init.scope
         this.Subscribe = Init.Subscribe
         this.NotifyAll = Init.NotifyAll
@@ -69,7 +68,7 @@ export class FirebasePurchaseService {
                 })
                 .catch((error)=> {
                     this.response.code = "400"
-                    this.response.message = "Ocorreu algum erro!"
+                    this.response.message = "Ocorreu algum erro na compara!"
                     this.response.purchase = purchase
                     this.response.error = error
                 })

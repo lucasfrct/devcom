@@ -6,6 +6,7 @@
 import { Injectable } from '@angular/core'
 import { FirebaseInitService } from './../firebase/firebase.init.service'
 import { FirebaseEventService } from './../firebase/firebase.event.service'
+import { tick } from '@angular/core/testing'
 
 @Injectable({
     providedIn: 'root'
@@ -45,19 +46,36 @@ export class FirebaseTicketService {
         return this.DB.collection(this.collection)
     }
 
-    public create(ticket: any, callback: any) {
+    public set(ticket: any, callback: Object = null) {
         var that = this
+        var collection = null
+
         that.Subscribe(callback)
 
-        if (that.uid.length > 5 && ticket.eid.length > 5) {
+        if (that.uid && ticket.pid  && ticket.eid) {
             
             ticket = that.extend(ticket, {uid: that.uid})
 
-            that.getCollection().doc().set(ticket, {merge: true})
-                .then(()=>{
+            if (ticket.id && ticket.length > 5) {
+                collection = that.getCollection().doc(ticket.id).set(ticket, {merge: true})
+            } else {
+                collection = collection = that.getCollection().add(ticket)
+            }
+  
+            collection
+                .then((doc)=>{
+
+
                     that.response.code = "200"
                     that.response.message = "Produco cadastrado com sucesso"
+
+                    if (doc && doc.id) {
+                        ticket.id = doc.id
+                        that.response.code = "201"
+                    }
+
                     that.response.ticket = ticket
+
                 }).catch((error)=>{
                     that.response.code = "400"
                     that.response.message = "Ocorreu algum erro"

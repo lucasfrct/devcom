@@ -5,6 +5,7 @@
  */
 import { Injectable } from '@angular/core'
 import { FirebaseInitService } from './../firebase/firebase.init.service'
+import { ConsoleReporter } from 'jasmine'
 
 
 @Injectable({
@@ -40,11 +41,13 @@ export class FirebaseUserService {
         this.uid = uid
     }
 
-    public set(user: Object, callback: Object = null) {
+    public set(user: any, callback: Object = null) {
         
         this.Subscribe(callback)
         
         if (this.uid && this.uid.length > 5) {
+            user.uid = this.uid
+            
             this.Collection
                 .doc(this.uid)
                 .set(user, {merge: true})
@@ -55,7 +58,7 @@ export class FirebaseUserService {
                 })
                 .catch((error)=> {
                     this.response.code = "400"
-                    this.response.message = "Ocorreu alguum Erro"
+                    this.response.message = "Ocorreu algum Erro ao atulaizar Usuário"
                     this.response.user = user
                     this.response.error = error
                 })
@@ -71,39 +74,44 @@ export class FirebaseUserService {
         }
     }
 
-    public load(uid: String, callback: Object = null) {
-        
-        console.log("LOAD",uid)
+    public get(callback: Object = null) {
+        var that = this
+        var user = { uid: that.uid}
 
-        if (uid && uid.length > 0) {
 
-            this.Subscribe(callback)
+        that.Subscribe(callback)
 
-            this.Collection
-                .where("uid","==", uid)
+        if (that.uid && that.uid.length > 5) {
+
+            that.Collection
+                .where("uid","==", that.uid)
                 .get()
                 .then((query)=> {
-                    var user = { uid: "" }
 
-                    query.forEach((doc)=>{ user = doc.data() })
+                    query.forEach((doc)=> {
+                        user.uid = doc.id
+                        user = that.extend(user, doc.data()) 
+                    })
                     
-                    this.response.code = "201"
-                    this.response.message = "Usuário carregado com sucesso"
-                    this.response.user = user
+                    that.response.code = "200"
+                    that.response.message = "Usuário carregado com sucesso"
+                    that.response.user = user
                 })
                 .catch((error)=> {
-                    this.response.code = "400"
-                    this.response.message = "Usuário carregado com sucesso"
-                    this.response.error = error
+                    that.response.code = "400"
+                    that.response.message = "Ocirreu um erro ao carregar o usuário"
+                    that.response.user = user
+                    that.response.error = error
                 })
                 .finally(()=> {
-                    this.NotifyAll(this.response)
+                    that.NotifyAll(that.response)
                 })
 
             } else {
-                this.response.code = "400"
-                this.response.message = "O usuário precisa estar logado"
-                this.NotifyAll(this.response)
+                that.response.code = "400"
+                that.response.message = "O usuário precisa estar logado"
+                that.response.user = user
+                that.NotifyAll(that.response)
             }
 
     }
