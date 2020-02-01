@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵConsole } from '@angular/core';
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
 import { EventService } from './../event/event.service'
 import { TicketService } from './../ticket/ticket.service'
@@ -20,6 +20,7 @@ export class ShopComponent implements OnInit {
     private Ticket: any
     private Purchase: any
     
+    public user: any
     public event: any
     public ticket: any
     public purchase = []
@@ -27,6 +28,7 @@ export class ShopComponent implements OnInit {
     public control = {
         modal: null,
         modalPurchase: null,
+        method: false,
         total: 0,  
     }
     
@@ -43,6 +45,14 @@ export class ShopComponent implements OnInit {
 
         this.event = Event.currentEvent
         this.ticket = Ticket.currentTicket
+
+        this.user = { 
+            name: "Cliente", 
+            surname: 'c',
+            telephone: '11111111',
+            email:"cliente@cliente", 
+            bi: "1234123423",
+        }
     }
     
     ngOnInit() { 
@@ -53,6 +63,9 @@ export class ShopComponent implements OnInit {
         that.Login.scope((user)=> { 
             if (null !== user) { that.uid = user.uid } 
             this.loadEvent()
+
+            this.Purchase.setUid(this.uid)
+
         })
     }
 
@@ -116,7 +129,8 @@ export class ShopComponent implements OnInit {
     public finallyPurchase() {
         console.log("FINALLY INIT")
         
-        this.Purchase.setUid(this.uid)
+       this.Purchase.setUid(this.uid)
+       this.Purchase.setUser(this.user)
 
         if (this.Purchase.valid().check) {
             
@@ -129,6 +143,8 @@ export class ShopComponent implements OnInit {
                 this.Login.redirect("payment")
             })
         }
+
+
         
     }
 
