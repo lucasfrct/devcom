@@ -1,5 +1,6 @@
 import { Component, OnInit, ɵConsole } from '@angular/core';
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
+import { UserService } from './../user/user.service'
 import { EventService } from './../event/event.service'
 import { TicketService } from './../ticket/ticket.service'
 import { PurchaseService } from './../purchase/purchase.service'
@@ -16,6 +17,7 @@ export class ShopComponent implements OnInit {
     
     private uid: String
     private Login: any
+    private User: any
     private Event: any
     private Ticket: any
     private Purchase: any
@@ -27,8 +29,8 @@ export class ShopComponent implements OnInit {
 
     public control = {
         modal: {
-            purchase: false,
-            pay: false,
+            ticket: false,
+            purchase: false, 
         },
         method: false,
         total: 0,  
@@ -36,25 +38,21 @@ export class ShopComponent implements OnInit {
     
     public constructor(
         Login: FirebaseLoginService, 
+        User: UserService,
         Event: EventService, 
         Ticket: TicketService,
         Purchase: PurchaseService
     ) {
         this.Login = Login
+        this.User = User
         this.Event = Event
         this.Ticket = Ticket
         this.Purchase = Purchase
 
-        this.event = Event.currentEvent
-        this.ticket = Ticket.currentTicket
+        this.user = User.current
+        this.event = Event.current
+        this.ticket = Ticket.current
 
-        /*this.user = { 
-            name: "Cliente", 
-            surname: 'c',
-            telephone: '11111111',
-            email:"cliente@cliente", 
-            bi: "1234123423",
-        }*/
     }
     
     public ngOnInit() { 
@@ -64,10 +62,18 @@ export class ShopComponent implements OnInit {
         
         that.Login.scope((user)=> { 
             if (null !== user) { that.uid = user.uid } 
+
+            this.loadUser()
             this.loadEvent()
 
             this.Purchase.setUid(this.uid)
+        })
+    }
 
+    private loadUser() {
+        this.User.setUid(this.uid)
+        this.User.load((response)=> {
+            this.user = this.User.extend(this.user, response.user)
         })
     }
 
@@ -98,19 +104,17 @@ export class ShopComponent implements OnInit {
     }
 
     public updatePurchase() {
-        this.purchase = this.Purchase.get()
-        this.control.total = this.Purchase.total()
+        this.purchase = this.Purchase.load()
+        this.control.total = this.Purchase.current.total
     }
 
     public addTicket(ticket) {
 
-        console.log("TK", ticket)
-
         var that = this
         
-        if (that.Ticket.validate(ticket).check) {
+        if (that.Ticket.valid(ticket).check) {
             
-            that.control.modal.purchase = true
+            that.control.modal.ticket = true
             
             ticket.uid = that.uid
             ticket.eid = that.event.id
@@ -118,7 +122,7 @@ export class ShopComponent implements OnInit {
 
             that.Event.getTicketEdition(ticket.seat.type, (edition) => {
 
-                that.control.modal.purchase = false
+                that.control.modal.ticket = false
 
                 ticket.edition = that.Purchase.extend(ticket.edition, edition)
                 
@@ -128,6 +132,8 @@ export class ShopComponent implements OnInit {
                 that.updatePurchase()
 
             });
+        } else {
+            that.notify("Preencha o ingresso")
         }
     }
 
@@ -138,13 +144,16 @@ export class ShopComponent implements OnInit {
 
         if (this.Purchase.valid().check) {
             
-            this.control.modal.pay = true;
+            this.control.modal.purchase = true;
             
+            //====Escolher forma de pagamento=====================================
+
+
             this.Purchase.transaction((response)=> {
 
-                this.control.modal.pay = false;
-                this.notify("Ingressos reservados com sucesso")
-                this.Login.redirect("payment")
+                this.control.modal.purchase = false;
+                this.notify("Ingressos reservados com sucesso", 6000)
+                //this.Login.redirect("payment")
 
             })
         }

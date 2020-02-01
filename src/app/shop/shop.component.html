@@ -2,7 +2,7 @@
     .sidebar,
     .panel {
         min-height: 60px;
-        padding: 1rem;
+        padding: 1rem; 
     }
 
     .sidebar {
@@ -51,37 +51,37 @@
 
 /*============= PRUCHASE ===============*/
 
-    .sidebar .purchase {
+    .sidebar .ticket {
         padding: 0;
     }
 
-    .sidebar .purchase {
+    .sidebar .ticket {
         background-color: transparent;
         border: solid 1px #DDD;
         padding: 1rem;
         margin: 0.1rem;
     }
 
-    .sidebar .purchase .title {
+    .sidebar .ticket .title {
         margin: 0 0 0.5rem 0;
         display: block;
         font-size: 1.2em;
         text-align: center;
     }
 
-    .sidebar .purchase .price {
+    .sidebar .ticket .price {
         text-align: right;
         display: block;
         font-size: 1em;
         padding: 0.5rem 1rem 1rem 0;
     }
 
-    .sidebar .purchase .add {
+    .sidebar .ticket .add {
         display: block;
         width: 100%;
     }
 
-    .sidebar .purchase > li {
+    .sidebar .ticket > li {
         border: solid 1px #EEE;
         border-left: solid 8px blueviolet;
         margin: 0 0 2px 0;
@@ -89,22 +89,22 @@
         background-color: rgba(0,0,0,0.01);
     }
 
-    .sidebar .purchase > li:hover {
+    .sidebar .ticket > li:hover {
         background-color: rgba(0,0,0,0.06);
         border-left-color: teal;
     }
 
-    .sidebar .purchase > li i {
+    .sidebar .ticket > li i {
         font-size: 2.4em;
     }
 
-    .sidebar .purchase > li input  {
+    .sidebar .ticket > li input  {
         padding: 0;
         margin-top: 0;
         margin-bottom: 2px !important;
     }
 
-    .sidebar .purchase > li label.active  {
+    .sidebar .ticket > li label.active  {
         transform: translateY(-2px) scale(0.8);
     }
 
@@ -120,9 +120,9 @@
         padding: 0;
     }
 
-    /*========== PAY CSS ======*/
+    /*========== purchase CSS ======*/
 
-    .pay-container {
+    .purchase-container {
         position: fixed;
         left: 0;
         bottom: 0;
@@ -134,27 +134,73 @@
         z-index: 100;
     }
 
-    .pay-container > * {
+    .purchase-container > * {
         padding: 0.8rem;
         padding-right: 2rem;
         margin: 0;
         font-size: 1.2em;
     }
 
-    .pay-container .badge {
+    .purchase-container .badge {
         height: auto;
         padding: 0.3rem 0.6rem;
         font-size: 1em;
     }
 
-    .pay-container .btn {
+    .purchase-container .btn {
         height: auto;
         font-size: 1.3em;
         padding: 0.8rem;
     }
 
+    /*======= payment ==========*/
+    .payment-modal.modal {
+        width: 80%;
+    }
+
+    .payment-modal.modal .modal-content {
+        padding: 12px 16px;
+        max-height: auto !important;
+    }
+
+    .payment-modal.modal, 
+    .payment-modal.modal .modal-content {
+        clear: both;
+        height: auto !important;
+        max-height: 100% !important;
+        overflow: hidden;
+    }
+
+    .payment-modal .modal-footer {
+        text-align: right;
+    }
+
+    .payment-modal .modal-footer .btn {
+        margin: 0 16px 24px 16px;
+        display: inline-block;
+        vertical-align: top;
+        top: 0;
+    }
+
+    @media(max-width: 576px) {
+
+        .payment-modal.modal, 
+        .payment-modal.modal .modal-content {
+            top: 0 !important;
+            width: 98%;
+        }
+
+        .payment-modal .modal-footer {
+            text-align: center;
+            padding-bottom: 48px;
+        }
+
+
+    }
+
 </style>
 <section class="row">
+
     <aside class="sidebar col s12 m6 l5 xl4">
         
         <div class="event row" *ngIf="event.name">
@@ -169,12 +215,12 @@
 
         <hr>
 
-        <ul class="purchase row">
+        <ul class="ticket row">
             <strong class="title">Preencher Ingresso</strong>
             <li class="input-field">
                 <i class="material-icons prefix">account_box</i>
                 <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
-                <label for="owner">Seu Nome</label>
+                <label for="owner">Nome no Ingresso</label>
             </li>
             <li class="input-field in-select">
                 <i class="material-icons prefix">event_seat</i>
@@ -200,14 +246,16 @@
             </button>
         </ul>
 
-        <div class="purchase-modal modal bottom-sheet" [modalControl]="control.modal.purchase">
+        <div class="ticket-modal modal bottom-sheet" [modalControl]="control.modal.ticket">
             <div class="modal-content">
-                <h4>Novo Ingresso</h4>
-                <p>Verificando a disponibilidade dos ingressos no sistema</p>
+                <div class="progress"><div class="indeterminate"></div></div>
+                <h4 style="text-align: right;">Novo Ingresso</h4>
+                <p style="text-align: right;">Verificando a disponibilidade dos ingressos no sistema</p>
             </div>
         </div>
 
     </aside>
+
     <section class="panel col s12 m6 l7 xl8"> 
         
         <span>Veja abaixo seus ingressos e confira se os nomes estão de acordo.<br>
@@ -221,7 +269,8 @@
         </div> 
         
     </section>
-    <section class="pay-container col s12">
+
+    <section class="purchase-container col s12">
         
         <span class="col s12 m6 l5 xl6">Ingressos adquiridos
             <span class="new badge blue" data-badge-caption="">{{purchase.length}}</span>
@@ -235,12 +284,30 @@
 
     </section>
 
-    <div class="pay-modal modal" [modalControl]="control.modal.pay">
+    <div class="purchase-modal modal" [modalControl]="control.modal.purchase">
         <div class="modal-content">
             <div class="progress"> <div class="indeterminate"></div></div>
-            <h4>Efetuando Transação</h4>
+            <h4>Iniciando Transação</h4>
             <p>Reservando seus ingressos no sistema!</p>
         </div>
+    </div>
+
+    <div class="payment-modal modal" [modalControl]="true">
+        
+        <div class="modal-content">
+            <h5>Escolha o Método de Pagamento</h5>
+            <div class="divider"></div>
+          
+            <app-payment></app-payment>
+
+            <div class="divider"></div>
+        </div>
+        
+        <div class="modal-footer row">
+            <a class="btn btn-large waves-effect waves-ligth green">Confirmar</a>
+            <a class="btn btn-large waves-effect waves-ligth red">Cancelar</a>
+        </div>
+
     </div>
 
 </section>
