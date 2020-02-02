@@ -5,7 +5,6 @@
  */
 import { Injectable } from '@angular/core'
 import { FirebaseInitService } from './../firebase/firebase.init.service'
-import { ConsoleReporter } from 'jasmine'
 
 
 @Injectable({
