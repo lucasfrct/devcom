@@ -27,19 +27,24 @@ export class TicketService {
         uid: "",
         eid:"",
         pid:"",
-        id: "",
+        tid: "",
         owner: "",
+        price: "0",
         event: {
+            eid: "",
             name: "",
             folderUrl: "",
             logoUrl: "",
             date: "",
             hour: "",
             address: "",
+            tickets: { 
+                vip: { price: "", total: "", sold: "", approved: "",}, // total - vendidos - aprovados
+                normal: { price: "", total: "", sold: "", approved: "", } 
+            },
         },
         seat: { session: "", type: "" },
         edition: { circulation: "", serial: "" },
-        price: "0",
     }
 
     public edition = { circulation: "", serial: "" }
@@ -61,54 +66,99 @@ export class TicketService {
         this.current.edition = this.edition
     }
 
-    public setUid(uid: String) {
+    public setUid(uid: any) {
         this.uid = uid
+        this.current.uid = uid
     }
 
-    public valid(ticket: any) {
+    public setEid(eid: any) {
+        this.current.eid = eid
+    }
+
+    public setPid(pid: any) {
+        this.current.pid = pid
+    }
+
+    public valid() {
         var valid = { check: false };
         
-        if (!name(ticket.owner)) {
+        
+        if (!eid(this.current.eid)) {
+            this.notify('O ingresso não contém um evento vinculado')
+        }
+
+        if (!name(this.current.owner)) {
             this.notify('Favor digitar um nome com mais de 3 letras')
         }
+
+        if (!price(this.current.price)) {
+            this.notify('Não existe um preçco para esse ingresso')
+        }
         
-        if (!seatSession(ticket.seat.session)) {
+        if (!session(this.current.seat.session)) {
             this.notify('Favor Selecionar um assento.')
         }
         
-        if (!seatType(ticket.seat.type)) {
+        if (!type(this.current.seat.type)) {
             this.notify('Favor Selecionar um tipo de ingresso.')
         }
         
         valid.check = (
-            name(ticket.owner) 
-            && seatSession(ticket.seat.session) 
-            && seatType(ticket.seat.type)
+            eid(this.current.eid)
+            &&  name(this.current.owner) 
+            && price(this.current.price)
+            && session(this.current.seat.session) 
+            && type(this.current.seat.type)
         ) ? true : false;
         
         return valid;
         
+        function eid(eid: String) {
+            return (eid && eid.length > 5) ? true : false
+        }
+
         function name(name: String) {
-            return (name.length >= 3) ? true : false;
+            return (name && name.length >= 3) ? true : false;
+        }
+
+        function price(price: String) {
+            return (price && price.length > 0) ? true : false
         }
         
-        function seatSession(session: any) {
+        function session(session: any) {
             return (session.length >= 3) ? true : false;
         }
        
-        function seatType(type: any) {
+        function type(type: String) {
             return ("VIP" == type || "Normal" == type) ? true : false;
         }
     }
 
-    public save(ticket, callback) {
+    public save(ticket: any, callback: Object = null) {
         this.Ticket.setUid(this.uid)
         this.Ticket.set(ticket, callback)
     }
 
-    public list(callback: any) {
+    public list(callback: Object = null) {
         this.Ticket.setUid(this.uid)
         this.Ticket.get(callback)
+    }
+
+    public obtain(callback: Object = null) {
+
+        this.Ticket.setUid(this.uid)
+        this.Ticket.setPid(this.current.pid)
+        this.Ticket.obtain(callback)
+    
+    }
+
+    public changePrice() {
+        
+        this.current.price = (this.current.seat.type == "VIP" )
+        ? this.current.event.tickets.vip.price
+        : this.current.event.tickets.normal.price
+        
+        return this.current.price
     }
 
     private notify(message: String, time = 4000) {
