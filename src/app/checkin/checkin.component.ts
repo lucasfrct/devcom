@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FirebaseLoginService } from './../firebase/firebase.login.service'
 
 @Component({
     selector: 'app-checkin',
@@ -8,9 +9,14 @@ import { Component, OnInit } from '@angular/core';
 
 export class CheckinComponent implements OnInit {
 
-    constructor() { }
+    private Login: any 
+
+    constructor(Login: FirebaseLoginService) { 
+        this.Login = Login
+    }
 
     ngOnInit() {
+        this.Login.check(null, 'login')
     }
 
 }
