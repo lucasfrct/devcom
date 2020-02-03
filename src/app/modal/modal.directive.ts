@@ -25,7 +25,7 @@ export class ModalDirective implements OnInit{
     public constructor(el: ElementRef) { 
         this.element = el
         this.native = el.nativeElement
-        this.instanceModal = M.Modal.init(this.native, { preventScrolling: true, dismissible: true })
+        this.instanceModal = M.Modal.init(this.native, { preventScrolling: false, dismissible: false })
     }
 
     ngOnInit() {
