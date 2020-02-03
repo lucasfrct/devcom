@@ -37,6 +37,7 @@ export class PurchaseService {
         bi: "",
         method: "",
         total: "",
+        status: "pendente", // pendente aprovado e cancelado
     }
 
     public constructor(
@@ -56,8 +57,13 @@ export class PurchaseService {
         this.responses = []
     }
 
-    public setUid(uid: String) {
+    public setUid(uid: any) {
         this.uid = uid
+        this.current.uid = uid
+    }
+
+    public setEid(eid: any) {
+        this.current.eid = eid
     }
 
     public setUser(user: any = null) {
@@ -66,6 +72,10 @@ export class PurchaseService {
         this.current.telephone = user.telephone
         this.current.bi = user.bi
         this.current.total = this.total()
+    }
+
+    public setMethod(method: any) {
+        this.current.method = method
     }
 
     public add(purchase: any) {
@@ -78,7 +88,7 @@ export class PurchaseService {
         this.total()
     }
 
-    load() {
+    public load() {
         this.total()
         return this.cart
     }
@@ -104,10 +114,6 @@ export class PurchaseService {
             this.notify("Você precisa logar para finalizar  a compra")
         }
 
-        if(!pid(this.current.pid)) {
-            this.notify("Não há registro para essa compra")
-        }
-
         if(!eid(this.current.eid)) {
             this.notify("Não há evento selecionado")
         }
@@ -124,10 +130,6 @@ export class PurchaseService {
             this.notify("Não há um bilhete de identificacao registrado")
         }
 
-        if(!method(this.current.method)) {
-            this.notify("Não há método de pagamento selecionado")
-        }
-
         if(!total(this.current.total)) {
             this.notify("Não há valor total Calculado")
         }
@@ -135,12 +137,10 @@ export class PurchaseService {
         valid.check = (
             cart(this.cart) 
             && uid(this.uid)
-            && pid(this.current.pid)
             && eid(this.current.eid)
             && name(this.current.name)
             && telephone(this.current.telephone)
             && bi(this.current.bi)
-            && method(this.current.method)
             && total(this.current.total)
         ) ? true : false
 
@@ -150,10 +150,6 @@ export class PurchaseService {
 
         function uid(uid: String = "") {
             return (uid.length > 5) ? true : false
-        }
-
-        function pid(pid: String) {
-            return (pid && pid.length > 5) ? true : false
         }
 
         function eid(eid: String) {
@@ -170,10 +166,6 @@ export class PurchaseService {
 
         function bi(bi: String) {
             return (bi && bi.length >= 9) ? true : false
-        }
-
-        function method(method: String) {
-            return (method && (method == "paypal" || method == "transferencia")) ? true : false
         }
 
         function total(total: String) {
@@ -198,21 +190,23 @@ export class PurchaseService {
 
             that.Purchase.register(that.current, (resp)=> {
 
-                if (resp.code != "400" && resp.purchase.pid && resp.purchase.pid.length > 5) {
+                if (resp.code != "400" && resp.purchase.pid && resp.purchase.pid.length > 15) {
+
            
-                    that.Ticket.setUid(this.uid)
+                    that.Ticket.setUid(resp.purchase.uid)
     
                     that.cart.forEach((ticket)=> {
-    
+                        
                         ticket.pid = resp.purchase.pid
+                        ticket.eid = resp.purchase.eid
     
                         that.Ticket.save(ticket, (res)=>{
     
-                            res.ticket = ticket
                             that.responses.push(res)
                             that.notify("Ingresso de "+ticket.owner+" foi salvo!")
                             
                             if (that.responses.length == that.cart.length) {
+                                that.reset()
                                 that.NotifyAll(that.responses)
                             }
                         })
@@ -236,16 +230,51 @@ export class PurchaseService {
             that.responses.push(response)
             that.NotifyAll(that.responses)
         }
-
-        
-        
         
     }
-
 
     public getList(callback: any) {
         this.Ticket.setUid(this.uid)
         this.Ticket.list(callback)
+    }
+
+    private reset() {
+        this.current.pid = ""
+        this.current.method = ""
+        this.current.total = "0"
+        this.cart = []
+        this.total()
+    }
+
+    public acquire(callback: Object = null) {
+        var response = { code: "", message: "", purchases: []}
+
+        this.Subscribe(callback)
+
+        this.Purchase.setUid(this.uid)
+        
+        this.Purchase.get((resp)=> {
+
+            resp.purchases.forEach((purchase)=> {
+
+                this.Ticket.setUid(this.uid)
+                this.Ticket.setPid(purchase.pid)
+
+                this.Ticket.obtain((res)=> {
+
+                    purchase.tickets = res.tickets
+                    response.purchases.push(purchase)
+
+                    if (response.purchases.length >= resp.purchases.length) {
+                        this.NotifyAll(response)
+                    }
+
+                })
+
+            })
+            
+        })
+
     }
 
     public notify(message: String, time = 4000) {
