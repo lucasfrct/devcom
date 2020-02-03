@@ -25,71 +25,95 @@ export class FirebaseLoginService {
     public extend: any
 
     public constructor(Init: FirebaseInitService, Router: Router) {
+
         this.scope = Init.scope
         this.firebase = Init.on()
+
         this.response = Init.response()
         this.Subscribe = Init.Subscribe
         this.NotifyAll = Init.NotifyAll
         this.copy = Init.copy
         this.extend = Init.extend
         this.Router = Router
+
     }
 
-    private CallSignEmail(email: string, password: string) {
+    private CallSignEmail(email: String, password: String) {
         return this.firebase.auth().signInWithEmailAndPassword(email, password)
     }
 
-    public check(callback: any, path= '') {
-        var that = this
-        that.scope((user)=> { 
-            if (null == user) { that.redirect(path) }
-            if (typeof callback == "function") { callback((null != user)) }
+    public check(callback: Object = null, path: String = '') {
+        
+        this.scope((user)=> { 
+            
+            this.Subscribe(callback)
+
+            var state = ( user ) ? true : false
+            
+            if (!state) { this.redirect(path) }
+
+            this.NotifyAll(state)
         })
     }
 
-    public access(user: any, callback: any) {
-        var that = this
-        that.Subscribe(callback)
+    public access(user: any, callback: Object = null) {
 
-        if (null == that.firebase.auth().currentUser) {
-            var Login = that.CallSignEmail(user.email, user.password)
-            that.response.user = that.firebase.auth().currentUser
+        this.Subscribe(callback)
+
+        if (null == this.firebase.auth().currentUser) {
+
+            var Login = this.CallSignEmail(user.email, user.password)
+
+            this.response.user = this.firebase.auth().currentUser
+
             Login
                 .then((user)=>{
-                    that.response.code = "201"
-                    that.response.message = "Sessão iniciada com sucesso!"
-                }).catch((error)=>{
-                    that.response.error = error
-                    that.response = that.extend(that.response, that.ErrorHandle(error.code))
+                    
+                    this.response.code = "200"
+                    this.response.message = "Sessão iniciada com sucesso!"
+                    this.response.user = user
+
+                }).catch((error)=> {
+
+                    this.response.code = "400"
+                    this.response.error = error
+                    this.response.user = this.firebase.auth().currentUser 
+                    this.response = this.extend(this.response, this.ErrorHandle(error.code))
+
                 }).finally(()=>{
-                    that.NotifyAll(that.response)
+                    this.NotifyAll(this.response)
                 })
+                
         } else {
-            that.response.code = "200"
-            that.response.message = "Sessão atualizada com sucesso"
-            that.NotifyAll(that.response)
+            this.response.code = "200"
+            this.response.message = "Sessão atualizada com sucesso!"
+            this.NotifyAll(this.response)
         }  
     }
 
-    public denied(callback: any){
+    public denied(callback: Object = null){
         
         this.Subscribe(callback)
 
         if (null != this.firebase.auth().currentUser) { 
+
             this.firebase.auth().signOut()
             this.response.user = null
             this.response.code = "200"
-            this.response.message = "Sessão terminada pelo usuário"
+            this.response.message = "Sessão terminada com sucesso!"
+        } else {
+            this.response.code = "400"
+            this.response.message = "Erro ao tentar terminar sessão"
         }
         
         this.NotifyAll(this.response)
     }
 
-    public redirect(path) {
+    public redirect(path: String) {
         this.Router.navigate([path])
     }
 
-    private ErrorHandle(error: any) {
+    private ErrorHandle(error: String) {
         var err = { code: "", message: "" }
         switch(error) {
             case "auth/wrong-password":

@@ -31,13 +31,15 @@ export class FirebaseSignService {
 
         this.firebase = Init.on()
         this.response = Init.response()
+
         this.Subscribe = Init.Subscribe
         this.NotifyAll = Init.NotifyAll
         this.copy = Init.copy
         this.extend = Init.extend
+
     }
 
-    private CallSignEmail(email: string, password: string) {
+    private CallSignEmail(email: String, password: String) {
         return this.firebase.auth().createUserWithEmailAndPassword(email, password)
     }
 
@@ -45,49 +47,67 @@ export class FirebaseSignService {
         this.Login.check(callback, path)
     }
 
-    public create(sign: any, callback: any) {
-        var that = this
-        that.Subscribe(callback)
+    public create(sign: any, callback: Object = null) {
 
-        var Sign = that.CallSignEmail(sign.email, sign.password)
+        this.Subscribe(callback)
+
+        var Sign = this.CallSignEmail(sign.email, sign.password)
         Sign
             .then((response)=> {
+                console.log("Create User ID", response)
 
                 sign.uid = response.user.uid
-                that.response.user = sign
-                that.response.code = "201"
-                that.response.message = "Conta Criado com sucesso!"
-                
-                that.User.setUid(sign.uid)
-                that.User.set(sign)
+               
+                this.User.setUid(sign.uid)
+
+                this.User.set(sign, (user)=> {
+                    console.log("CREATE USER DB", user)
+
+                    this.response.user = user
+                    this.response.code = "201"
+                    this.response.message = "Conta Criada com sucesso!"
+
+                    this.NotifyAll(this.response)
+                    
+                })
 
             }).catch((error)=> {
-                that.response.error = error
-                that.ErrorHandle(error.code)
-            }).finally(()=> {
-                that.NotifyAll(that.response)
+
+                console.log ("ERROR", error)
+
+                this.response.user = sign
+                this.response.code = "400"
+                this.response.message = "Erroao Cria a conta"
+                this.response.error = error
+                this.ErrorHandle(error.code)
+                
+                this.NotifyAll(this.response)
+
             })
     }
 
-    private ErrorHandle(error: any) {
-        var that = this
+    private ErrorHandle(error: String) {
         
         switch(error) {
             case "auth/invalid-email":
-                that.response.code = "400"
-                that.response.message = "Formatação do e-mail inválida, favor inserir um email válido."
+                this.response.code = "400"
+                this.response.message = "Formatação do e-mail inválida, favor inserir um email válido."
                 break
             case "auth/weak-password":
-                that.response.code = "400"
-                that.response.message = "Senha fraca ou insuficiente, favor utilizar mais de 8 caracteres."
+                this.response.code = "400"
+                this.response.message = "Senha fraca ou insuficiente, favor utilizar mais de 8 caracteres."
                 break
             case "auth/email-already-in-use":
-                that.response.code = "400"
-                that.response.message = "Este email está em uso, favor inserir outro email para cadastro."
+                this.response.code = "400"
+                this.response.message = "Este email está em uso, favor inserir outro email para cadastro."
                 break
             default:
                 break
         }
+    }
+
+    public redirect(path: String) {
+        this.Login.redirect(path)
     }
 
 }

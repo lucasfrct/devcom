@@ -14,6 +14,7 @@ export class FirebasePurchaseService {
 
     private collection = "purchases"
     private uid: String
+    private firebase: any
     private response: any
     private Collection: any
 
@@ -25,6 +26,7 @@ export class FirebasePurchaseService {
 
     public constructor(Init: FirebaseInitService) {
 
+        this.firebase = Init.on()
         this.scope = Init.scope
         this.Subscribe = Init.Subscribe
         this.NotifyAll = Init.NotifyAll
@@ -80,6 +82,46 @@ export class FirebasePurchaseService {
             this.response.code = "400"
             this.response.message = "O usuário precisa estar logado para comprar"
             this.response.purchase = purchase
+            this.NotifyAll(this.response)
+        }
+    }
+
+    public get(callback: Object = null) {
+        console.log("GET")
+
+        this.Subscribe(callback)
+
+        if (this.uid && this.uid.length > 15) {
+
+            this.Collection
+                .where("uid", "==", this.uid)
+                .get()
+                .then((query)=> {
+                    var data = []
+                    query.forEach((doc)=> {
+                        data.push(this.extend(doc.data(), { pid: doc.id }))
+                    })
+
+                    this.response.code = "200"
+                    this.response.message = "Compras carregadas com sucesso!"
+                    this.response.purchases = data
+
+                })
+                .catch((error)=> {
+                
+                    this.response.code = "400"
+                    this.response.message = "Compras carregadas com sucesso!"
+                    this.response.purchases = []
+                    this.response.error = error
+                })
+                .finally(()=> {
+                    this.NotifyAll(this.response)
+                })
+
+        } else {
+            this.response.code = "400"
+            this.response.message = "Usuário não está logado"
+            this.response.purchases = []
             this.NotifyAll(this.response)
         }
     }

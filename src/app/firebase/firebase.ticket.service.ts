@@ -17,6 +17,7 @@ export class FirebaseTicketService {
     private collection = "tickets"
     private Event: any
     private uid:any 
+    private pid: any
     private DB: any
     private response: any
 
@@ -40,7 +41,13 @@ export class FirebaseTicketService {
         this.extend = Init.extend 
     }
 
-    public setUid(uid: String) { this.uid = uid }
+    public setUid(uid: String) { 
+        this.uid = uid 
+    }
+
+    public setPid(pid: String) {
+        this.pid = pid
+    }
 
     private getCollection() {
         return this.DB.collection(this.collection)
@@ -54,10 +61,10 @@ export class FirebaseTicketService {
 
         if (that.uid && ticket.pid  && ticket.eid) {
             
-            ticket = that.extend(ticket, {uid: that.uid})
+            ticket.uid = this.uid
 
-            if (ticket.id && ticket.length > 5) {
-                collection = that.getCollection().doc(ticket.id).set(ticket, {merge: true})
+            if (ticket.tid && ticket.tid.length > 5) {
+                collection = that.getCollection().doc(ticket.tid).set(ticket, {merge: true})
             } else {
                 collection = collection = that.getCollection().add(ticket)
             }
@@ -65,12 +72,11 @@ export class FirebaseTicketService {
             collection
                 .then((doc)=>{
 
-
                     that.response.code = "200"
-                    that.response.message = "Produco cadastrado com sucesso"
+                    that.response.message = "Ingresso cadastrado com sucesso!"
 
-                    if (doc && doc.id) {
-                        ticket.id = doc.id
+                    if (doc && doc.id.length > 5) {
+                        ticket.tid = doc.id
                         that.response.code = "201"
                     }
 
@@ -92,37 +98,82 @@ export class FirebaseTicketService {
         }
     }
 
-    public get(callback: Object) {
-        var that = this
+    public get(callback: Object = null) {
 
-        that.Subscribe(callback)
+
+        this.Subscribe(callback)
         
-        if (that.uid && that.uid.length > 5) {
+        if (this.uid && this.uid.length > 5) {
 
-            that.getCollection()
-                .where("uid", "==", that.uid)
+            this.getCollection()
+                .where("uid", "==", this.uid)
                 .get()
                 .then((query)=>{  
                     var data = []
                     
                     query.forEach((doc)=> {
-                        data.push(that.extend(doc.data(), { id: doc.id}))
+                        data.push(this.extend(doc.data(), { id: doc.id}))
                     });
 
-                    that.response.code = "200"
-                    that.response.message = "lista Carregada com sucesso"
-                    that.response.list = data
+                    this.response.code = "200"
+                    this.response.message = "lista Carregada com sucesso"
+                    this.response.list = data
                 }).catch((error)=>{
-                    that.response.code = "400"
-                    that.response.message = "Ocorreu algum erro"
-                    that.response.error = error
+                    this.response.code = "400"
+                    this.response.message = "Ocorreu algum erro"
+                    this.response.error = error
                 }).finally(()=> {
-                    that.NotifyAll(that.response)
+                    this.NotifyAll(this.response)
                 })
         } else {
-            that.response.code = "400"
-            that.response.message = "Precisa estar logado apara ver esta página"
-            that.NotifyAll(that.response)
+            this.response.code = "400"
+            this.response.message = "Precisa estar logado apara ver esta página"
+            this.NotifyAll(this.response)
         }
+    }
+
+    public obtain(callback: Object = null) {
+
+        this.Subscribe(callback)
+
+        if (this.uid && this.uid.length > 15 && this.pid && this.pid.length > 15) {
+
+            this.getCollection()
+                .where("uid", "==", this.uid)
+                .where("pid", "==", this.pid)
+                .get()
+                .then((query)=> {
+                    
+                    var data = []
+                    
+                    query.forEach((doc)=> {
+                        data.push(this.extend(doc.data(), { tid: doc.id }))
+                    })
+
+                    this.response.code = "200"
+                    this.response.message = "Lista de ingressos caregada com sucesso!"
+                    this.response.tickets = data
+
+                })
+                .catch((error)=> {
+
+                    this.response.code = "400"
+                    this.response.message = "Ocoreu algum erro ao carregar os ingressos"
+                    this.response.error = error
+                    this.response.tickets = []
+
+                })
+                .finally(()=> {
+                    this.NotifyAll(this.response)
+                })
+
+        } else {
+            this.response.code = "400"
+            this.response.message = "Usuário ou identificação de compra inexistentes"
+            this.response.tickets = []
+            this.NotifyAll(this.response)
+        }
+
+
     }
 }

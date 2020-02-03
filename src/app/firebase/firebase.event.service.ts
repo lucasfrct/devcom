@@ -14,7 +14,7 @@ export class FirebaseEventService {
 
     private collection = "events"
     private uid: any
-    private Firebase: any
+    private firebase: any
     private DB: any
     private response: any
     
@@ -24,11 +24,14 @@ export class FirebaseEventService {
     public copy: any
     public extend: any
 
+
     public constructor(Init: FirebaseInitService) {
         
-        this.scope = Init.scope
         this.DB = Init.db()
         this.response = Init.response()
+        this.firebase = Init.on()
+        
+        this.scope = Init.scope
         this.Subscribe = Init.Subscribe
         this.NotifyAll = Init.NotifyAll
         this.copy = Init.copy
@@ -47,23 +50,28 @@ export class FirebaseEventService {
         
         this.Subscribe(callback)
         
-        if(this.uid) {
+        if(this.uid && this.Subscribe.length > 15) {
             
             var collection = null
             event.uid = this.uid
 
-
-            if (event.id) {
-                collection = this.callCollectionEvent().doc(event.id)
+            if (event.eid) {
+                collection = this.callCollectionEvent().doc(event.eid).set(event, {merge: true})
             } else {
-                collection = this.callCollectionEvent().doc()
+                collection = this.callCollectionEvent().add(event)
             }
             
             collection
-                .set(event, {merge: true})
-                .then(()=>{
+                .then((doc)=> {
+
                     this.response.code = "200"
                     this.response.message = "Evento criado com sucesso!"
+
+                    if (doc && doc.id.length > 15) {
+                        event.eid = doc.id
+                        this.response.code = "201"
+                    }
+                    
                     this.response.event = event
                 })
                 .catch((error)=> {
@@ -85,44 +93,52 @@ export class FirebaseEventService {
         
     }
 
-    public get(id: any = null, callback: Object = null) {
-        var that = this
+    public get(eid: any = null, callback: Object = null) {
         var collection = null
 
-        that.Subscribe(callback)
+        this.Subscribe(callback)
 
-        if (that.uid) {
+        if (this.uid && this.uid.length > 15) {
             
-            if (id) {
-                collection = that.callCollectionEvent().where("id", "==", id)
+        //==================== PARA FORCA APENA O EVENTO CORRRENTE ======================
+                                eid = "eEPBQVAwu7yG9dRcW0C9"
+        // ==============================================================================
+            
+            if (eid && eid.length > 15) {
+                collection = this.callCollectionEvent().where("eid", "==", eid)
             } else {
-                collection = that.callCollectionEvent()
+                collection = this.callCollectionEvent()
             }
 
             collection
                 .get()
                 .then((query)=> {
+
                     var data = []
+
                     query.forEach((doc)=> {
-                        data.push(that.extend(doc.data(), { id: doc.id}))
+                        data.push(this.extend(doc.data(), { eid: doc.id}))
                     })
-                    that.response.code = "200"
-                    that.response.message = "Lista Carregada com sucesso!"
-                    that.response.events = data
+
+                    this.response.code = "200"
+                    this.response.message = "Lista Carregada com sucesso!"
+                    this.response.events = data
                 })
                 .catch((error)=> {
-                    that.response.code = "400"
-                    that.response.message = "Ocorreu algum erro."
-                    that.response.error = error
+                    this.response.code = "400"
+                    this.response.message = "Ocorreu algum erro na lista de Eventos."
+                    this.response.error = error
+                    this.response.events = []
                 })
                 .finally(()=> {
-                    that.NotifyAll(that.response)
+                    this.NotifyAll(this.response)
                 })
                 
         } else {
-            that.response.code = "400"
-            that.response.message = "Usuáruiio não Logado"
-            that.NotifyAll(that.response)
+            this.response.code = "400"
+            this.response.message = "Sem ID de Usuário"
+            this.response.events = []
+            this.NotifyAll(this.response)
         }
 
     }
