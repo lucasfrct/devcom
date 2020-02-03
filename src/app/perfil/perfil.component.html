@@ -13,6 +13,11 @@
         padding: 0 1rem 0.5rem 1rem;
     }
 
+    .perfil .perfil-name > *,
+    .perfil .perfil-contact > * {
+        min-height: 150px;
+    }
+
 </style>
 <section class="perfil row">
 
@@ -69,21 +74,21 @@
             </div>
 
             <div class="input-field col s12 m6">
-                <input id="email" name="email" type="text" [(ngModel)]="user.email">
+                <input id="email" name="email" type="text" [(ngModel)]="user.email" disabled>
                 <label class="active" for="email" >E-mail</label>
             </div>
 
             <div class="input-field col s12 m6 ">
-                <input id="telephone" name="telephone" type="text" [(ngModel)]="user.telephone">
+                <input id="telephone" name="telephone" type="text" [(ngModel)]="user.telephone" disabled>
                 <label class="active" for="telephone" >Telefone</label>
             </div>
 
         </div>
  
-        <div class="modal-footer row">
-            <a class="waves-effect btn green" (click)="onSave(user)">
+        <div class="modal-footer row col">
+            <button class="waves-effect btn green right" (click)="onSave()">
                 <i class="material-icons left">save</i> Salvar
-            </a>
+            </button>
         </div>
     </div>
 

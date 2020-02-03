@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
-import { FirebaseUserService } from './../firebase/firebase.user.service'
-import { from } from 'rxjs';
-import { ControlContainer } from '@angular/forms';
+import { UserService } from './../user/user.service'
 
 declare var M: any
 
@@ -18,12 +16,12 @@ export class PerfilComponent implements OnInit {
     private User: any
 
     public user = {
+        uid: "",
         name: "",
         surname: "",
         bi: "",
         email: "",
         telephone: "",
-        uid: "",
     }
 
     public control = {
@@ -32,7 +30,7 @@ export class PerfilComponent implements OnInit {
         preload: false,
     }
 
-    constructor(Login: FirebaseLoginService, User: FirebaseUserService) { 
+    constructor(Login: FirebaseLoginService, User: UserService) { 
         this.Login = Login
         this.User = User
     }
@@ -41,20 +39,22 @@ export class PerfilComponent implements OnInit {
         this.control.preload = true
 
         this.Login.check(null, 'login')
+
         this.Login.scope((user)=> { 
-            this.user.uid = user.uid
-            this.load(user.uid)
+            if (user && user.uid.length > 15 ) { 
+                this.user.uid = user.uid 
+            }
+            this.load()
         })
-        
-        M.updateTextFields()
         
     }
 
-    load(uid: String) {
+    public load() {
         var that = this
         that.control.preload = true
-    
-        that.User.load(uid, (response)=> {
+        
+        that.User.setUid(this.user.uid)
+        that.User.load((response)=> {
             that.control.preload = false
             that.user = response.user
         })
@@ -62,25 +62,21 @@ export class PerfilComponent implements OnInit {
 
     public onEdit() {
         this.control.modal = !this.control.modal
-        M.updateTextFields()
     }
 
-    public onSave(user: Object) {
+    public onSave() {
        
         this.control.modal = true
         this.control.bar = true
 
         this.User.setUid(this.user.uid)
+        this.User.current = this.user
 
-        this.User.set(this.user, (response)=> {
-            this.notify(response.message)
+        this.User.update((response)=> {
+            this.user = response.user
+            this.User.notify(response.message)
             this.control.modal = false
             this.control.bar = false
         })
     }
-
-    public notify(message: String, time = 4000) {
-        M.toast({ html: message, displayLength: time });
-    }
-
 }
