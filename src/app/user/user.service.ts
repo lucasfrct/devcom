@@ -134,16 +134,30 @@ export class UserService {
     }
 
     public load(callback: Object = null) {
+        
+        this.User.Subscribe(callback)
+
         this.User.setUid(this.uid)
-        this.User.get(callback)
+        
+        this.User.get((response)=> {
+            this.current = this.extend(this.current, response.user)
+            this.NotifyAll(response)
+        })
     }
 
-    public update(user: any, callback: Object = null) {
+    public update(callback: Object = null) {
+        
+        this.Subscribe(callback)
+        
         this.User.setUid(this.uid)
-        this.User.set(user, callback)
+
+        this.User.set(this.current, (response)=> {
+            this.current = response.user
+            this.NotifyAll(response)
+        })
     }
 
-    private notify(message: String, time = 4000) {
+    public notify(message: String, time = 4000) {
         M.toast({ html: message, displayLength: time });
     }
 
