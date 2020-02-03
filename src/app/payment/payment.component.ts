@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'app-payment',
@@ -8,17 +8,28 @@ import { Component, OnInit } from '@angular/core';
 
 export class PaymentComponent implements OnInit {
 
-    control = {
+    @Input() set bank(message) {
+        this.control.messageBank = message
+    }
+
+    @Input() set paypal(message) {
+        this.control.messagePaypal = message
+    }
+
+    @Output() onSelected = new EventEmitter()
+
+    public control = {
         bank: false,
         paypal: false,
         unchecked: false,
-        selected: ""
+        selected: "",
+        messageBank: "",
+        messagePaypal: "",
     }
 
     constructor() { }
 
-    ngOnInit() {
-    }
+    ngOnInit() { }
 
     public toggleBank() {
         this.control.bank = !this.control.bank
@@ -59,7 +70,9 @@ export class PaymentComponent implements OnInit {
             this.control.selected = ""
         }
 
-        return this.selected
+        this.onSelected.emit(this.control.selected)
+
+        return this.control.selected
     }
 
     public type() {
