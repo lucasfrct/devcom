@@ -19,12 +19,17 @@ export class TicketComponent implements OnInit {
 		}
 	}
 
+	@Input() set onQr(state: any) {
+		this.control.displayQr = state
+	}
+
 	@Output() onRemove = new EventEmitter()
 
 	public index: any
 
 	public control = {
 		displayDelete: false,
+		displayQr: false,
 	}
 
 	public ticket = {
@@ -58,6 +63,10 @@ export class TicketComponent implements OnInit {
 
 	deleteTicket() {
 		this.onRemove.emit(this.index)
+	}
+
+	public generateQRCode() {
+		console.log("QR Code")
 	}
 
 	

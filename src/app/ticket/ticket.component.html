@@ -20,7 +20,6 @@
         margin: 0;
         padding-top: 0.1rem;
         padding-bottom: 0.2rem;
-        border: solid 1px transparent;
     }
 
     .ticket .ticket-del {
@@ -80,6 +79,11 @@
         padding-bottom: 0.3rem;
     }
 
+    .ticket .ticket-qr-code {
+        margin: -42px auto 0 auto;
+        text-align: right;
+    }
+
 </style>
 
 <section class="ticket row">
@@ -112,6 +116,11 @@
 
     <div class="ticket-address col s12">
         <span>Local: <b>{{ticket.event.address}}</b></span>
+    </div>
+    <div class="ticket-qr-code col s12" *ngIf="control.displayQr">
+        <button class="btn waves-effect green"  (click)="generateQRCode()">
+            <i class="material-icons left">border_outer</i>QR Code
+        </button> 
     </div>
     
 </section>
