@@ -50,6 +50,7 @@ export class SignComponent implements OnInit {
     }
 
     constructor(Sign: FirebaseSignService, User: UserService) { 
+       
         this.Sign = Sign
         this.User = User
 
@@ -58,7 +59,7 @@ export class SignComponent implements OnInit {
             surname: 'cliente', 
             telephone: '935 964 737', 
             bi: "12345678900",
-            email:"cliente@cliente.com", 
+            email:"cliente@cliente.com-g", 
             password: "12345678",
         } 
 
@@ -75,18 +76,28 @@ export class SignComponent implements OnInit {
     }
 
     public onSubmit(user: any){
+
         
         var valid = this.User.valid(user, this.control.mirror)
+
         this.control.alerts = valid.alerts
+
         this.control.notifications = valid.notifications
-        
+
         if (valid.check) {
             this.control.bar = true
 
             this.Sign.create(user, (response)=> {
+
                 this.control.bar = false
                 this.control.modal = true
                 this.control.message = response.message
+
+                if ("201" == response.code) {
+                    setTimeout(()=> {
+                        this.Sign.redirect('perfil')
+                    },1300)
+                }
             })
 
         }
