@@ -1,47 +1,41 @@
 Módulo de compra - SHOP Component
 
-Evento do sistema: Carragar escope e configurações para uso
+Evento do sistema: Carraga escope e configurações para uso
 step 1: carreaga o Constructor 
+
 step 2: constroi a classe Login - módulo para controle de login
+step 2: constroi a classe User - módulo para controle de usuário
 step 2: constroi a classe Event - módulo para controle de eventos
 step 2: constroi a classe Ticket - módulo para controle de ticket
 step 2: constroi a classe Purchase - módulo par controle de compra
+
+step 2: carrega um objeto modelo para User
 step 2: carrega um objeto modelo para Event
 step 2: carrega um objeto modelo para Ticket
+step 2: carrega um objeto modelo para Cart (purchase)
+
 step 3: Carrega Invoke da classe SHOP
-step 3: Verifica se esta logado (Login.check) e redireciona para login caso não esteja
-step 3: Carrega o Escopo (Login.scope()) 
-step 3: Carrega o ususário (this.user)
-step 3: Carrega um evento (loadEvent())
-step 3.1: Set uid em Event (Event.setUdi())
-step 3.1: Inscreve o callback de evento
-step 3.1: Carrega evento (Event.read)
-setp 3.1: Set event (this.event) carrega no shoop o evento
-step 3.1: Notifica (dispara) o callback do Event.read
-step 3: Set uid em Purchase (Purchase.setUid()) 
+step 3: Checa login
+step 3: Carrega o Escopo do login (Login.scope()) 
+step 3.1: Carrega id do ususário (this.user)
+step 3.1: Set uid em Ticket (Ticket.setUid())
+step 3.1: Set uid em Purchase (Purchase.setUid())
 
-Evento do usuário: Adicionar ingresso ao carrinho
-step 4: invoca addTicket
-step 4: invoca Tiket.valid(ticket) testa se o ingresso esta preenchido corretamente
-step 4: Abre Modal de ticket (Verifinacdo a disponibilidade do ingresso)
-step 4: set uid em tiket (user id)
-step 4: set eis em tiket (event id)
-step 4: set event em tiket (this.event)
-step 4: Verifica se tem ingresso disponível (Event.getTicketEdition)
-step 4.1: Fecha modal de ticket
-step 4.1: Set em edicao do ingresso disponível (ticket.edition)  
-step 4:1: Adciona ticket ao carrinho (Purchase.add())
-step 4.1: Notifica (dispara) o callbak do evento
-step 4.1: Atualiza o carrinho (updatePruchase()) faz sets pruchase e total
+step 3.1: Set uid em User (User.setUid())
+step 3.1: Carrega usuário (User.load())
+step 3.1: Set uid em Event (Event.setUid())
+step 3.1: Carrega evento (Event.load())
+step 3.1.1: Set eid em Ticket (Ticket.setEid())
+step 3.1.1: Set event em Ticket
+step 3.1.1: Set ticket em control
 
-Evento do usuário: Finalizar compra
-step 5: invoce finallyPurchase
-step 5: set uid em Purchase (Purchase.setUid())
-step 5: set user em Purchase (Purchase.setUser()) ----------------- VERIFICAR -----------------
-step 5: invoca Purchase.valid() testa se a compra é válida, e se registro de usuário e produtos está ok
-step 5: Escolher forma de pagamento ---------------------------- ADICIONAR ----------------------------
-step 5: Set formde pagamento em Purchase ---------------------------- ADICIONAR ----------------------------
-step 5: Abre o modal de Pruchase (Iniciando a transacão)
-step 5: Inicia a transacão da compara (Purchase.transaction())
-step 5.1: Fecha o modal de Purchase
-step 5.1: Notifica (ingressos reservados com sucesso)
+Evento do usuário: mudar assento
+step 4: Set session em Ticket
+
+Evento do usuário: Muda o tipo de ingresso
+step 5: Set type em Ticket
+step 5: set price em Ticket (Ticket.changePrice())
+
+
+Evento do usuário: Addcionar ingresso no carrinho
+step 6: checa Tiket (ticket.vlaid().check)
