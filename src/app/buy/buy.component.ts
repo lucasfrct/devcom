@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
-import { TicketService } from './../ticket/ticket.service'
+import { PurchaseService } from './../purchase/purchase.service'
 
 
 @Component({
@@ -12,50 +12,48 @@ import { TicketService } from './../ticket/ticket.service'
 export class BuyComponent implements OnInit {
 
     private Login: any
-    private Ticket: any
+    private Purchase: any
     private uid: String
 
-    public list: any
+    public purchases: any
 
     public control = {
         bar: false
     }
 
-    public constructor(Login: FirebaseLoginService, Ticket: TicketService) { 
+    public constructor(Login: FirebaseLoginService, Purchase: PurchaseService) { 
+       
         this.Login = Login
-        this.Ticket = Ticket
+        this.Purchase = Purchase
 
-        this.list = []
+        this.purchases = []
     }
 
     ngOnInit() {
         var that = this
         
+        this.control.bar = true
         that.Login.check(null, 'login')
         
         that.Login.scope((user)=> { 
             if (null !== user) { that.uid = user.uid } 
-            that.loadTickets()
+
+            this.loadPurchases()
         })
+
+    }
+
+    public loadPurchases() {
+    
+        this.Purchase.setUid(this.uid)
         
-        that.list = []
-
-    }
-
-    public loadTickets() {
-        var that = this
-
-        that.control.bar = true
-
-        that.Ticket.setUid(that.uid)
-
-        that.Ticket.list((response)=> {
-            that.control.bar = false
-            
-            if ("200" == response.code) {
-                that.list = that.list.concat(response.list)
-            }
+        this.Purchase.acquire((response)=> {
+            this.control.bar = false
+            this.purchases = response.purchases
+            console.log("LOADS",this.purchases)
         })
     }
+
+    
 
 }

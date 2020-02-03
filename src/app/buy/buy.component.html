@@ -1,6 +1,7 @@
 
 <style>
-    .controls .menu {
+    .controls {
+        margin-bottom: 1rem;
     }
 
     .controls .menu > * {
@@ -13,25 +14,69 @@
         padding: 1rem;
         height: auto;
         display: block;
+        margin: 0 4px;
     }
+    
+    .container-tickets {
+        clear: both;
+        text-align: center;
+        margin-top: 4px;
+        transform-origin:top center;
+    }
+
+    .container-tickets::after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 0;
+    }
+
+    .buy-purchase .buy-puchase-details,
+    .container-tickets {
+    }
+
+    .buy-purchase {
+        border: solid 1px #CCC;
+        padding: 0.8rem;
+        margin: 1rem 4px;
+        clear: both;
+    }
+
+    .buy-purchase::after {
+        clear: both;
+        display: block;
+        content: "";
+    }
+
+    .buy-purchase .buy-puchase-details {
+        margin-bottom: 1rem;
+    }
+
+    .buy-purchase .buy-puchase-details > * {
+        display: block;
+        padding: 0.5rem 0;
+        text-transform: uppercase;
+    }
+
+    .buy-purchase .buy-puchase-details .btn-qr {
+        height: auto;
+        padding: 0.5rem 1rem;
+    }
+
 </style>
 <section class="row">
+    
     <div class="controls col s12 m5 l4 xl3">
         <div class="col s12">
-
-        </div>
-        <div class="col s12">
             <ul class="menu">
-                <li><a class="btn waves-effect purple">Pagamentos Aprovados</a></li>
-                <li><a class="btn waves-effect purple">Pagamentos Pendentes</a></li>
-                <li><a class="btn waves-effect purple">Gerar QR Code</a></li>
+                <li><h5>Meus Pagamentos</h5></li>
+                <li class="col s6 m12"><a class="btn waves-effect waves-light purple">Aprovados</a></li>
+                <li class="col s6 m12"><a class="btn waves-effect waves-light purple">Pendentes</a></li>
             </ul>
         </div>
     </div>
+
     <div class="col s12 m7 l8 xl9">
-        <div class="container-tickets" *ngFor="let tck of list; index as i">
-            <app-ticket [onTicket]="tck"></app-ticket>
-        </div>
 
         <div class="preloader-wrapper big active" *ngIf="control.bar">
             <div class="spinner-layer spinner-blue-only">
@@ -44,5 +89,24 @@
                 </div>
             </div>
         </div>
+
+        <section class="buy-purchase" *ngFor="let purchase of purchases">
+            
+            <div class="buy-puchase-details col s12 l3">
+                <span>Valor da compra: <b>{{purchase.total}}</b></span>
+                <span>Status: <b>{{purchase.status}}</b></span>
+                <button class="btn btn-qr waves-effect gray">
+                    <i class="material-icons left">border_outer</i>QR Code
+                </button>
+            </div>
+
+            <div class="col s12 l9">
+                <div class="container-tickets col s12" *ngFor="let tck of purchase.tickets; index as i">
+                    <app-ticket [onTicket]="tck"></app-ticket>
+                </div>
+            </div>
+
+        </section>
+
     </div>
 </section>
