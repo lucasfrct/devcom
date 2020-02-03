@@ -96,7 +96,7 @@ export class SignComponent implements OnInit {
                 if ("201" == response.code) {
                     setTimeout(()=> {
                         this.Sign.redirect('perfil')
-                    },1300)
+                    }, 1300)
                 }
             })
 

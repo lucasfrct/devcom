@@ -18,7 +18,8 @@ export class BuyComponent implements OnInit {
     public purchases: any
 
     public control = {
-        bar: false
+        bar: false,
+        purchaseFilter: "pendente",
     }
 
     public constructor(Login: FirebaseLoginService, Purchase: PurchaseService) { 
@@ -41,6 +42,14 @@ export class BuyComponent implements OnInit {
             this.loadPurchases()
         })
 
+    }
+
+    public onApproved() {
+        this.control.purchaseFilter = "aprovado"
+    }
+
+    public onPending() {
+        this.control.purchaseFilter = "pendente"
     }
 
     public loadPurchases() {

@@ -70,8 +70,12 @@
         <div class="col s12">
             <ul class="menu">
                 <li><h5>Meus Pagamentos</h5></li>
-                <li class="col s6 m12"><a class="btn waves-effect waves-light purple">Aprovados</a></li>
-                <li class="col s6 m12"><a class="btn waves-effect waves-light purple">Pendentes</a></li>
+                <li class="col s6 m12">
+                    <a class="btn waves-effect waves-light purple" (click)="onApproved()">Aprovados</a>
+                </li>
+                <li class="col s6 m12">
+                    <a class="btn waves-effect waves-light purple" (click)="onPending()">Pendentes</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -90,7 +94,10 @@
             </div>
         </div>
 
-        <section class="buy-purchase" *ngFor="let purchase of purchases">
+        <section 
+            class="buy-purchase" 
+            *ngFor="let purchase of purchases | purchaseFiiter: { status: control.purchaseFilter }"
+        >
             
             <div class="buy-puchase-details col s12 l3">
                 <span>Valor da compra: <b>{{purchase.total}}</b></span>

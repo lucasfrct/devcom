@@ -12,6 +12,9 @@ import { SidenavDirective } from './sidenav/sidenav.directive'
 /*======== SERVICES =========*/
 import { FirebaseInitService } from './firebase/firebase.init.service'
 
+/*======== FILTERS =========*/
+import { BuyPurchaseFilter } from './buy/buy.purchase.filter'
+
 /*======== COMPONENTS =========*/
 import { HeaderComponent } from './header/header.component'
 import { MainComponent } from './main/main.component'
@@ -32,6 +35,7 @@ import { PerfilComponent } from './perfil/perfil.component'
     ModalDirective,
     FormSelectDirective,
     SidenavDirective,
+    BuyPurchaseFilter,
     HeaderComponent,
     MainComponent,
     FooterComponent,
