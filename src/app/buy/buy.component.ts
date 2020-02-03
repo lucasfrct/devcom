@@ -59,10 +59,7 @@ export class BuyComponent implements OnInit {
         this.Purchase.acquire((response)=> {
             this.control.bar = false
             this.purchases = response.purchases
-            console.log("LOADS",this.purchases)
         })
     }
-
-    
 
 }
