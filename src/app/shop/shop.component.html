@@ -12,6 +12,8 @@
 /*========== EVENT =================*/
     .sidebar .event {
         overflow: hidden;
+        min-height: 143px;
+        display: block;
     }
 
     .sidebar .event > * {
@@ -39,10 +41,13 @@
         padding: 0 0 0.7rem 0;
         margin: 0;
         text-align: left;
+        clear: both;
+        min-height: 31px;
     }
 
     .sidebar .event .details > .title {
         margin: 0 0 0.4rem 0;
+        min-height: 44px;
     }
 
     .sidebar .event .details .material-icons {
@@ -62,7 +67,7 @@
         margin: 0.1rem;
     }
 
-    .sidebar .ticket .title {
+    .sidebar .ticket .ticket-title {
         margin: 0 0 0.5rem 0;
         display: block;
         font-size: 1.2em;
@@ -203,20 +208,24 @@
 
     <aside class="sidebar col s12 m6 l5 xl4">
         
-        <div class="event row" *ngIf="event.name">
+        <div class="event row">
+
             <figure class="image col s4 m5 l4"> <img src="{{event.folderUrl}}" ></figure>
-            <div class="details col s8 m7 l8">
+            <div class="details col s8 m7 l8" *ngIf="event.name">
                 <h6 class="title"><b>{{event.name}}</b></h6>
                 <span><i class="material-icons left">location_on</i> {{event.address}}</span>
                 <span><i class="material-icons left">perm_contact_calendar</i> {{event.date}}</span>
                 <strong><i class="material-icons left">access_time</i> {{event.hour}}</strong>
             </div>
+            
         </div>
-
+        <div class="progress" *ngIf="!event.name"><div class="indeterminate"></div></div>
+        
         <hr>
 
         <ul class="ticket row">
-            <strong class="title">Preencher Ingresso</strong>
+
+            <strong class="ticket-title">Preencher Ingresso</strong>
             <li class="input-field">
                 <i class="material-icons prefix">account_box</i>
                 <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
@@ -224,7 +233,12 @@
             </li>
             <li class="input-field in-select">
                 <i class="material-icons prefix">event_seat</i>
-                <select class="select" id="session" name="session" (change)="ticket.seat.session = $event.target.value">
+                <select 
+                    class="select" 
+                    id="session" 
+                    name="session" 
+                    (change)="onChangeSession($event.target.value)"
+                >
                     <option disabled >selecione um assento</option>
                     <option value="A01">A01</option>
                     <option value="B01">B01</option>
@@ -233,7 +247,12 @@
             </li>
             <li class="input-field in-select">
                 <i class="material-icons prefix">stars</i>
-                <select class="select" id="type" name="type" (change)="ticket.seat.type = $event.target.value; onChange()">
+                <select 
+                    class="select" 
+                    id="type" 
+                    name="type" 
+                    (change)="onChangeType($event.target.value)"
+                >
                     <option disabled selected>selecione um tipo de ingresso</option>
                     <option value="Normal">Normal</option>
                     <option value="VIP">VIP</option>
@@ -241,9 +260,11 @@
                 <label for="type">Tipo de Ingresso</label>
             </li>
             <span class="price">Valor do ingresso: <b>{{ticket.price}} KZ</b></span>
-            <button class="add btn right waves-effect waves-light" (click)="addTicket(ticket)" >
-                <i class="material-icons left">add_shopping_cart</i> Adicionar ingresso
-            </button>
+            <button 
+                class="add btn right waves-effect waves-light" 
+                (click)="addTicket(ticket)" 
+                [disabled]="!control.ticket"
+            > <i class="material-icons left">add_shopping_cart</i> Adicionar ingresso</button>
         </ul>
 
         <div class="ticket-modal modal bottom-sheet" [modalControl]="control.modal.ticket">
@@ -264,7 +285,7 @@
 
         <hr>
 
-        <div class="container-tickets col s12 m6 l6 xl4" *ngFor="let tck of purchase; index as i">
+        <div class="container-tickets col s12 m6 l6 xl4" *ngFor="let tck of cart; index as i">
             <app-ticket [onTicket]="tck" [onRegister]="i" (onRemove)="onDelete($event)"></app-ticket>
         </div> 
         
@@ -272,15 +293,15 @@
 
     <section class="purchase-container col s12">
         
-        <span class="col s12 m6 l5 xl6">Ingressos adquiridos
-            <span class="new badge blue" data-badge-caption="">{{purchase.length}}</span>
+        <span class="col s12 m6 l4 xl6">Ingressos adquiridos
+            <span class="new badge blue" data-badge-caption="">{{cart.length}}</span>
         </span>
         
-        <span class="col s12 m6 l4 xl4">Valor total da compra: 
+        <span class="col s12 m6 l4 xl3">Valor total da compra: 
             <span class="new badge red" data-badge-caption=" KZ">{{control.total}}</span>
         </span>
         
-        <button class="col s12 m12 l3 xl2 btn" type="button" (click)="finallyPurchase()">Finalizar a Compra</button>
+        <button class="col s12 m12 l4 xl3 btn" type="button" (click)="finallyPurchase()">Finalizar a Compra</button>
 
     </section>
 
@@ -292,20 +313,24 @@
         </div>
     </div>
 
-    <div class="payment-modal modal" [modalControl]="true">
+    <div class="payment-modal modal" [modalControl]="control.modal.payment">
         
         <div class="modal-content">
             <h5>Escolha o Método de Pagamento</h5>
             <div class="divider"></div>
           
-            <app-payment></app-payment>
+            <app-payment (onSelected)="onMethod($event)"></app-payment>
 
             <div class="divider"></div>
         </div>
         
         <div class="modal-footer row">
-            <a class="btn btn-large waves-effect waves-ligth green">Confirmar</a>
-            <a class="btn btn-large waves-effect waves-ligth red">Cancelar</a>
+            <button 
+                class="btn btn-large waves-effect waves-ligth green" 
+                [disabled]="!control.method"
+                (click)="confirmPayment()"
+            >Confirmar</button>
+            <button class="btn btn-large waves-effect waves-ligth red" (click)="cancelPayment()" >Cancelar</button>
         </div>
 
     </div>

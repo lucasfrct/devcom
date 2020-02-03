@@ -25,15 +25,17 @@ export class ShopComponent implements OnInit {
     public user: any
     public event: any
     public ticket: any
-    public purchase = []
+    public cart = []
 
     public control = {
         modal: {
             ticket: false,
-            purchase: false, 
+            purchase: false,
+            payment: false,
         },
+        ticket: false,
         method: false,
-        total: 0,  
+        total: 0,
     }
     
     public constructor(
@@ -41,7 +43,7 @@ export class ShopComponent implements OnInit {
         User: UserService,
         Event: EventService, 
         Ticket: TicketService,
-        Purchase: PurchaseService
+        Purchase: PurchaseService,
     ) {
         this.Login = Login
         this.User = User
@@ -52,6 +54,7 @@ export class ShopComponent implements OnInit {
         this.user = User.current
         this.event = Event.current
         this.ticket = Ticket.current
+        this.cart = Purchase.load()
 
     }
     
@@ -61,77 +64,81 @@ export class ShopComponent implements OnInit {
         that.Login.check(null, 'login')
         
         that.Login.scope((user)=> { 
+            
             if (null !== user) { that.uid = user.uid } 
 
-            this.loadUser()
-            this.loadEvent()
+            this.Ticket.setUid(this.uid)
 
             this.Purchase.setUid(this.uid)
+
+            this.User.setUid(this.uid)
+            this.User.load((response)=>{
+                this.user = response.user
+            })
+
+            this.Event.setUid(this.uid)
+            this.Event.load((response)=>{
+                
+                this.event = response.events[0]
+
+                this.Ticket.setEid(this.event.eid)
+                this.Ticket.current.event = this.event
+                this.control.ticket = true
+
+                this.Purchase.setEid(this.event.eid)
+
+            })
+
         })
     }
 
-    private loadUser() {
-        this.User.setUid(this.uid)
-        this.User.load((response)=> {
-            this.user = this.User.extend(this.user, response.user)
-        })
+    public onChangeSession(session: String) {
+        this.Ticket.current.seat.session = session
+        this.ticket.seat.session = session
     }
 
-    private loadEvent(callback: any = null) {
-        this.Event.setUid(this.uid)
-        this.Event.Subscribe(callback)
-
-        this.Event.read((response)=> { 
-            this.event = this.Event.extend(this.event, response.events[0]) 
-            this.Event.NotifyAll(this.event)
-        })
-    }
-    
-    public onChange() {
-        this.ticket.price = 
-            (this.ticket.seat.type == "VIP") 
-            ? this.event.tickets.vip.price 
-            : this.event.tickets.normal.price
-    }
-    
-    public removeTicket(index: any) {
-        this.Purchase.remove(index)
-        this.updatePurchase()
+    public onChangeType(type: String) {
+        this.Ticket.current.seat.type = type
+        this.ticket.seat.type = type
+        
+        this.ticket.price = this.Ticket.changePrice()
     }
 
     public onDelete(index: any) {
-        this.removeTicket(index)
-    }
-
-    public updatePurchase() {
-        this.purchase = this.Purchase.load()
+        this.Purchase.remove(index)
+        this.cart = this.Purchase.load()
         this.control.total = this.Purchase.current.total
     }
 
-    public addTicket(ticket) {
+    public onMethod(method: any) {
+        this.Purchase.current.method = method
+        this.control.method = (method) ? true : false 
+    }
+
+    public addTicket(ticket: any) {
 
         var that = this
         
-        if (that.Ticket.valid(ticket).check) {
-            
+        if (that.Ticket.valid().check) {
+
             that.control.modal.ticket = true
             
-            ticket.uid = that.uid
-            ticket.eid = that.event.id
-            ticket.event = that.Ticket.extend(ticket.event, that.event)
 
-            that.Event.getTicketEdition(ticket.seat.type, (edition) => {
+            that.Ticket.current.event = that.Ticket.extend(that.Ticket.current.event, that.Event.current)
+
+            that.Event.getTicketEdition(that.Ticket.current.seat.type, (edition) => {
 
                 that.control.modal.ticket = false
 
-                ticket.edition = that.Purchase.extend(ticket.edition, edition)
+                that.Ticket.current.edition = that.Ticket.extend(that.Ticket.current, edition)
                 
-                that.Purchase.add(that.Purchase.copy(ticket))
+                that.Purchase.add(that.Purchase.copy(that.Ticket.current))
+                that.cart = this.Purchase.load()
+                that.control.total = this.Purchase.current.total
                 that.Purchase.notify('Ingresso adicionado')
 
-                that.updatePurchase()
-
             });
+    
         } else {
             that.notify("Preencha o ingresso")
         }
@@ -139,25 +146,38 @@ export class ShopComponent implements OnInit {
 
     public finallyPurchase() {
         
-       this.Purchase.setUid(this.uid)
-       this.Purchase.setUser(this.user)
-
+        this.Purchase.setUid(this.uid)
+        this.Purchase.setUser(this.User.current)
+    
         if (this.Purchase.valid().check) {
-            
-            this.control.modal.purchase = true;
-            
-            //====Escolher forma de pagamento=====================================
-
-
-            this.Purchase.transaction((response)=> {
-
-                this.control.modal.purchase = false;
-                this.notify("Ingressos reservados com sucesso", 6000)
-                //this.Login.redirect("payment")
-
-            })
+            this.control.modal.payment = true   
         }
 
+    }
+
+    public cancelPayment() {
+        this.control.modal.payment = false
+    }
+
+    public confirmPayment(){
+        this.control.modal.payment = false
+        this.register()
+    }
+
+    public register() {
+        
+        this.control.modal.purchase = true;
+
+        this.Purchase.transaction((response)=> {
+            this.control.modal.purchase = false;
+            this.Purchase.notify("Ingressos reservados com sucesso", 6000)
+            this.reset()
+        })
+    }
+
+    private reset() {
+        this.cart = this.Purchase.load()
+        this.control.total = this.Purchase.current.total
     }
 
     private notify(message: String, time = 4000) {
