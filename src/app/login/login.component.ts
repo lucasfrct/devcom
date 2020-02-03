@@ -36,6 +36,7 @@ export class LoginComponent implements OnInit {
 
     constructor(Login: FirebaseLoginService) {
         this.Login = Login
+
         this.extend = Login.extend
         this.copy = Login.copy
         this.user = { email:"cliente@cliente.com", password: "12345678" } 
@@ -46,19 +47,20 @@ export class LoginComponent implements OnInit {
     }
 
     public onSubmit(user: any) {
-        var that = this
-        var valid = this.validate(user)
         
-        if (valid.check) {
-            that.control.bar = true
+        if (this.valid(user).check) {
             
-            that.Login.access(user, (response)=>{
-                that.control.bar = false
-                that.control.modal = true;
-                that.control.message = response.message
+            this.control.bar = true
+            
+            this.Login.access(user, (response)=>{
+                
+                this.control.bar = false
+                this.control.modal = true;
+                this.control.message = response.message
+                
                 setTimeout(()=> {
-                    that.Login.redirect('perfil')
-                }, 1000)
+                    this.Login.redirect('perfil')
+                }, 1300)
             })
         }
     }
@@ -68,27 +70,27 @@ export class LoginComponent implements OnInit {
         this.password = (this.password == "password") ? "text" : "password"
     }
 
-    private validate(user: any) {
-        const that = this
+    private valid(user: any) {
+
         var valid = { check: false }
 
-        that.control.alerts = []
-        that.control.emailAlert = ""
-        that.control.passwordAlert = ""
+        this.control.alerts = []
+        this.control.emailAlert = ""
+        this.control.passwordAlert = ""
 
         if (!email(user.email)) {
-            that.control.alerts.push("O email está incorreto, favor digitar um email válido")
-            that.control.emailAlert = "alert"
+            this.control.alerts.push("O email está incorreto, favor digitar um email válido")
+            this.control.emailAlert = "alert"
         }
 
         if (!password(user.password)) {
-            that.control.alerts.push("A senha está incorreta ou insuficiente, favor digitar uma senha válida com mais de 8 caracteres")
-            that.control.passwordAlert = "alert"
+            this.control.alerts.push("A senha está incorreta ou insuficiente, favor digitar uma senha válida com mais de 8 caracteres")
+            this.control.passwordAlert = "alert"
         }
 
         valid.check = (email(user.email) && password(user.password)) ? true : false
 
-        return valid
+        
 
         function email(email: String) {
             return (email.indexOf("@") != -1 && email.indexOf(".com") != -1 && email.length > 8) ? true : false
@@ -97,6 +99,8 @@ export class LoginComponent implements OnInit {
         function password(password: String) {
             return (password.length >= 8) ? true : false
         }
+
+        return valid
     }
 
     public logOut() {
