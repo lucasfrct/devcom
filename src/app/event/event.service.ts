@@ -5,7 +5,6 @@
  */
 import { Injectable } from '@angular/core'
 import { FirebaseEventService } from './../firebase/firebase.event.service'
-import { TicketService } from './../ticket/ticket.service'
 
 @Injectable({
     providedIn: "root"
@@ -14,9 +13,8 @@ import { TicketService } from './../ticket/ticket.service'
 export class EventService {
 
     private Event: any
-    private Ticket: any
     private uid: any
-    private id: any
+    private eid: any
 
     public scope: any
     public Subscribe: any
@@ -26,7 +24,7 @@ export class EventService {
 
     public current = {
         uid: "",
-        id: "",
+        eid: "",
         name: "",
         folderUrl: "",
         logUrl: "",
@@ -36,9 +34,8 @@ export class EventService {
         tickets: {},
     }
     
-    public constructor(Event: FirebaseEventService, Ticket: TicketService) {
+    public constructor(Event: FirebaseEventService) {
         this.Event = Event
-        this.Ticket = Ticket
 
         this.scope = Event.scope
         this.Subscribe = Event.Subscribe
@@ -46,53 +43,67 @@ export class EventService {
         this.copy = Event.copy
         this.extend = Event.extend
 
-        this.current.tickets = Ticket.event
     }
 
-    public setUid(uid: String) {
+    public setUid(uid: any) {
         this.uid = uid
+        this.current.uid = uid
     }
 
-    public set(event) {
-        this.current = this.Event.extend(this.current, event)
-    }
-
-    public create(callback) {
+    public add(callback) {
         this.Event.setUid(this.uid)
         this.Event.set(this.current, callback)
     }
 
-    public update(callback) {
-        this.Event.setUid(this.uid)
-        this.create(callback)
-    }
+    public load(callback) {
 
-    public read(callback) {
+        this.Subscribe(callback)
+        
         this.Event.setUid(this.uid)
-        this.Event.get(null, callback)
+        
+        this.Event.get(null, (response)=> {
+            
+            if ("400" != response.code && response.events.length > 0) {
+                this.current = response.events[0]
+            }
+
+            this.NotifyAll(response)
+        })
     }
 
     public getTicketEdition(type: any, callback: any) {
+        
+        this.Subscribe(callback)
 
-        this.Event.get(null, (response)=> {
-            var event = response.events[0]
-            var edition = this.Ticket.edition
+        this.Event.setUid(this.uid)
 
-            if(type =="Normal") {
-                edition.circulation = "A001"
-                edition.serial = serial(event.tickets.normal.sold)
+        this.Event.get(this.current.eid, (response)=> {
+
+            var event = null
+            var edition = { circulation: "A1", serial: "" }
+
+            if ("400" != response && response.events.length > 0) {
+                event = response.events[0]
+                edition.serial = this.serial(event.tickets.normal.sold)
             }
 
-            if(type =="VIP" ) {
-                edition.circulation = "V001"
-                edition.serial = serial(event.tickets.vip.sold)
-            }
+            this.NotifyAll(edition)
 
-            callback(edition)
         })
 
-        function serial(str) {
-            return String(String((Number(str) + 1)) +"-"+ Math.floor(Math.random() * 100))
+    }
+
+    public serial(str : String) {
+        var numGenerate = this.pad(Math.floor(Math.random() * 1000), 4)
+        var numSerial = this.pad((Number(str) + 1), 3)
+        return String(numSerial + "-" + numGenerate)
+    }
+
+    private pad(num, size) {
+        var s = String(num) + ""
+        while (s.length < Number(size)) {
+            s = "0" + s
         }
+        return String(s)
     }
 }
