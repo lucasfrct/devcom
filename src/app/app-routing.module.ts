@@ -24,7 +24,6 @@ const routes: Routes = [
   { path: "payment", component: PaymentComponent },
   { path: "checkin", component: CheckinComponent },
   { path: "perfil", component: PerfilComponent },
-  { path: "**", component: HomeComponent },
 ];
 
 @NgModule({

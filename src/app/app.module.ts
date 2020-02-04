@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser'
+import { APP_BASE_HREF } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 
@@ -58,7 +59,7 @@ import { PerfilComponent } from './perfil/perfil.component'
     AppRoutingModule,
     QRCodeModule,
   ],
-  providers: [FirebaseInitService],
+  providers: [{provide: APP_BASE_HREF, useValue: ""}, FirebaseInitService],
   bootstrap: [HeaderComponent, MainComponent, FooterComponent]
 })
 
