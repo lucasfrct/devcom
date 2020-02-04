@@ -14,7 +14,6 @@ import { PerfilComponent } from './perfil/perfil.component'
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
-  { path: " ", component: HomeComponent },
   { path: "sign", component: SignComponent },
   { path: "login", component: LoginComponent },
   { path: "tickets", component: TicketComponent },
@@ -24,6 +23,7 @@ const routes: Routes = [
   { path: "payment", component: PaymentComponent },
   { path: "checkin", component: CheckinComponent },
   { path: "perfil", component: PerfilComponent },
+  { path: "**", component: HomeComponent },
 ];
 
 @NgModule({
