@@ -207,7 +207,7 @@
         <div class="ticket-back col s12">
             <!-- [qrdata]="ticket.tid"  -->
             <qrcode 
-                [qrdata]="ticket.tid" 
+                [qrdata]="'https://dope-muzik.firebaseapp.com/?checkin=Teste%20de%20QR%20Code'" 
                 [width]="110" 
                 [errorCorrectionLevel]="'M'"
                 *ngIf="control.displayQr"
