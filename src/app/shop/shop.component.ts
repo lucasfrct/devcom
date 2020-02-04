@@ -53,7 +53,7 @@ export class ShopComponent implements OnInit {
 
         this.user = User.current
         this.event = Event.current
-        this.ticket = Ticket.current
+        this.ticket = Ticket.current //display ticket (layout html)
         this.cart = Purchase.load()
 
     }
@@ -65,29 +65,33 @@ export class ShopComponent implements OnInit {
         
         that.Login.scope((user)=> { 
             
-            if (null !== user) { that.uid = user.uid } 
+            if (null !== user) { 
+                console.log("Load user")
 
-            this.Ticket.setUid(this.uid)
+                this.uid = user.uid
 
-            this.Purchase.setUid(this.uid)
+                this.Ticket.setUid(this.uid)
 
-            this.User.setUid(this.uid)
-            this.User.load((response)=>{
-                this.user = response.user
-            })
+                this.Purchase.setUid(this.uid)
 
-            this.Event.setUid(this.uid)
-            this.Event.load((response)=>{
-                
-                this.event = response.events[0]
+                this.User.setUid(this.uid)
+                this.User.load((response)=>{
+                    this.user = response.user
+                })
 
-                this.Ticket.setEid(this.event.eid)
-                this.Ticket.current.event = this.event
-                this.control.ticket = true
+                this.Event.setUid(this.uid)
+                this.Event.load((response)=>{
+                    
+                    this.event = response.events[0]
 
-                this.Purchase.setEid(this.event.eid)
+                    this.Ticket.setEid(this.event.eid)
+                    this.Ticket.current.event = this.event
+                    this.control.ticket = true
 
-            })
+                    this.Purchase.setEid(this.event.eid)
+
+                })
+            } 
 
         })
     }
@@ -115,32 +119,28 @@ export class ShopComponent implements OnInit {
         this.control.method = (method) ? true : false 
     }
 
-    public addTicket(ticket: any) {
-
-        var that = this
+    public addTicket() {
         
-        if (that.Ticket.valid().check) {
+        if (this.Ticket.valid().check) {
 
-            that.control.modal.ticket = true
+            this.control.modal.ticket = true
             
+            this.Ticket.current.event = this.Ticket.extend(this.Ticket.current.event, this.Event.current)
 
-            that.Ticket.current.event = that.Ticket.extend(that.Ticket.current.event, that.Event.current)
+            this.Event.getTicketEdition(this.Ticket.current.seat.type, (edition) => {
 
-            that.Event.getTicketEdition(that.Ticket.current.seat.type, (edition) => {
+                this.control.modal.ticket = false
 
-                that.control.modal.ticket = false
-
-                that.Ticket.current.edition = that.Ticket.extend(that.Ticket.current, edition)
-                
-                that.Purchase.add(that.Purchase.copy(that.Ticket.current))
-                that.cart = this.Purchase.load()
-                that.control.total = this.Purchase.current.total
-                that.Purchase.notify('Ingresso adicionado')
-
+                this.Ticket.current.edition = this.Ticket.extend(this.Ticket.current.edition, edition)
+     
+                this.Purchase.add(this.Purchase.copy(this.Ticket.current))
+                this.cart = this.Purchase.load()
+                this.control.total = this.Purchase.current.total
+  
             });
     
         } else {
-            that.notify("Preencha o ingresso")
+            this.notify("Preencha o ingresso")
         }
     }
 
