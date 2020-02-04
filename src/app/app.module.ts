@@ -10,7 +10,9 @@ import { FormSelectDirective } from './form/form.select.directive'
 import { SidenavDirective } from './sidenav/sidenav.directive'
 
 /*======== SERVICES =========*/
+
 import { FirebaseInitService } from './firebase/firebase.init.service'
+import { QRCodeModule } from 'angularx-qrcode';
 
 /*======== FILTERS =========*/
 import { BuyPurchaseFilter } from './buy/buy.purchase.filter'
@@ -54,6 +56,7 @@ import { PerfilComponent } from './perfil/perfil.component'
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    QRCodeModule,
   ],
   providers: [FirebaseInitService],
   bootstrap: [HeaderComponent, MainComponent, FooterComponent]

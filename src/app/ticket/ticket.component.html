@@ -84,6 +84,10 @@
         text-align: right;
     }
 
+    .ticket .ticket-back {
+        border: solid 1px #F00;
+    }
+
 </style>
 
 <section class="ticket row">
@@ -121,6 +125,9 @@
         <button class="btn waves-effect green"  (click)="generateQRCode()">
             <i class="material-icons left">border_outer</i>QR Code
         </button> 
+    </div>
+    <div class="ticket-back col s12">
+        <qrcode [qrdata]="ticket.tid" [size]="256" [level]="'M'" *ngIf="control.displayQr"></qrcode>
     </div>
     
 </section>
