@@ -59,11 +59,13 @@ export class FirebaseTicketService {
 
         that.Subscribe(callback)
 
-        if (that.uid && ticket.pid  && ticket.eid) {
-            
-            ticket.uid = this.uid
+        if (
+            that.uid && that.uid.length > 15
+            && ticket.pid && ticket.pid.length > 15
+            && ticket.eid && ticket.eid.length > 15
+        ) {
 
-            if (ticket.tid && ticket.tid.length > 5) {
+            if (ticket.tid && ticket.tid.length > 15) {
                 collection = that.getCollection().doc(ticket.tid).set(ticket, {merge: true})
             } else {
                 collection = collection = that.getCollection().add(ticket)
@@ -75,7 +77,7 @@ export class FirebaseTicketService {
                     that.response.code = "200"
                     that.response.message = "Ingresso cadastrado com sucesso!"
 
-                    if (doc && doc.id.length > 5) {
+                    if (doc && doc.id.length > 15) {
                         ticket.tid = doc.id
                         that.response.code = "201"
                     }

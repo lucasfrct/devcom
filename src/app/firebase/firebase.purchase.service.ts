@@ -40,15 +40,15 @@ export class FirebasePurchaseService {
         this.uid = uid
     }
 
-    public register(purchase: any = null, callback: Object = null) {
+    public set(purchase: any = null, callback: Object = null) {
         var collection = null
 
         this.Subscribe(callback)
 
-        if (this.uid && this.uid.length > 5) {
-            purchase.uid = this.uid
+        if (this.uid && this.uid.length > 15) {
+            purchase.uid = this.uid 
 
-            if (purchase.pid && purchase.pid.length > 5) {
+            if (purchase.pid && purchase.pid.length > 15) {
                 collection = this.Collection.doc(purchase.pid).set(purchase, {merge: true})
             } else {
                 collection = this.Collection.add(purchase)
