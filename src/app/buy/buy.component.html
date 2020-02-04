@@ -80,11 +80,13 @@
 </style>
 <section class="row">
     
-    <div class="controls col s12 m4 l3 xl2">
+    <div class="controls col s12 m3 l2 xl2">
         <div class="col s12">
             <h5>Pagamentos</h5>
             <ul class="menu">
-                <li></li>
+                <li class="col s12 m12">
+                    <a class="btn waves-effect waves-light purple" (click)="onAll()">Todos</a>
+                </li>
                 <li class="col s6 m12">
                     <a class="btn waves-effect waves-light purple" (click)="onApproved()">Aprovados</a>
                 </li>
@@ -95,7 +97,7 @@
         </div>
     </div>
 
-    <div class="col s12 m8 l9 xl10">
+    <div class="col s12 m9 l10 xl10">
 
         <div class="preloader-wrapper big active" *ngIf="control.bar">
             <div class="spinner-layer spinner-blue-only">
@@ -116,7 +118,7 @@
 
             <div class="buy-puchase-details col s12">
                 <span class="col s6 m5 l3 xl2 ">Status: 
-                    <b class="p-status {{ (control.purchaseFilter == 'aprovado') ? 'green' : 'yellow' }}">{{purchase.status}}</b>
+                    <b class="p-status {{ (purchase.status == 'aprovado') ? 'green' : 'yellow' }}">{{purchase.status}}</b>
                 </span>
                 <span class="col s6 m7 l8 xl10">Valor: <b>{{purchase.total}} KZ</b></span>
             </div>

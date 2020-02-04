@@ -13,15 +13,17 @@ declare var c: any
 })
 
 export class BuyPurchaseFilter implements PipeTransform {
+    private items: any
 
     transform(items: any[], filter:any): any {
 
-        if(!items || !filter) {
-            return  []
+        if (!items || !filter || filter.status == "") {
+            this.items = items
+        } else {
+            this.items = items.filter((item)=> {
+                return item.status == filter.status
+            })
         }
-
-        return items.filter((item)=> {
-            return item.status == filter.status
-        })
+        return this.items
     }
 }
