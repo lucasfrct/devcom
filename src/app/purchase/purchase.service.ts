@@ -177,37 +177,37 @@ export class PurchaseService {
 
     public transaction(callback: Object = null) {
 
-        var that = this
         var response = { code: "", message: "", purchase: {} }
         
-        that.Subscribe(callback)
+        this.Subscribe(callback)
 
-        that.total()
+        this.total()
+        
+        if (this.valid().check) {
+            
+            this.Purchase.setUid(this.uid)
 
-        if (that.valid().check) {
-
-            that.Purchase.setUid(that.uid)
-
-            that.Purchase.register(that.current, (resp)=> {
+            this.Purchase.set(this.current, (resp)=> {
 
                 if (resp.code != "400" && resp.purchase.pid && resp.purchase.pid.length > 15) {
 
-           
-                    that.Ticket.setUid(resp.purchase.uid)
-    
-                    that.cart.forEach((ticket)=> {
-                        
+                    this.Ticket.setUid(resp.purchase.uid)
+                    
+                    this.cart.forEach((ticket)=> {
+
                         ticket.pid = resp.purchase.pid
                         ticket.eid = resp.purchase.eid
-    
-                        that.Ticket.save(ticket, (res)=>{
-    
-                            that.responses.push(res)
-                            that.notify("Ingresso de "+ticket.owner+" foi salvo!")
+                        
+                        this.Ticket.current = this.Ticket.extend(this.Ticket.current, ticket)
+
+                        this.Ticket.save((res)=>{
                             
-                            if (that.responses.length == that.cart.length) {
-                                that.reset()
-                                that.NotifyAll(that.responses)
+                            this.responses.push(res)
+                            this.notify("Ingresso de "+ticket.owner+" foi salvo!")
+                            
+                            if (this.responses.length == this.cart.length) {
+                                this.reset()
+                                this.NotifyAll(this.responses)
                             }
                         })
     
@@ -216,9 +216,9 @@ export class PurchaseService {
                 } else {
                     response.code = "400"
                     response.message = "Compora não pode ser registrada por algum erro"
-                    response.purchase = that.current
-                    that.responses.push(response)
-                    that.NotifyAll(that.responses)
+                    response.purchase = this.current
+                    this.responses.push(response)
+                    this.NotifyAll(this.responses)
                 }
     
             })
@@ -226,9 +226,9 @@ export class PurchaseService {
         } else {
             response.code = "400"
             response.message = "Essa transaçcão não foi validada, favor reinicar a compra"
-            response.purchase = that.current
-            that.responses.push(response)
-            that.NotifyAll(that.responses)
+            response.purchase = this.current
+            this.responses.push(response)
+            this.NotifyAll(this.responses)
         }
         
     }
