@@ -87,7 +87,6 @@ export class FirebasePurchaseService {
     }
 
     public get(callback: Object = null) {
-        console.log("GET")
 
         this.Subscribe(callback)
 

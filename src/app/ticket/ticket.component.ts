@@ -30,13 +30,14 @@ export class TicketComponent implements OnInit {
 	public control = {
 		displayDelete: false,
 		displayQr: false,
+		qrcode: false,
 	}
 
 	public ticket = {
 		uid: "",
 		eid: "",
 		pid: "",
-		id: "",
+		tid: "",
 		owner: "",
 		event: {
 			name: "",
@@ -65,8 +66,8 @@ export class TicketComponent implements OnInit {
 		this.onRemove.emit(this.index)
 	}
 
-	public generateQRCode() {
-		console.log("QR Code")
+	public visibleQRCode() {
+		this.control.qrcode = !this.control.qrcode
 	}
 
 	
