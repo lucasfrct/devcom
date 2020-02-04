@@ -59,7 +59,7 @@ export class SignComponent implements OnInit {
             surname: 'cliente', 
             telephone: '935 964 737', 
             bi: "12345678900",
-            email:"cliente@cliente.com-g", 
+            email:"cliente@cliente.com-a", 
             password: "12345678",
         } 
 

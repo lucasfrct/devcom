@@ -5,6 +5,7 @@
  */
 import { Injectable  } from '@angular/core'
 import { FirebaseInitService } from './../firebase/firebase.init.service'
+import { FirebaseSMSService } from './../firebase/firebase.sms.service'
 import { FirebaseLoginService } from './../firebase/firebase.login.service'
 import { FirebaseUserService } from './../firebase/firebase.user.service'
 
@@ -14,6 +15,7 @@ import { FirebaseUserService } from './../firebase/firebase.user.service'
 
 export class FirebaseSignService {
 
+    private SMS: any
     private Login: any
     private User: any
     private firebase: any
@@ -24,8 +26,14 @@ export class FirebaseSignService {
     public copy: any
     public extend: any
     
-    public constructor(Init: FirebaseInitService, Login: FirebaseLoginService, User: FirebaseUserService) {
+    public constructor(
+        Init: FirebaseInitService, 
+        SMS: FirebaseSMSService,
+        Login: FirebaseLoginService, 
+        User: FirebaseUserService
+    ) {
         
+        this.SMS = SMS
         this.Login = Login
         this.User = User
 
