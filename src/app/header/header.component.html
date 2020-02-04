@@ -39,11 +39,19 @@
                 <a ><span class="white-text email">Info: 935 864  737</span></a>
             </div>
         </li>
-        <li><a routerLink="" class="waves-effect"><i class="material-icons">home</i>Home</a></li>
-        <li><a routerLink="/about" class="waves-effect"><i class="material-icons">event</i>Evento</a></li>
-        <li><a routerLink="/perfil" class="waves-effect"><i class="material-icons">account_box</i>Perfil</a></li>
+        <li>
+            <a routerLink="" class="waves-effect"><i class="material-icons">home</i>Home</a>
+        </li>
+        <li>
+            <a routerLink="/about" class="waves-effect"><i class="material-icons">event</i>Evento</a>
+        </li>
+        <li *ngIf="control.state">
+            <a routerLink="/perfil" class="waves-effect"><i class="material-icons">account_box</i>Perfil</a>
+        </li>
         <li><div class="divider"></div></li>
-        <li><a class="subheader"><i class="material-icons">info</i>INFO : 935 864  737</a></li>
+        <li>
+            <a class="subheader"><i class="material-icons">info</i>INFO : 935 864  737</a>
+        </li>
         <li><div class="divider"></div></li>
         <li>
             <a routerLink="/shop" class="waves-effect"><i class="material-icons">shopping_basket</i>Comprar Ingressos</a>
