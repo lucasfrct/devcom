@@ -70,5 +70,4 @@ export class TicketComponent implements OnInit {
 		this.control.qrcode = !this.control.qrcode
 	}
 
-	
 }

@@ -47,13 +47,6 @@ export class TicketService {
         edition: { circulation: "", serial: "" },
     }
 
-    public edition = { circulation: "", serial: "" }
-
-    public event = { 
-        vip: { price: "", total: "", sold: "", approved: "",}, // total - vendidos - aprovados
-        normal: { price: "", total: "", sold: "", approved: "", } 
-    }
-
     public constructor(Ticket: FirebaseTicketService) {
         this.Ticket = Ticket
 
@@ -62,8 +55,7 @@ export class TicketService {
         this.NotifyAll = Ticket.NotifyAll
         this.copy = Ticket.copy
         this.extend = Ticket.extend 
-
-        this.current.edition = this.edition
+        
     }
 
     public setUid(uid: any) {
@@ -114,7 +106,7 @@ export class TicketService {
         return valid;
         
         function eid(eid: String) {
-            return (eid && eid.length > 5) ? true : false
+            return (eid && eid.length > 15) ? true : false
         }
 
         function name(name: String) {
@@ -134,9 +126,9 @@ export class TicketService {
         }
     }
 
-    public save(ticket: any, callback: Object = null) {
+    public save(callback: Object = null) {
         this.Ticket.setUid(this.uid)
-        this.Ticket.set(ticket, callback)
+        this.Ticket.set(this.current, callback)
     }
 
     public list(callback: Object = null) {

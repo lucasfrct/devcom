@@ -205,7 +205,13 @@
         </div>
 
         <div class="ticket-back col s12">
-            <qrcode [qrdata]="ticket.tid" [width]="110" [errorCorrectionLevel]="'M'" *ngIf="control.displayQr"></qrcode>
+            <!-- [qrdata]="ticket.tid"  -->
+            <qrcode 
+                [qrdata]="ticket.tid" 
+                [width]="110" 
+                [errorCorrectionLevel]="'M'"
+                *ngIf="control.displayQr"
+            ></qrcode>
             
             <div class="ticket-btn col s12" *ngIf="control.displayQr">
                 <button class="btn waves-efect col s12" (click)="visibleQRCode()">Ingresso</button>
