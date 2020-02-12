@@ -25,6 +25,8 @@ export class FirebaseSignService {
     public NotifyAll: any
     public copy: any
     public extend: any
+
+    public reCaptcha: any
     
     public constructor(
         Init: FirebaseInitService, 
@@ -45,13 +47,15 @@ export class FirebaseSignService {
         this.copy = Init.copy
         this.extend = Init.extend
 
+        this.reCaptcha = SMS.reCaptcha
+
     }
 
     private CallSignEmail(email: String, password: String) {
         return this.firebase.auth().createUserWithEmailAndPassword(email, password)
     }
 
-    public check(callback: any, path: String) {
+    public check(callback: Object = null, path: String) {
         this.Login.check(callback, path)
     }
 
@@ -62,14 +66,12 @@ export class FirebaseSignService {
         var Sign = this.CallSignEmail(sign.email, sign.password)
         Sign
             .then((response)=> {
-                console.log("Create User ID", response)
 
                 sign.uid = response.user.uid
                
                 this.User.setUid(sign.uid)
 
                 this.User.set(sign, (user)=> {
-                    console.log("CREATE USER DB", user)
 
                     this.response.user = user
                     this.response.code = "201"
@@ -81,17 +83,44 @@ export class FirebaseSignService {
 
             }).catch((error)=> {
 
-                console.log ("ERROR", error)
-
                 this.response.user = sign
                 this.response.code = "400"
                 this.response.message = "Erroao Cria a conta"
                 this.response.error = error
                 this.ErrorHandle(error.code)
-                
-                this.NotifyAll(this.response)
 
+                this.NotifyAll(this.response)
+                
             })
+    }
+
+    public sendSms(telephone: any, callback: Object = null) {
+
+        this.SMS.send(telephone, callback)
+
+    }
+
+    public sendCode(sign: any, callback: Object = null) {
+        
+        this.Subscribe(callback)
+
+        this.SMS.code(sign.code, (response)=> {
+            
+            if ("400" != response.code) {
+
+                this.User.setUid(response.user.uid)
+                this.User.set(sign, (user)=> {
+                    response.user = user
+                    response.code = "201"
+                    response.message = "Conta Criada com sucesso!"
+
+                    this.NotifyAll(response)
+                })
+
+            } else {
+                this.NotifyAll(response)
+            }
+        })
     }
 
     private ErrorHandle(error: String) {
