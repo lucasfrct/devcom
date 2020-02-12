@@ -1,36 +1,62 @@
+<style>
+    .login-links > * {
+        margin: 8px 0;
+    }
+</style>
+
 <section class="container">
     
     <div class="row">
-        <h5 class="center">Para adquirir um ingresso ou consultar sua compra é necessário fazer o login</h5>
+        <h6 class="center">Para adquirir um ingresso ou consultar sua compra é necessário fazer o login</h6>
     </div>
     
     <div class="row">
+
         <form class="form col s12 md9" (ngSubmit)="onSubmit(user)">
+            
             <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
-             <legend>Login</legend>
-             <div class="row">
+             
+            <legend>Login</legend>
+             
+            <div class="row">
                  <div class="input-field col s12">
                      <input name="email" type="email" id="email" [(ngModel)]="user.email">
                      <label for="email">Email</label>
                  </div>
              </div>
+
              <div class="row">
                  <div class="input-field col s12">
                      <input name="password" type="password" id="password" [(ngModel)]="user.password">
                      <label for="password">Palavra passe</label>
                  </div>
              </div>
+
              <div class="row">
                 <span class="alert">
                     <em *ngFor="let alert of control.alerts"> {{alert}}</em>
                 </span>
-                 <button class="btn btn-large waves-effects waves-light" type="submit">Entrar</button>
+
+                 <button class="btn btn-large waves-effects waves-light col s12 m8 l4" type="submit">Entrar</button>
                  
              </div>
-             <div class="row">
-                <hr>
-                    <a class="btn btn-small green waves-effects waves-light" >Esquecia senha</a>
-                    <a routerLink="/sign" class="btn btn-small green waves-effects waves-light" >Criar uma conta</a>
+
+             <div class="login-links row">
+
+                <div class="col s12 m6 l5 xl4">
+                    <a routerLink="/sign" 
+                    class="btn btn-small orange waves-effect waves-light col s12" 
+                    >Criar um conta</a>
+                </div >
+                
+                <!--<div class="col s12 m6 l5 xl4">
+                    <button id="" 
+                        type="button" 
+                        class="btn btn-small purple waves-effect wave-light col s12"
+                        (click)="onSendSMS(user)"
+                    >Entrar com telefone</button>
+                </div>-->
+    
              </div>
         </form>
     </div>
@@ -42,4 +68,5 @@
         <div class="modal-footer">
         </div>
     </div>
+
 </section>

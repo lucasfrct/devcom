@@ -17,7 +17,6 @@ export class UserService {
     private User: any
     private uid: String
 
-    public scope: any
     public Subscribe: any
     public NotifyAll: any
     public copy: any
@@ -36,7 +35,6 @@ export class UserService {
     public constructor(User: FirebaseUserService) {
         this.User = User
 
-        this.scope = User.scope
         this.Subscribe = User.Subscribe
         this.NotifyAll = User.NotifyAll
         this.copy = User.copy
