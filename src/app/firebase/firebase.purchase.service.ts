@@ -33,6 +33,7 @@ export class FirebasePurchaseService {
         this.copy = Init.copy
         this.extend = Init.extend
         this.response = Init.response()
+
         this.Collection = Init.collection(this.collection)
     }
 
@@ -45,7 +46,7 @@ export class FirebasePurchaseService {
 
         this.Subscribe(callback)
 
-        if (this.uid && this.uid.length > 15) {
+        if (this.uid && this.uid.length > 15 && purchase.eid && purchase.eid.length > 15) {
             purchase.uid = this.uid 
 
             if (purchase.pid && purchase.pid.length > 15) {

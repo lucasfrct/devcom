@@ -16,6 +16,8 @@ declare var M: any
 export class ShopComponent implements OnInit {
     
     private uid: String
+    private eid: String
+    
     private Login: any
     private User: any
     private Event: any
@@ -51,49 +53,57 @@ export class ShopComponent implements OnInit {
         this.Ticket = Ticket
         this.Purchase = Purchase
 
-        this.user = User.current
-        this.event = Event.current
-        this.ticket = Ticket.current //display ticket (layout html)
-        this.cart = Purchase.load()
-
+        this.user = this.User.current
+        this.event = this.Event.current
+        this.ticket = this.Ticket.current
     }
     
     public ngOnInit() { 
-        var that = this
 
-        that.Login.check(null, 'login')
+        this.Login.check(null, 'login')
         
-        that.Login.scope((user)=> { 
+        this.Login.scope((user)=> { 
             
             if (null !== user) { 
-                console.log("Load user")
 
                 this.uid = user.uid
-
-                this.Ticket.setUid(this.uid)
-
-                this.Purchase.setUid(this.uid)
-
+                
                 this.User.setUid(this.uid)
+                
                 this.User.load((response)=>{
-                    this.user = response.user
-                })
-
-                this.Event.setUid(this.uid)
-                this.Event.load((response)=>{
                     
-                    this.event = response.events[0]
+                    this.User.current = this.User.extend(this.User.current, response.user)
+                    this.user = this.User.current
 
-                    this.Ticket.setEid(this.event.eid)
-                    this.Ticket.current.event = this.event
+                    this.Purchase.setUid(this.User.current.uid)
+                    this.Purchase.setUser(this.User.current)    
+                    
+                })
+                
+                this.Event.setUid(this.User.current.uid)
+                
+                this.Event.load((response)=>{
+
+                    this.Event.current = this.Event.extend(this.Event.current, response.events[0])
+                    this.event = this.Event.current
+                            
+                    this.eid = this.Event.current.eid
+
+                    this.Purchase.setEid(this.Event.current.eid)
+
+                    this.Ticket.setUid(this.User.current.uid)
+                    this.Ticket.setEid(this.Event.current.eid)
+                    this.Ticket.current.event = this.Ticket.extend(this.Ticket.current.event, this.Event.current)
+                    this.ticket = this.Ticket.current
+
                     this.control.ticket = true
 
-                    this.Purchase.setEid(this.event.eid)
-
                 })
-            } 
+
+            }
 
         })
+
     }
 
     public onChangeSession(session: String) {
@@ -114,30 +124,39 @@ export class ShopComponent implements OnInit {
         this.control.total = this.Purchase.current.total
     }
 
-    public onMethod(method: any) {
+    public onMethod(method: String) {
         this.Purchase.current.method = method
         this.control.method = (method) ? true : false 
     }
 
     public addTicket() {
+
+        this.Ticket.setUid(this.User.current.uid)
+        this.Ticket.setEid(this.Event.current.eid)
+        this.Ticket.current.event = this.Ticket.extend(this.Ticket.current.event, this.Event.current)
         
         if (this.Ticket.valid().check) {
-
+            
+            
             this.control.modal.ticket = true
             
-            this.Ticket.current.event = this.Ticket.extend(this.Ticket.current.event, this.Event.current)
-
+            this.Event.setUid(this.User.current.uid)
+            this.Event.setEid(this.Event.current.eid)
             this.Event.getTicketEdition(this.Ticket.current.seat.type, (edition) => {
-
+                
                 this.control.modal.ticket = false
-
+                
                 this.Ticket.current.edition = this.Ticket.extend(this.Ticket.current.edition, edition)
-     
+                
+                this.Purchase.setUid(this.User.current.uid)
+                this.Purchase.setEid(this.Event.current.eid)
+                this.Purchase.setUser(this.User.current)
+                
                 this.Purchase.add(this.Purchase.copy(this.Ticket.current))
                 this.cart = this.Purchase.load()
                 this.control.total = this.Purchase.current.total
   
-            });
+            })
     
         } else {
             this.notify("Preencha o ingresso")
@@ -146,11 +165,14 @@ export class ShopComponent implements OnInit {
 
     public finallyPurchase() {
         
-        this.Purchase.setUid(this.uid)
+        this.Purchase.setUid(this.User.current.uid)
+        this.Purchase.setEid(this.Event.current.eid)
         this.Purchase.setUser(this.User.current)
     
         if (this.Purchase.valid().check) {
             this.control.modal.payment = true   
+        } else {
+            this.control.modal.payment = false 
         }
 
     }
@@ -165,19 +187,33 @@ export class ShopComponent implements OnInit {
     }
 
     public register() {
-        
+
+        this.control.modal.payment = false
         this.control.modal.purchase = true;
+
+        this.Purchase.setUid(this.User.current.uid)
+        this.Purchase.setEid(this.Event.current.eid)
+        this.Purchase.setUser(this.User.current)
 
         this.Purchase.transaction((response)=> {
             this.control.modal.purchase = false;
             this.Purchase.notify("Ingressos reservados com sucesso", 6000)
-            this.reset()
+
         })
     }
 
-    private reset() {
-        this.cart = this.Purchase.load()
-        this.control.total = this.Purchase.current.total
+    private clean() {
+        
+        //this.Purchase.clean()
+        //this.Ticket.clean()
+
+
+        //this.user = this.User.current
+        //this.event = this.Event.current
+        //this.ticket = this.Ticket.current //display ticket (layout html)
+        //this.cart = this.Purchase.load()
+        //this.control.total = this.Purchase.current.total
+
     }
 
     private notify(message: String, time = 4000) {

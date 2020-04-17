@@ -54,49 +54,49 @@ export class FirebaseTicketService {
     }
 
     public set(ticket: any, callback: Object = null) {
-        var that = this
         var collection = null
 
-        that.Subscribe(callback)
-
+        this.Subscribe(callback)
+        
         if (
-            that.uid && that.uid.length > 15
-            && ticket.pid && ticket.pid.length > 15
+            this.uid && this.uid.length > 15
             && ticket.eid && ticket.eid.length > 15
+            && ticket.pid && ticket.pid.length > 15
         ) {
 
             if (ticket.tid && ticket.tid.length > 15) {
-                collection = that.getCollection().doc(ticket.tid).set(ticket, {merge: true})
+                collection = this.getCollection().doc(ticket.tid).set(ticket, {merge: true})
             } else {
-                collection = collection = that.getCollection().add(ticket)
+                collection = collection = this.getCollection().add(ticket)
             }
   
             collection
                 .then((doc)=>{
 
-                    that.response.code = "200"
-                    that.response.message = "Ingresso cadastrado com sucesso!"
+                    this.response.code = "200"
+                    this.response.message = "Ingresso cadastrado com sucesso!"
 
                     if (doc && doc.id.length > 15) {
                         ticket.tid = doc.id
-                        that.response.code = "201"
+                        this.response.code = "201"
                     }
 
-                    that.response.ticket = ticket
+                    this.response.ticket = ticket
 
                 }).catch((error)=>{
-                    that.response.code = "400"
-                    that.response.message = "Ocorreu algum erro"
-                    that.response.ticket = ticket
-                    that.response.error = error
+                    this.response.code = "400"
+                    this.response.message = "Ocorreu algum erro"
+                    this.response.ticket = ticket
+                    this.response.error = error
                 }).finally(()=> {
-                    that.NotifyAll(that.response)
+                    this.NotifyAll(this.response)
                 })
+
         } else {
-            that.response.code = "400"
-            that.response.message = "Usuário não registrado, favor logar no painel"
-            that.response.ticket = ticket
-            that.NotifyAll(that.response)
+            this.response.code = "400"
+            this.response.message = "Usuário não registrado, favor logar no painel"
+            this.response.ticket = ticket
+            this.NotifyAll(this.response)
         }
     }
 
@@ -134,9 +134,9 @@ export class FirebaseTicketService {
         }
     }
 
-    public obtain(callback: Object = null) {
+    public gain(callback: any) {
 
-        this.Subscribe(callback)
+        var response = this.copy(this.response)
 
         if (this.uid && this.uid.length > 15 && this.pid && this.pid.length > 15) {
 
@@ -152,28 +152,28 @@ export class FirebaseTicketService {
                         data.push(this.extend(doc.data(), { tid: doc.id }))
                     })
 
-                    this.response.code = "200"
-                    this.response.message = "Lista de ingressos caregada com sucesso!"
-                    this.response.tickets = data
+                    response.code = "200"
+                    response.message = "Lista de ingressos caregada com sucesso!"
+                    response.tickets = data
 
                 })
                 .catch((error)=> {
 
-                    this.response.code = "400"
-                    this.response.message = "Ocoreu algum erro ao carregar os ingressos"
-                    this.response.error = error
-                    this.response.tickets = []
+                    response.code = "400"
+                    response.message = "Ocoreu algum erro ao carregar os ingressos"
+                    response.error = error
+                    response.tickets = []
 
                 })
                 .finally(()=> {
-                    this.NotifyAll(this.response)
+                    callback(response)
                 })
 
         } else {
-            this.response.code = "400"
-            this.response.message = "Usuário ou identificação de compra inexistentes"
-            this.response.tickets = []
-            this.NotifyAll(this.response)
+            response.code = "400"
+            response.message = "Usuário ou identificação de compra inexistentes"
+            response.tickets = []
+            callback(response)
         }
 
 

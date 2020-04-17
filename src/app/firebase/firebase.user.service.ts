@@ -13,8 +13,10 @@ import { FirebaseInitService } from './../firebase/firebase.init.service'
 
 export class FirebaseUserService {
 
-    private collection = "users"
+    private Init: any
     private Collection: any
+    
+    private collection = "users"
     private uid: String
     private response: any
 
@@ -25,6 +27,9 @@ export class FirebaseUserService {
     public extend: any
 
     public constructor(Init: FirebaseInitService) {
+        
+        this.Init = Init
+        
         this.response = Init.response()
         
         this.scope = Init.scope
@@ -44,11 +49,12 @@ export class FirebaseUserService {
         
         this.Subscribe(callback)
         
-        if (this.uid && this.uid.length > 5) {
+        if (this.uid && this.uid.length > 15) {
+            
             user.uid = this.uid
             
             this.Collection
-                .doc(this.uid)
+                .doc(String(this.uid))
                 .set(user, {merge: true})
                 .then(()=>{
                     this.response.code = "201"
@@ -63,6 +69,7 @@ export class FirebaseUserService {
                 })
                 .finally(()=> {
                     this.NotifyAll(this.response)
+                    this.clean()
                 })
 
         } else {
@@ -70,48 +77,53 @@ export class FirebaseUserService {
             this.response.message = "Usuario precisa estar logado"
             this.response.user = user
             this.NotifyAll(this.response)
+            this.clean()
         }
     }
 
     public get(callback: Object = null) {
-        var that = this
-        var user = { uid: that.uid}
+        
+        var user = {uid: this.uid}
 
+        this.Subscribe(callback)
 
-        that.Subscribe(callback)
+        if (this.uid && this.uid.length > 15) {
 
-        if (that.uid && that.uid.length > 5) {
-
-            that.Collection
-                .where("uid","==", that.uid)
+            this.Collection
+                .where("uid","==", String(this.uid))
                 .get()
                 .then((query)=> {
 
                     query.forEach((doc)=> {
-                        user.uid = doc.id
-                        user = that.extend(user, doc.data()) 
+                        user = this.extend(user, doc.data()) 
                     })
                     
-                    that.response.code = "200"
-                    that.response.message = "Usuário carregado com sucesso"
-                    that.response.user = user
+                    this.response.code = "200"
+                    this.response.message = "Usuário carregado com sucesso"
+                    this.response.user = user
                 })
                 .catch((error)=> {
-                    that.response.code = "400"
-                    that.response.message = "Ocirreu um erro ao carregar o usuário"
-                    that.response.user = user
-                    that.response.error = error
+                    this.response.code = "400"
+                    this.response.message = "Ocirreu um erro ao carregar o usuário"
+                    this.response.user = user
+                    this.response.error = error
                 })
                 .finally(()=> {
-                    that.NotifyAll(that.response)
+                    this.NotifyAll(this.response)
+                    this.clean()
                 })
 
             } else {
-                that.response.code = "400"
-                that.response.message = "O usuário precisa estar logado"
-                that.response.user = user
-                that.NotifyAll(that.response)
+                this.response.code = "400"
+                this.response.message = "O usuário precisa estar logado"
+                this.response.user = user
+                this.NotifyAll(this.response)
+                this.clean()
             }
 
+    }
+
+    public clean(){
+        this.response = this.Init.response()
     }
 }

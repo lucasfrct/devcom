@@ -15,7 +15,10 @@ declare var M: any
 export class TicketService {
 
     private Ticket: any
+
     private uid: any
+    private eid: any
+    private pid: any
 
     public scope: any
     public Subscribe: any
@@ -23,31 +26,10 @@ export class TicketService {
     public copy: any
     public extend: any
 
-    public current = {
-        uid: "",
-        eid:"",
-        pid:"",
-        tid: "",
-        owner: "",
-        price: "0",
-        event: {
-            eid: "",
-            name: "",
-            folderUrl: "",
-            logoUrl: "",
-            date: "",
-            hour: "",
-            address: "",
-            tickets: { 
-                vip: { price: "", total: "", sold: "", approved: "",}, // total - vendidos - aprovados
-                normal: { price: "", total: "", sold: "", approved: "", } 
-            },
-        },
-        seat: { session: "", type: "" },
-        edition: { circulation: "", serial: "" },
-    }
+    public current: any
 
     public constructor(Ticket: FirebaseTicketService) {
+        
         this.Ticket = Ticket
 
         this.scope = Ticket.scope
@@ -56,25 +38,31 @@ export class TicketService {
         this.copy = Ticket.copy
         this.extend = Ticket.extend 
         
+        this.clean()
     }
 
-    public setUid(uid: any) {
+    public setUid(uid: String) {
         this.uid = uid
         this.current.uid = uid
     }
 
-    public setEid(eid: any) {
+    public setEid(eid: String) {
+        this.eid = eid
         this.current.eid = eid
     }
 
-    public setPid(pid: any) {
+    public setPid(pid: String) {
+        this.pid = pid
         this.current.pid = pid
     }
 
     public valid() {
         var valid = { check: false };
         
-        
+        if (!uid(this.current.uid)) {
+            this.notify('O ingresso não contém um usuário vinculado')
+        }
+
         if (!eid(this.current.eid)) {
             this.notify('O ingresso não contém um evento vinculado')
         }
@@ -96,15 +84,18 @@ export class TicketService {
         }
         
         valid.check = (
-            eid(this.current.eid)
-            &&  name(this.current.owner) 
+            uid(this.current.uid)
+            && eid(this.current.eid)
+            && name(this.current.owner) 
             && price(this.current.price)
             && session(this.current.seat.session) 
             && type(this.current.seat.type)
         ) ? true : false;
         
-        return valid;
-        
+        function uid(uid: String) {
+            return (uid && uid.length > 15) ? true : false
+        }
+
         function eid(eid: String) {
             return (eid && eid.length > 15) ? true : false
         }
@@ -124,11 +115,13 @@ export class TicketService {
         function type(type: String) {
             return ("VIP" == type || "Normal" == type) ? true : false;
         }
+
+        return valid;
     }
 
     public save(callback: Object = null) {
         this.Ticket.setUid(this.uid)
-        this.Ticket.set(this.current, callback)
+        this.Ticket.set(this.copy(this.current), callback)
     }
 
     public list(callback: Object = null) {
@@ -136,11 +129,11 @@ export class TicketService {
         this.Ticket.get(callback)
     }
 
-    public obtain(callback: Object = null) {
-
+    public obtain(pid: String, callback: Object = null) {
+        //console.log("OBTAIN", pid)
         this.Ticket.setUid(this.uid)
-        this.Ticket.setPid(this.current.pid)
-        this.Ticket.obtain(callback)
+        this.Ticket.setPid(pid)
+        this.Ticket.gain(callback)
     
     }
 
@@ -151,6 +144,42 @@ export class TicketService {
         : this.current.event.tickets.normal.price
         
         return this.current.price
+    }
+
+    public sanitize() {
+        this.current.tid = ""
+        this.current.owner = ""
+        this.current.price = ""
+        this.current.seat.session = ""
+        this.current.seat.tupe = ""
+        this.current.edition.circulation = ""
+        this.current.edition.serial = ""
+    }
+
+    public clean() {
+       this.current = {
+            uid: "",
+            eid:"",
+            pid:"",
+            tid: "",
+            owner: "",
+            price: "0",
+            event: {
+                eid: "",
+                name: "",
+                folderUrl: "",
+                logoUrl: "",
+                date: "",
+                hour: "",
+                address: "",
+                tickets: { 
+                    vip: { price: "", total: "", sold: "", approved: "",}, // total - vendidos - aprovados
+                    normal: { price: "", total: "", sold: "", approved: "", } 
+                },
+            },
+            seat: { session: "", type: "" },
+            edition: { circulation: "", serial: "" },
+        }
     }
 
     private notify(message: String, time = 4000) {

@@ -19,6 +19,9 @@ export class PurchaseService {
     private Ticket: any
 
     private uid: String
+    private eid: String
+    private pid: String
+    
     private cart: any
     private responses: any
     
@@ -28,17 +31,7 @@ export class PurchaseService {
     public extend: any
     public copy: any
 
-    private current = {
-        uid: "",
-        pid: "",
-        eid: "",
-        name: "",
-        telephone: "",
-        bi: "",
-        method: "",
-        total: "",
-        status: "pendente", // pendente aprovado e cancelado
-    }
+    private current: any
 
     public constructor(
         Purchase: FirebasePurchaseService, 
@@ -47,14 +40,13 @@ export class PurchaseService {
         this.Purchase = Purchase
         this.Ticket = Ticket
 
-        this.scope= Purchase.scope
+        this.scope = Purchase.scope
         this.Subscribe = Purchase.Subscribe
         this.NotifyAll = Purchase.NotifyAll 
         this.extend = Purchase.extend
         this.copy = Purchase.copy
 
-        this.cart = []
-        this.responses = []
+        this.clean()
     }
 
     public setUid(uid: any) {
@@ -63,6 +55,7 @@ export class PurchaseService {
     }
 
     public setEid(eid: any) {
+        this.eid = eid
         this.current.eid = eid
     }
 
@@ -78,8 +71,8 @@ export class PurchaseService {
         this.current.method = method
     }
 
-    public add(purchase: any) {
-        this.cart.push(purchase)
+    public add(ticket: any) {
+        this.cart.push(ticket)
         this.total()
     }
 
@@ -144,20 +137,20 @@ export class PurchaseService {
             && total(this.current.total)
         ) ? true : false
 
-        function cart(cart: any = []) {
+        function cart(cart: [] = []) {
             return (cart.length > 0 ) ? true : false
         }
 
         function uid(uid: String = "") {
-            return (uid.length > 5) ? true : false
+            return (uid && uid.length > 15) ? true : false
         }
 
         function eid(eid: String) {
-            return (eid && eid.length > 5) ? true : false
+            return (eid && eid.length > 15) ? true : false
         }
 
         function name(name: String) {
-            return (name && name.length > 0) ? true : false
+            return (name && name.length > 3) ? true : false
         }
 
         function telephone(telephone: String) {
@@ -182,32 +175,35 @@ export class PurchaseService {
         this.Subscribe(callback)
 
         this.total()
+
         
-        if (this.valid().check) {
+        if (this.valid().check && this.cart.length > 0) {
             
             this.Purchase.setUid(this.uid)
 
             this.Purchase.set(this.current, (resp)=> {
-
+                
                 if (resp.code != "400" && resp.purchase.pid && resp.purchase.pid.length > 15) {
-
-                    this.Ticket.setUid(resp.purchase.uid)
+                    
+                    this.current = this.extend(this.current, resp.purchase)
                     
                     this.cart.forEach((ticket)=> {
-
-                        ticket.pid = resp.purchase.pid
-                        ticket.eid = resp.purchase.eid
                         
                         this.Ticket.current = this.Ticket.extend(this.Ticket.current, ticket)
-
+                        this.Ticket.setUid(resp.purchase.uid)
+                        this.Ticket.setEid(resp.purchase.eid)
+                        this.Ticket.setPid(resp.purchase.pid)
+                        
                         this.Ticket.save((res)=>{
                             
+                            this.Ticket.sanitize()
+                    
                             this.responses.push(res)
                             this.notify("Ingresso de "+ticket.owner+" foi salvo!")
-                            
+                    
                             if (this.responses.length == this.cart.length) {
-                                this.reset()
                                 this.NotifyAll(this.responses)
+                                this.clean()
                             }
                         })
     
@@ -219,6 +215,7 @@ export class PurchaseService {
                     response.purchase = this.current
                     this.responses.push(response)
                     this.NotifyAll(this.responses)
+                    this.clean()
                 }
     
             })
@@ -238,14 +235,6 @@ export class PurchaseService {
         this.Ticket.list(callback)
     }
 
-    private reset() {
-        this.current.pid = ""
-        this.current.method = ""
-        this.current.total = "0"
-        this.cart = []
-        this.total()
-    }
-
     public acquire(callback: Object = null) {
         var response = { code: "", message: "", purchases: []}
 
@@ -256,12 +245,12 @@ export class PurchaseService {
         this.Purchase.get((resp)=> {
 
             resp.purchases.forEach((purchase)=> {
-
-                this.Ticket.setUid(this.uid)
+                
+                this.Ticket.setUid(purchase.uid)
                 this.Ticket.setPid(purchase.pid)
-
-                this.Ticket.obtain((res)=> {
-
+                
+                this.Ticket.obtain(purchase.pid, (res)=> {
+                    
                     purchase.tickets = res.tickets
                     response.purchases.push(purchase)
 
@@ -275,6 +264,29 @@ export class PurchaseService {
             
         })
 
+    }
+
+    public clean() {
+
+        this.uid = ""
+        this.eid = ""
+        this.pid = ""
+
+        this.current = {
+            uid: "",
+            pid: "",
+            eid: "",
+            name: "",
+            telephone: "",
+            bi: "",
+            method: "",
+            total: "",
+            status: "pendente", // pendente aprovado e cancelado
+        }
+        
+        this.cart = []
+        this.responses = []
+        this.total()
     }
 
     public notify(message: String, time = 4000) {

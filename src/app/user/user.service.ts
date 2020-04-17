@@ -14,35 +14,32 @@ declare var M: any
 
 export class UserService {
 
+    private uid: any
+
     private User: any
-    private uid: String
 
     public Subscribe: any
     public NotifyAll: any
     public copy: any
     public extend: any
 
-    public current = { 
-        uid: "",
-        name: "", 
-        surname: '',
-        telephone: '',
-        bi: "",
-        email:"", 
-        password: "",
-    }
+    public current: any
 
     public constructor(User: FirebaseUserService) {
+        
         this.User = User
 
         this.Subscribe = User.Subscribe
         this.NotifyAll = User.NotifyAll
         this.copy = User.copy
         this.extend = User.extend
+
+        this.clean()
     }
 
     public setUid(uid: String) {
         this.uid = uid
+        this.current.uid = this.uid
     }
 
     public valid(user: any, mirror: String = "") {
@@ -138,7 +135,7 @@ export class UserService {
         this.User.setUid(this.uid)
         
         this.User.get((response)=> {
-            this.current = this.extend(this.current, response.user)
+            this.current = this.User.extend(this.current, response.user)
             this.NotifyAll(response)
         })
     }
@@ -150,9 +147,21 @@ export class UserService {
         this.User.setUid(this.uid)
 
         this.User.set(this.current, (response)=> {
-            this.current = response.user
+            this.current = this.User.extend(this.current, response.user)
             this.NotifyAll(response)
         })
+    }
+
+    public clean() {
+        this.current = { 
+            uid: "",
+            name: "", 
+            surname: '',
+            telephone: '',
+            bi: "",
+            email:"", 
+            password: "",
+        }
     }
 
     public notify(message: String, time = 4000) {

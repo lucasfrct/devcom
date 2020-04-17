@@ -13,6 +13,7 @@ import { FirebaseEventService } from './../firebase/firebase.event.service'
 export class EventService {
 
     private Event: any
+    
     private uid: any
     private eid: any
 
@@ -22,17 +23,7 @@ export class EventService {
     public copy: any
     public extend: any
 
-    public current = {
-        uid: "",
-        eid: "",
-        name: "",
-        folderUrl: "",
-        logUrl: "",
-        date: "",
-        hour: "",
-        address: "",
-        tickets: {},
-    }
+    public current: any
     
     public constructor(Event: FirebaseEventService) {
         this.Event = Event
@@ -43,11 +34,18 @@ export class EventService {
         this.copy = Event.copy
         this.extend = Event.extend
 
+        this.clean()
+
     }
 
-    public setUid(uid: any) {
+    public setUid(uid: String) {
         this.uid = uid
         this.current.uid = uid
+    }
+
+    public setEid(eid: String) {
+        this.eid = eid
+        this.current.eid = eid
     }
 
     public add(callback) {
@@ -73,20 +71,20 @@ export class EventService {
 
     public getTicketEdition(type: any, callback: any) {
         
+        var edition = { circulation: "A1", serial: "" }
+
         this.Subscribe(callback)
 
-        this.Event.setUid(this.uid)
+        this.Event.setUid(this.current.eid)
 
         this.Event.get(this.current.eid, (response)=> {
 
-            var event = null
-            var edition = { circulation: "A1", serial: "" }
-
+            
             if ("400" != response && response.events.length > 0) {
-                event = response.events[0]
-                edition.serial = this.serial(event.tickets.normal.sold)
+                this.current = this.Event.extend(this.current, response.events[0])
+                edition.serial = this.serial(this.current.tickets.normal.sold)
             }
-
+            
             this.NotifyAll(edition)
 
         })
@@ -105,5 +103,19 @@ export class EventService {
             s = "0" + s
         }
         return String(s)
+    }
+
+    public clean() {
+        this.current = {
+            uid: "",
+            eid: "",
+            name: "",
+            folderUrl: "",
+            logUrl: "",
+            date: "",
+            hour: "",
+            address: "",
+            tickets: {},
+        }
     }
 }
