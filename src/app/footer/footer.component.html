@@ -1,9 +1,57 @@
 <style>
 .footer {
     margin-bottom: 85px;
-    padding: 0 1rem 1rem 1rem;
+    padding: 8px 1rem 1rem 1rem;
+    background-color: rgba(230,230,230,0.5);
+}
+
+.footer-copyright {
+    background-color: rgba(0,0,0,0.9);
+    color: #FFF;
 }
 </style>
 <section class="footer">
-    <h1>footer</h1>
+    <h5 class="center">DevCom</h5>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col s4">
+            <ul class="col s11 offset-s1">
+                <li>
+                    <a routerLink="" class="waves-effect"><i class="material-icons">home</i>Home</a>
+                </li>
+                <li>
+                    <a routerLink="/about" class="waves-effect"><i class="material-icons">event</i>Evento</a>
+                </li>
+                <li>
+                    <a routerLink="/shop" class="waves-effect"><i class="material-icons">shopping_basket</i>Comprar Ingressos</a>
+                </li>
+                <li>
+                    <a routerLink="" class="waves-effect"><i class="material-icons">email</i>lucasfrct@gmail.com</a>
+                </li>
+                <li>
+                    <a class="subheader"><i class="material-icons">info</i>Info: (88) 98158-4026</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col s4">
+            <h5>Bio</h5>
+            <p> Meu nome é <b>Lucas Costa</b> e sou o dsenvolvedor desta aplicação. <br><br>
+            Sou Pogramador <b>a mais de 9 anos</b> e domino tecnologias como <b>PHP, Java, Javascript, C++</b> e outros. <br><br> 
+            Neta plataforma resolvi fazer um teste de extensão do <b>Framwork Angular na versão 8</b>. Assim fiz toda a plataforma com um grande <b>monolito front-end em Angular</b> sem recorrer ao auxilio de tenologias back-end.<br>
+            Reconheço que foi satisfatótio e o Angular respondeu bem ao desafio</p>
+        </div>
+        <div class="col s4">
+            <h5>Descrição</h5>
+            <p class="col s11">
+                Essa é uma <b>plataforma</b> teste. <br><br>
+                A proposta do projeto é criar uma <b>aplicação</b> para comprar <i>ingressos de eventos</i>. <br><br>
+                A <b>plataforma</b> conta com uma área de <b>administração do proprietário</b>, outra área de <b>administração realizador do evento</b> e outra área para <b>administração do cliente</b> que comprará os ingressos.
+            </p>
+        </div>
+    </div>
+    <div class="footer-copyright center">
+        <div class="container">
+        © 2021 Copyright by <b>Lucas Costa</b>
+        </div>
+    </div>
 </section>

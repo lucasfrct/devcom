@@ -1,4 +1,8 @@
 <style>
+    .container {
+        margin-bottom: 64px;
+    }
+
     .login-links > * {
         margin: 8px 0;
     }
@@ -7,7 +11,8 @@
 <section class="container">
     
     <div class="row">
-        <h6 class="center">Para adquirir um ingresso ou consultar sua compra é necessário fazer o login</h6>
+        <h3>Login</h3>
+        <h6 class=""><strong>*Para adquirir um ingresso ou consultar sua compra é necessário fazer o login</strong></h6>
     </div>
     
     <div class="row">
@@ -15,8 +20,6 @@
         <form class="form col s12 md9" (ngSubmit)="onSubmit(user)">
             
             <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
-             
-            <legend>Login</legend>
              
             <div class="row">
                  <div class="input-field col s12">
@@ -42,20 +45,7 @@
              </div>
 
              <div class="login-links row">
-
-                <div class="col s12 m6 l5 xl4">
-                    <a routerLink="/sign" 
-                    class="btn btn-small orange waves-effect waves-light col s12" 
-                    >Criar um conta</a>
-                </div >
-                
-                <!--<div class="col s12 m6 l5 xl4">
-                    <button id="" 
-                        type="button" 
-                        class="btn btn-small purple waves-effect wave-light col s12"
-                        (click)="onSendSMS(user)"
-                    >Entrar com telefone</button>
-                </div>-->
+                <a routerLink="/sign" class="col s12" >Criar um conta</a>
     
              </div>
         </form>

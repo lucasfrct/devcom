@@ -117,10 +117,11 @@
         >
 
             <div class="buy-puchase-details col s12">
-                <span class="col s6 m5 l3 xl2 ">Status: 
+                <span class="col s12 m6 l7 xl7">Pedido: <b>{{purchase.pid}}</b></span>
+                <span class="col s6 m3 l3 xl3 ">Status: 
                     <b class="p-status {{ (purchase.status == 'aprovado') ? 'green' : 'yellow' }}">{{purchase.status}}</b>
                 </span>
-                <span class="col s6 m7 l8 xl10">Valor: <b>{{purchase.total}} KZ</b></span>
+                <span class="col s6 m3 l2 xl2">Valor: <b>R$ {{purchase.total}}</b></span>
             </div>
 
             <div class="purchase-cards col s12">

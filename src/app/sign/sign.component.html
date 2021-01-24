@@ -54,7 +54,7 @@
 
             <div class="input-field col s6 m6 {{(control.alerts.bi) ? 'alert' : ''}}">
                 <input id="bi" type="text" class="validate" name="bi" [(ngModel)]="user.bi">
-                <label for="bi">Bibliete de Identificação:</label>
+                <label for="bi">RG:</label>
             </div>
         </div>
         
@@ -101,23 +101,9 @@
 
         </div>
         
-        <div class="row sign-links">
-
-            
-            <div class="col s12 m6 l5 xl4">
-                <a routerLink="/login" 
-                class="btn btn-small orange waves-effect waves-light col s12" 
-                >Já tenho uma conta</a>
-            </div >
-            
-            <div class="col s12 m6 l5 xl4">
-                <button id="" 
-                    type="button" 
-                    class="btn btn-small purple waves-effect wave-light col s12"
-                    (click)="onSendSMS(user)"
-                >Entrar com telefone</button>
-            </div>
-
+        <div class="row sign-links"><br>
+            <a routerLink="/login" >Já tenho uma conta</a><br><br>
+            <a id="" (click)="onSendSMS(user)">Entrar com telefone</a>
          </div>
 
     </form>

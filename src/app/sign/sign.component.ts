@@ -60,8 +60,8 @@ export class SignComponent implements OnInit {
 
         this.user.name = "Cliente"
         this.user.surname = 'cliente'
-        this.user.telephone = '+244555555555' //'935 964 737' 
-        this.user.bi = "12345678900"
+        this.user.telephone = '+55 11 11111-1111'
+        this.user.bi = "1234567890"
         this.user.email = "cliente@cliente.com"
         this.user.password = "12345678"
         this.user.code = ""

@@ -90,8 +90,6 @@ export class LoginComponent implements OnInit {
 
         valid.check = (email(user.email) && password(user.password)) ? true : false
 
-        
-
         function email(email: String) {
             return (email.indexOf("@") != -1 && email.indexOf(".com") != -1 && email.length > 8) ? true : false
         }

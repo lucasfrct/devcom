@@ -1,3 +1,8 @@
+html form{
+    background-color: rgba(0,0,0,0.03);
+    box-shadow: 2px 2px 20px 5px rgba(0,0,0,0.15);
+}
+
 html .form {
     max-width: 960px;
     border: solid 1px #CCC;
