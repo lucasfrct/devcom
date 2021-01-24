@@ -10,10 +10,12 @@ import { FirebaseLoginService } from './../firebase/firebase.login.service'
 
 export class LoginComponent implements OnInit {
 
-    private login: any
-
+    private Login: any
     private eye = "visibility"
     private password = "password"
+
+    public extend: any
+    public copy: any
 
     public control = {
         toggleEye: this.ToggleEye,
@@ -32,25 +34,33 @@ export class LoginComponent implements OnInit {
         password: "",
     }
 
-    constructor(login: FirebaseLoginService) {
-        this.login = login
-        //this.user = { email:"lucas@lucas.com-e", password: "12345678" } 
+    constructor(Login: FirebaseLoginService) {
+        this.Login = Login
+
+        this.extend = Login.extend
+        this.copy = Login.copy
+        this.user = { email:"cliente@cliente.com", password: "12345678" } 
      }
 
     ngOnInit() {
+        this.Login.check(null, 'login')
     }
 
     public onSubmit(user: any) {
-        var that = this
-        var valid = this.validate(user)
         
-        if (valid.check) {
-            that.control.bar = true
+        if (this.valid(user).check) {
             
-            that.login.access(user, (response)=>{
-                that.control.bar = false
-                that.control.modal = true;
-                that.control.message = response.message
+            this.control.bar = true
+            
+            this.Login.access(user, (response)=>{
+                
+                this.control.bar = false
+                this.control.modal = true;
+                this.control.message = response.message
+                
+                setTimeout(()=> {
+                    this.Login.redirect('perfil')
+                }, 1300)
             })
         }
     }
@@ -60,27 +70,25 @@ export class LoginComponent implements OnInit {
         this.password = (this.password == "password") ? "text" : "password"
     }
 
-    private validate(user: any) {
-        const that = this
+    private valid(user: any) {
+
         var valid = { check: false }
 
-        that.control.alerts = []
-        that.control.emailAlert = ""
-        that.control.passwordAlert = ""
+        this.control.alerts = []
+        this.control.emailAlert = ""
+        this.control.passwordAlert = ""
 
         if (!email(user.email)) {
-            that.control.alerts.push("O email está incorreto, favor digitar um email válido")
-            that.control.emailAlert = "alert"
+            this.control.alerts.push("O email está incorreto, favor digitar um email válido")
+            this.control.emailAlert = "alert"
         }
 
         if (!password(user.password)) {
-            that.control.alerts.push("A senha está incorreta ou insuficiente, favor digitar uma senha válida com mais de 8 caracteres")
-            that.control.passwordAlert = "alert"
+            this.control.alerts.push("A senha está incorreta ou insuficiente, favor digitar uma senha válida com mais de 8 caracteres")
+            this.control.passwordAlert = "alert"
         }
 
         valid.check = (email(user.email) && password(user.password)) ? true : false
-
-        return valid
 
         function email(email: String) {
             return (email.indexOf("@") != -1 && email.indexOf(".com") != -1 && email.length > 8) ? true : false
@@ -89,10 +97,12 @@ export class LoginComponent implements OnInit {
         function password(password: String) {
             return (password.length >= 8) ? true : false
         }
+
+        return valid
     }
 
     public logOut() {
-        this.login.denied()
+        this.Login.denied()
     }
 
 }

@@ -3,8 +3,11 @@
  * Autor: Lucas
  * Data: Janeiro de 2020
  */
-import { FirebaseInitService } from './../firebase/firebase.init.service'
 import { Injectable  } from '@angular/core'
+import { FirebaseInitService } from './../firebase/firebase.init.service'
+import { FirebaseSMSService } from './../firebase/firebase.sms.service'
+import { FirebaseLoginService } from './../firebase/firebase.login.service'
+import { FirebaseUserService } from './../firebase/firebase.user.service'
 
 @Injectable({
     providedIn: "root"
@@ -12,80 +15,136 @@ import { Injectable  } from '@angular/core'
 
 export class FirebaseSignService {
 
-    private init: any
-    private firebase = null
-    private db = null
-    private response = null
-    private user = null
-    
-    private observers = []
+    private SMS: any
+    private Login: any
+    private User: any
+    private firebase: any
+    private response: any
 
-    public constructor(init: FirebaseInitService) {
-        this.init = init
-        this.firebase = this.init.on()
-        this.db = this.init.db()
-        this.response = this.init.response
+    public Subscribe: any
+    public NotifyAll: any
+    public copy: any
+    public extend: any
+
+    public reCaptcha: any
+    
+    public constructor(
+        Init: FirebaseInitService, 
+        SMS: FirebaseSMSService,
+        Login: FirebaseLoginService, 
+        User: FirebaseUserService
+    ) {
+        
+        this.SMS = SMS
+        this.Login = Login
+        this.User = User
+
+        this.firebase = Init.on()
+        this.response = Init.response()
+
+        this.Subscribe = Init.Subscribe
+        this.NotifyAll = Init.NotifyAll
+        this.copy = Init.copy
+        this.extend = Init.extend
+
+        this.reCaptcha = SMS.reCaptcha
+
     }
 
-    private CallSignEmail(email: string, password: string) {
+    private CallSignEmail(email: String, password: String) {
         return this.firebase.auth().createUserWithEmailAndPassword(email, password)
     }
 
-    public create(sign: any, callback: any) {
-        var that = this
-        that.Subscribe(callback)
+    public check(callback: Object = null, path: String) {
+        this.Login.check(callback, path)
+    }
 
-        var Sign = that.CallSignEmail(sign.email, sign.password)
+    public create(sign: any, callback: Object = null) {
+
+        this.Subscribe(callback)
+
+        var Sign = this.CallSignEmail(sign.email, sign.password)
         Sign
             .then((response)=> {
-                console.log("NEW USER: ", response)
-                that.user = sign
-                that.user.uid = response.user.uid
-                that.response.user = that.user
-                that.response.code = "201"
-                that.response.message = "Conta Criado com sucesso!"
-                that.createUserFiretore(that.user)
+
+                sign.uid = response.user.uid
+               
+                this.User.setUid(sign.uid)
+
+                this.User.set(sign, (user)=> {
+
+                    this.response.user = user
+                    this.response.code = "201"
+                    this.response.message = "Conta Criada com sucesso!"
+
+                    this.NotifyAll(this.response)
+                    
+                })
+
             }).catch((error)=> {
-                that.ErrorHandle(error.code)
-            }).finally(()=> {
-                that.NotifyAll(that.response)
+
+                this.response.user = sign
+                this.response.code = "400"
+                this.response.message = "Erroao Cria a conta"
+                this.response.error = error
+                this.ErrorHandle(error.code)
+
+                this.NotifyAll(this.response)
+                
             })
     }
 
-    public Subscribe(command:any) {
-        this.observers.push(command)
+    public sendSms(telephone: any, callback: Object = null) {
+
+        this.SMS.send(telephone, callback)
+
     }
 
-    public NotifyAll(command: any) {
-        this.observers.forEach(ObserverFuncion => {
-            ObserverFuncion(command)
-        });
+    public sendCode(sign: any, callback: Object = null) {
+        
+        this.Subscribe(callback)
 
-        this.observers = []
+        this.SMS.code(sign.code, (response)=> {
+            
+            if ("400" != response.code) {
+
+                this.User.setUid(response.user.uid)
+                this.User.set(sign, (user)=> {
+                    response.user = user
+                    response.code = "201"
+                    response.message = "Conta Criada com sucesso!"
+
+                    this.NotifyAll(response)
+                })
+
+            } else {
+                this.NotifyAll(response)
+            }
+        })
     }
 
-    private ErrorHandle(error: any) {
-        var that = this
+    private ErrorHandle(error: String) {
         
         switch(error) {
             case "auth/invalid-email":
-                that.response.code = "400"
-                that.response.message = "Formatação do e-mail inválida, favor inserir um email válido."
+                this.response.code = "400"
+                this.response.message = "Formatação do e-mail inválida, favor inserir um email válido."
                 break
             case "auth/weak-password":
-                that.response.code = "400"
-                that.response.message = "Senha fraca ou insuficiente, favor utilizar mais de 8 caracteres."
+                this.response.code = "400"
+                this.response.message = "Senha fraca ou insuficiente, favor utilizar mais de 8 caracteres."
                 break
             case "auth/email-already-in-use":
-                that.response.code = "400"
-                that.response.message = "Este email está em uso, favor inserir outro email para cadastro."
+                this.response.code = "400"
+                this.response.message = "Este email está em uso, favor inserir outro email para cadastro."
                 break
             default:
                 break
         }
     }
 
-    private createUserFiretore(user: any) {
-        this.db.collection("users").doc(user.uid).set(user, {merge: true})
+    public redirect(path: String) {
+        this.Login.redirect(path)
     }
+
 }

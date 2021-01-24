@@ -2,7 +2,7 @@
     .sidebar,
     .panel {
         min-height: 60px;
-        padding: 1rem;
+        padding: 1rem; 
     }
 
     .sidebar {
@@ -12,6 +12,8 @@
 /*========== EVENT =================*/
     .sidebar .event {
         overflow: hidden;
+        min-height: 143px;
+        display: block;
     }
 
     .sidebar .event > * {
@@ -24,24 +26,28 @@
     }
 
     .sidebar .event .image {
-        height: 180px;
+        height: 140px;
         float: left;
+        margin: 0;
     }
 
     .sidebar .event .details {
-        padding: 0 1em;
+        padding: 0 0.8em;
         box-sizing: border-box;
     }
 
     .sidebar .event .details > * {
         display: block;
-        padding: 0 0 0.9rem 0;
+        padding: 0 0 0.7rem 0;
         margin: 0;
         text-align: left;
+        clear: both;
+        min-height: 31px;
     }
 
     .sidebar .event .details > .title {
-        margin: 0 0 0.5rem 0;
+        margin: 0 0 0.4rem 0;
+        min-height: 44px;
     }
 
     .sidebar .event .details .material-icons {
@@ -49,114 +55,190 @@
     }
 
 /*============= PRUCHASE ===============*/
-    .sidebar .total {
-        padding: 0 1rem;
-    }
-/*============= PRUCHASE ===============*/
 
-    .sidebar .purchase {
+    .sidebar .ticket {
         padding: 0;
     }
 
-    .sidebar .purchase {
+    .sidebar .ticket {
         background-color: transparent;
         border: solid 1px #DDD;
         padding: 1rem;
         margin: 0.1rem;
     }
 
-    .sidebar .purchase .title {
-        margin-bottom: 1rem;
+    .sidebar .ticket .ticket-title {
+        margin: 0 0 0.5rem 0;
         display: block;
-        font-size: 1.5em;
+        font-size: 1.2em;
         text-align: center;
     }
 
-    .sidebar .purchase .price {
+    .sidebar .ticket .price {
         text-align: right;
         display: block;
-        font-size: 1.3em;
-        padding: 0.5rem 0 1rem 0;
+        font-size: 1em;
+        padding: 0.5rem 1rem 1rem 0;
     }
 
-    .sidebar .purchase .add {
+    .sidebar .ticket .add {
         display: block;
         width: 100%;
     }
 
-    .sidebar .purchase > li {
+    .sidebar .ticket > li {
         border: solid 1px #EEE;
-        border-left: solid 8px #00F;
+        border-left: solid 8px blueviolet;
         margin: 0 0 2px 0;
-        padding: 0.6rem 0 0 0;
+        padding: 0.2rem 0;
         background-color: rgba(0,0,0,0.01);
     }
 
-    .sidebar .purchase > li:hover {
+    .sidebar .ticket > li:hover {
         background-color: rgba(0,0,0,0.06);
         border-left-color: teal;
     }
 
-/*========== GENERAL CSS ======*/
-    .sidebar .input-field > label:not(.label-icon).active {
-        transform: translateY(4px) scale(0.8);
+    .sidebar .ticket > li i {
+        font-size: 2.4em;
     }
 
-    .sidebar .input-field .material-icons {
-        font-size: 2.8em;
+    .sidebar .ticket > li input  {
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 2px !important;
     }
 
-    .sidebar .input-field input,
-    .sidebar .input-field select option {
-        padding-left: 0.5rem;
-        color: inherit;
-        box-sizing: border-box;
+    .sidebar .ticket > li label.active  {
+        transform: translateY(-2px) scale(0.8);
     }
 
-   .sidebar .in-select label {
-        top: -10px !important;
+    .sidebar .in-select label {
+        top: -12px !important;
         color: inherit;
     }
 
-    figure img {
-        object-fit: cover;
-        height: 100%;
+    /*========== PANEL CSS ======*/
+
+    .panel .container-tickets {
+        margin: 0;
+        padding: 0;
+    }
+
+    /*========== purchase CSS ======*/
+
+    .purchase-container {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #434334;
+        color: #FFF;
+        text-align: right;
+        padding: 0;
+        z-index: 100;
+    }
+
+    .purchase-container > * {
+        padding: 0.8rem;
+        padding-right: 2rem;
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    .purchase-container .badge {
+        height: auto;
+        padding: 0.3rem 0.6rem;
+        font-size: 1em;
+    }
+
+    .purchase-container .btn {
+        height: auto;
+        font-size: 1.3em;
+        padding: 0.8rem;
+    }
+
+    /*======= payment ==========*/
+    .payment-modal.modal {
+        width: 80%;
+    }
+
+    .payment-modal.modal .modal-content {
+        padding: 12px 16px;
+        max-height: auto !important;
+    }
+
+    .payment-modal.modal, 
+    .payment-modal.modal .modal-content {
+        clear: both;
+        height: auto !important;
+        max-height: 100% !important;
+        overflow: hidden;
+    }
+
+    .payment-modal .modal-footer {
+        text-align: right;
+    }
+
+    .payment-modal .modal-footer .btn {
+        margin: 0 16px 24px 16px;
+        display: inline-block;
+        vertical-align: top;
+        top: 0;
+    }
+
+    @media(max-width: 576px) {
+
+        .payment-modal.modal, 
+        .payment-modal.modal .modal-content {
+            top: 0 !important;
+            width: 98%;
+        }
+
+        .payment-modal .modal-footer {
+            text-align: center;
+            padding-bottom: 48px;
+        }
+
+
     }
 
 </style>
-<a routerLink="/">Home</a><br>
-<hr>
 <section class="row">
+
     <aside class="sidebar col s12 m6 l5 xl4">
         
         <div class="event row">
-            <figure class="image col s12 m5 l4"> <img src="assets/images/sources/arte-1.jpeg" ></figure>
-            <div class="details col s12 m7 l8">
-                <h5 class="title">{{event.name}}</h5>
-                <strong><i class="material-icons left">location_on</i> {{event.address}}</strong>
-                <strong><i class="material-icons left">perm_contact_calendar</i> {{event.date}}</strong>
+
+            <figure class="image col s4 m5 l4"> <img src="{{event.folderUrl}}" ></figure>
+            <div class="details col s8 m7 l8" *ngIf="event.name">
+                <h6 class="title"><b>{{event.name}}</b></h6>
+                <span><i class="material-icons left">location_on</i> {{event.address}}</span>
+                <span><i class="material-icons left">perm_contact_calendar</i> {{event.date}}</span>
                 <strong><i class="material-icons left">access_time</i> {{event.hour}}</strong>
             </div>
+            
         </div>
-
-        <hr>
+        <div class="progress" *ngIf="!event.name"><div class="indeterminate"></div></div>
         
-        <div class="total row">
-            <h5 class="right">Total: <b>{{control.total}} KZ</b></h5>
-        </div>
-
         <hr>
 
-        <ul class="purchase row">
-            <span class="title">Ingresso</span>
+        <ul class="ticket row">
+
+            <strong class="ticket-title">Preencher Ingresso</strong>
             <li class="input-field">
                 <i class="material-icons prefix">account_box</i>
                 <input type="text" id="owner" name="owner" [(ngModel)]="ticket.owner">
-                <label for="owner">Seu Nome</label>
+                <label for="owner">Nome no Ingresso</label>
             </li>
             <li class="input-field in-select">
                 <i class="material-icons prefix">event_seat</i>
-                <select class="select" id="session" name="session" (change)="ticket.seat.session = $event.target.value">
+                <select 
+                    class="select" 
+                    id="session" 
+                    name="session" 
+                    (change)="onChangeSession($event.target.value)"
+                >
                     <option disabled >selecione um assento</option>
                     <option value="A01">A01</option>
                     <option value="B01">B01</option>
@@ -165,36 +247,92 @@
             </li>
             <li class="input-field in-select">
                 <i class="material-icons prefix">stars</i>
-                <select class="select" id="type" name="type" (change)="ticket.seat.type = $event.target.value; onChange()">
+                <select 
+                    class="select" 
+                    id="type" 
+                    name="type" 
+                    (change)="onChangeType($event.target.value)"
+                >
                     <option disabled selected>selecione um tipo de ingresso</option>
                     <option value="Normal">Normal</option>
                     <option value="VIP">VIP</option>
                 </select>
                 <label for="type">Tipo de Ingresso</label>
             </li>
-            <span class="price">Valor unitário: <b>{{ticket.price}} KZ</b></span>
-            <button class="add btn right" (click)="addTicked()" >
-                <i class="material-icons left">add</i> Add ingresso
-            </button>
+            <span class="price">Valor do ingresso: <b>R$ {{ticket.price}}</b></span>
+            <button 
+                class="add btn right waves-effect waves-light" 
+                (click)="addTicket()" 
+                [disabled]="!control.ticket"
+            > <i class="material-icons left">add_shopping_cart</i> Adicionar ingresso</button>
         </ul>
 
-        <!-- Modal Structure -->
-        <div  class="modal bottom-sheet" [modalControl]="control.modal">
-          <div class="modal-content">
-            <h4>Novo Ingresso</h4>
-            <p>Verificando a disponibilidade dos ingressos</p>
-          </div>
-          <div class="modal-footer">
-          </div>
+        <div class="ticket-modal modal bottom-sheet" [modalControl]="control.modal.ticket">
+            <div class="modal-content">
+                <div class="progress"><div class="indeterminate"></div></div>
+                <h4 style="text-align: right;">Novo Ingresso</h4>
+                <p style="text-align: right;">Verificando a disponibilidade dos ingressos no sistema</p>
+            </div>
         </div>
 
     </aside>
+
     <section class="panel col s12 m6 l7 xl8"> 
-        <h4>Ingressos Adquiridos</h4> 
-        {{purchase}}
-        <div *ngFor="let tck of purchase">
-            <app-tickets [currentTicket]="tck"></app-tickets>
-        </div>     
+        
+        <span>Veja abaixo seus ingressos e confira se os nomes estão de acordo.<br>
+            <small class="yellow">*Tenha muita atenção  no nome e no tipo de ingresso</small>
+        </span>
+
+        <hr>
+
+        <div class="container-tickets col s12 m6 l6 xl4" *ngFor="let tck of cart; index as i">
+            <app-ticket [onTicket]="tck" [onRegister]="i" (onRemove)="onDelete($event)"></app-ticket>
+        </div> 
         
     </section>
+
+    <section class="purchase-container col s12">
+        
+        <span class="col s12 m6 l4 xl6">Ingressos adquiridos
+            <span class="new badge blue" data-badge-caption="">{{cart.length}}</span>
+        </span>
+        
+        <span class="col s12 m6 l4 xl3">Valor total da compra: R$ 
+            <span class="new badge red" data-badge-caption="">{{control.total}}</span>
+        </span>
+        
+        <button class="col s12 m12 l4 xl3 btn" type="button" (click)="finallyPurchase()">Finalizar a Compra</button>
+
+    </section>
+
+    <div class="purchase-modal modal" [modalControl]="control.modal.purchase">
+        <div class="modal-content">
+            <div class="progress"> <div class="indeterminate"></div></div>
+            <h4>Iniciando Transação</h4>
+            <p>Reservando seus ingressos no sistema!</p>
+        </div>
+    </div>
+
+    <div class="payment-modal modal" [modalControl]="control.modal.payment">
+        
+        <div class="modal-content">
+            <h5>Escolha o Método de Pagamento</h5>
+            <div class="divider"></div>
+          
+            <app-payment (onSelected)="onMethod($event)"></app-payment>
+
+            <div class="divider"></div>
+        </div>
+        
+        <div class="modal-footer row">
+            <button 
+                class="btn btn-large waves-effect waves-ligth green" 
+                [disabled]="!control.method"
+                (click)="confirmPayment()"
+            >Confirmar</button>
+            <button class="btn btn-large waves-effect waves-ligth red" (click)="cancelPayment()" >Cancelar</button>
+        </div>
+
+    </div>
+
 </section>

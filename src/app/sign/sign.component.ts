@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseSignService } from './../firebase/firebase.sign.service'
+import { UserService } from './../user/user.service'
+import { FormService } from './../form/form.service'
 
 @Component({
     selector: 'app-sign',
@@ -9,135 +11,135 @@ import { FirebaseSignService } from './../firebase/firebase.sign.service'
 
 export class SignComponent implements OnInit {
 
-    private sign: any
+    private Sign: any
+    private User: any
+    private Form : any
     
     private eye = "visibility"
     private password = "password"
 
+    public recaptcha: any
+
+    public tgg: any
+
     public control = {
+        bar: false,
+        barCode: false,
+        modal: false,
+        modalCode: false,
         mirror: "",
-        toggleEye: this.ToggleEye,
+        message: "",
         password: "password",
         eye: "visibility",
-        bar: false,
-        alerts: [],
-        nameAlert: "",
-        surnameAlert: "",
-        telephoneAlert: "",
-        emailAlert: "",
-        passwordAlert: "",
-        modal: false,
-        message: ""
+        notifications: [],
+        alerts: {
+            name: false,
+            surname: false,
+            telephone: false,
+            bi: false,
+            email: false,
+            password: false,
+        },
     }
-
+    
     public user = { 
         name: "", 
         surname: '',
         telephone: '',
+        bi: "",
         email:"", 
-        password: "" 
+        password: "",
+        code: "",
     }
 
-    constructor(sign: FirebaseSignService) { 
-        this.sign = sign
+    constructor(Sign: FirebaseSignService, User: UserService, Form: FormService) { 
+       
+        this.Sign = Sign
+        this.User = User
+        this.Form = Form
 
-        //this.user = { name: "Lucas", surname: 'Costa', telephone: '(88) 99382-4305', email:"lucas@lucas.com-e", password: "12345678" } 
-        //this.control.mirror = "12345678"
+        this.user.name = "Cliente"
+        this.user.surname = 'cliente'
+        this.user.telephone = '+55 11 11111-1111'
+        this.user.bi = "1234567890"
+        this.user.email = "cliente@cliente.com"
+        this.user.password = "12345678"
+        this.user.code = ""
+
+        this.control.mirror = "12345678"
     }
 
     ngOnInit() { 
-
+        this.Sign.check(null, 'sign')
+        this.Sign.reCaptcha ()
     }
 
-    private ToggleEye() {
-        this.eye = (this.eye == "visibility" ) ? "visibility_off" : "visibility"
-        this.password = (this.password == "password") ? "text" : "password"
+    public ToggleEye () {
+        this.control.eye = this.Form.toggleEye()
+        this.control.password = this.Form.togglePassword()
     }
 
     public onSubmit(user: any){
-        console.log("USER: ", user)
-        var valid = this.validator(user)
-        
+
+        var valid = this.User.valid(user, this.control.mirror)
+
+        this.control.alerts = valid.alerts
+
+        this.control.notifications = valid.notifications
+
         if (valid.check) {
+        
             this.control.bar = true
 
-            this.sign.create(user, (response)=> {
+            this.Sign.create(user, (response)=> {
+
+                console.log("CREAtE", response)
+                
                 this.control.bar = false
                 this.control.modal = true
                 this.control.message = response.message
-                console.log("SIGN COMPONENT: ", response)
+
+                if ("201" == response.code) {
+                    setTimeout(()=> {
+                        this.Sign.redirect('perfil')
+                    }, 1300)
+                }
             })
 
         }
     }
 
-    private validator(user: any) {
-        const that = this
+    public onSendSMS(user: any) {
 
-        const valid = { check: false }
-
-        that.control.alerts = []
-        that.control.nameAlert = ""
-        that.control.surnameAlert = ""
-        that.control.telephoneAlert = ""
-        that.control.emailAlert = ""
-        that.control.passwordAlert = ""
-
-        if(!name(user.name)) {
-            that.control.alerts.push("O nome precisa ter no mínimo 5 letras")
-            that.control.nameAlert = "alert"
-        }
+        this.control.bar = true
+        this.control.message = "Enviando SMS... Espere um pouco."
         
-        if(!surname(user.surname)) {
-            that.control.alerts.push("O sobrenome precisa ter no mínimo 3 letras.")
-            that.control.surnameAlert = "alert"
-        }
+        this.Sign.sendSms(user.telephone, (response)=> {
+            this.control.bar = false
+            this.control.modalCode = true
+            this.control.message = response.message
 
-        if(!telephone(user.telephone)) {
-            that.control.alerts.push("O telfone precisa ter no mínimo 11 números.")
-            that.control.telephoneAlert = "alert"
-        }
+        })
+    }
 
-        if(!email(user.email)) {
-            that.control.alerts.push("Email inválido favor corrigir.")
-            that.control.emailAlert = "alert"
-        }
+    public onSendCode(user: any) {
+        
+        this.control.modalCode = true
 
-        if(!password(user.password, that.control.mirror)) {
-            that.control.alerts.push("A senha precisa ter no mínimo 8 caracterres.")
-            that.control.alerts.push("As senhas precisam ser iguais")
-            that.control.passwordAlert = "alert"
-        }
+        this.Sign.sendCode(user, (response)=> {
 
-        valid.check = (
-            name(user.name) 
-            && surname(user.surname) 
-            && telephone(user.telephone) 
-            && email(user.email) 
-            && password(user.password, that.control.mirror)
-        ) ? true : false
+            if ("201" == response.code) {
+                
+                this.control.modalCode = false
+                
+                setTimeout(()=> {
+                    this.Sign.redirect('perfil')
+                }, 1300)
 
-        return valid
-          
-        function name(name: String) {
-            return (name.length >= 3) ? true : false
-        }
+            }
 
-        function surname(surname: String) {
-            return (surname.length >= 3) ? true : false
-        }
+        })
 
-        function telephone(telephone: String) {
-            return (telephone.length >= 11) ? true : false
-        }
-
-        function email(email: String) {
-            return (email.length >= 6 && email.indexOf("@") && email.indexOf(".com")) ? true : false 
-        }
-
-        function password(password: String, mirror: String) {
-            return (password.length >= 8 && password == mirror) ? true : false
-        }
     }
 
 }

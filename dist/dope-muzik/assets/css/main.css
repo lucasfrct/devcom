@@ -1,0 +1,19 @@
+html .preloader-wrapper {
+    margin: auto;
+    display: block;
+    margin: auto;
+    margin-bottom: - 60px;
+    top: 2rem;
+    text-align: center;
+}
+
+/*======== MODULE SHOP ========*/
+.sidebar .purchase > li .select-wrapper,
+.sidebar .purchase > li .select-dropdown {
+    margin-bottom: 2px !important;
+}
+
+figure img {
+    object-fit: cover;
+    height: 100%;
+}

@@ -12,6 +12,8 @@ declare var firebase: any
 })
 
 export class FirebaseInitService {
+
+    private observers: any
     
     private firebaseConfig = {
         apiKey: "AIzaSyCr0VNqcrCUpn_O_9mn67GdxyTs9XSUJwQ",
@@ -24,26 +26,46 @@ export class FirebaseInitService {
         measurementId: "G-70QMM4HJCK"
     }
 
-    public fisebase = null;
+    private firebase: any;
+    private reply = { code: "", message: "", user: null, error: null}
+
+    public constructor() { this.firebase = onInitFirebase(this.firebaseConfig) }
     
-    public response = { code: "", message: "", user: null, error: null}
+    public scope(callback) { this.firebase.auth().onAuthStateChanged(callback) }
+    
+    public on() { return this.firebase }
 
-    constructor() {
-        this.fisebase = onInitFirebase(this.firebaseConfig)
+    public db() { return this.firebase.firestore() }
+
+    public collection(collection: String) {
+        return this.db().collection(collection)
     }
 
-    scope(callback) {
-        return this.fisebase.auth().onAuthStateChanged(callback)
+    public response(resposnse = {}) {
+        return JSON.parse(JSON.stringify(Object.assign(this.reply, resposnse)))
     }
 
-    on() {
-        return this.fisebase
-    }
-
-    db() {
-        return this.fisebase.firestore()
+    public Subscribe(fn: any) {
+        if (typeof this.observers != "object" ) { this.observers = [] }
+        if (typeof fn == "function") { this.observers.push(fn) }
     }
     
+    public NotifyAll(response = {}) {
+        if (this.observers) {
+            this.observers.forEach(ObserverFn => {
+                ObserverFn(response)
+            })
+        }
+        this.observers = []
+    }
+
+    public copy(obj: any) {
+        return JSON.parse(JSON.stringify(obj))
+    }
+
+    public extend(objA: any, objB: any) {
+        return Object.assign(this.copy(objA),this.copy(objB))
+    }
 }
 
 
@@ -59,6 +81,6 @@ function onInitFirebase(firebaseConfig) {
         firebase = null;                                                                // Set null SGBD
     }
 
-    console.log("MODULE FIREBASE: ",state);
+    console.log("MODULE FIREBASE: ", state);
     return firebase
 }

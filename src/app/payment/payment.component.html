@@ -1,0 +1,97 @@
+<style>
+    .payment-component {
+        min-height: 60px;
+    }
+
+    .payment-component .card-title {
+        margin: 0;
+        padding: 0;
+        font-size: 1.3em;
+    }
+
+    .payment-component .card-content {
+        padding: 12px;
+    } 
+
+    .payment-component .card-content ul {
+        margin: 8px 0 4px 0;
+    } 
+
+    .payment-component .card-action {
+        padding: 4px 12px 8px 12px;
+    }
+
+    .payment-component .card,
+    .payment-component .checked,
+    .payment-component .unchecked {
+        -webkit-transition: all 0.3s ease-in-out;
+        -moz-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        -webkit-transform: scale(0.95);
+        -moz-transform: scale(0.95);
+        -ms-transform: scale(0.95);
+        -o-transform: scale(0.95);
+        transform: scale(0.95);
+        background-color: #FDFDFD;
+    }
+
+    .payment-component .card.checked {
+        transform: scale(1);
+        border: solid 1px green;
+        background-color: #FFF;
+    }
+
+    .payment-component .card.unchecked:not(.checked) {
+        background-color: #CCC;
+        opacity: 0.5;
+        transform: scale(0.7);
+    }
+
+    .payment-component .card-action > * {
+        cursor: pointer;
+    }
+
+</style>
+<section class="payment-component row">
+    
+    <div class="col s12 m6">
+        <div class="card 
+            {{(control.bank) ? 'checked' : '' }} 
+            {{(control.unchecked) ? 'unchecked' :  ''}}"
+
+            (click)="toggleBank()"
+        > 
+            <div class="card-content">
+                <span class="card-title">Transferência Bancária</span>
+                <ul>
+                    <li>Banco: <b>Bic</b></li>
+                    <li>Conta: <b>119392885</b></li>
+                    <li>IBAN: <b>AO06 005100001 939288514121</b> </li>
+                    <li>Favorecido: <b>Rui Henriques Fragoso da Silva</b></li>
+                </ul>
+            </div>
+            <div class="card-action">
+                <button class="btn btn-flat waves-effect">Selecionar esta</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m6">
+        <div class="card 
+            {{ (control.paypal)? 'checked' : '' }} 
+            {{(control.unchecked) ? 'unchecked' :  ''}}"
+            (click)="togglePaypal()"
+        > 
+            <div class="card-content">
+                <span class="card-title">Paypal</span>
+                <p>Voce pode faze um solicitaçcao de depoósito direto no Paypal ou usar um links abaixo</p>
+            </div>
+            <div class="card-action">
+                <button class="btn btn-flat waves-effect">Selecionar esta</button>
+            </div>
+        </div>
+    </div>
+
+</section>
