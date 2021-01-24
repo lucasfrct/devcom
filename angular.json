@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dope-muzik": {
+    "devcom": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/dope-muzik",
+            "outputPath": "dist/devcom",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -63,18 +63,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "dope-muzik:build"
+            "browserTarget": "devcom:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "dope-muzik:build:production"
+              "browserTarget": "devcom:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dope-muzik:build"
+            "browserTarget": "devcom:build"
           }
         },
         "test": {
@@ -111,15 +111,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "dope-muzik:serve"
+            "devServerTarget": "devcom:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "dope-muzik:serve:production"
+              "devServerTarget": "devcom:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "dope-muzik"
+  "defaultProject": "devcom"
 }
