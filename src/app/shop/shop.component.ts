@@ -148,6 +148,7 @@ export class ShopComponent implements OnInit {
                 
                 this.Ticket.current.edition = this.Ticket.extend(this.Ticket.current.edition, edition)
                 
+                
                 this.Purchase.setUid(this.User.current.uid)
                 this.Purchase.setEid(this.Event.current.eid)
                 this.Purchase.setUser(this.User.current)
