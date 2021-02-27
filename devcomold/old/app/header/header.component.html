@@ -1,0 +1,73 @@
+<style>
+    .nav {
+        padding: 0 1.5rem;
+        background-color: #fff;
+    }
+
+    .logOut {
+        color: #FFF !important;
+    }
+
+    
+</style>
+<div class="navbar-fixed">
+    <nav class="nav  blue darken-3">
+        <div class="nav-wrapper">
+            <a data-target="slide-out" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
+            <a routerLink="" class="brand-logo">DevCom</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li class="waves-effect waves-light"><a routerLink="">Home</a></li>
+                <li class="waves-effect waves-light"><a routerLink="/about">Evento</a></li>
+                <li class="waves-effect waves-light" *ngIf="control.state"><a routerLink="/perfil">Perfil</a></li>
+                <li class="waves-effect waves-light" waves-light><a routerLink="/shop">Comprar Ingressos</a></li>
+                <li class="waves-effect waves-light" *ngIf="control.state"><a routerLink="/buy">Meus Ingressos</a></li>
+                <li class="waves-effect waves-light" *ngIf="control.state"><a routerLink="/checkin">Checkin</a></li>
+                <li class="waves-effect waves-light" *ngIf="!control.state"><a routerLink="/login">Entrar</a></li>
+                <li class="waves-effect waves-light" *ngIf="control.state" (click)="logOut()">
+                    <button class="btn red waves-effect logOut" >Sair</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <ul id="slide-out" class="sidenav" [sidenavControl]="false">
+        <li>
+            <div class="user-view">
+                <div class="background">
+                    <img src="assets/images/sources/capa.jpg">
+                </div>
+                <a ><img class="circle" src="assets/images/logo.png"></a>
+                <a ><span class="white-text name">DevCom</span></a>
+                <a ><span class="white-text email">Info: (88) 98158-4026 </span></a>
+            </div>
+        </li>
+        <li>
+            <a routerLink="" class="waves-effect"><i class="material-icons">home</i>Home</a>
+        </li>
+        <li>
+            <a routerLink="/about" class="waves-effect"><i class="material-icons">event</i>Evento</a>
+        </li>
+        <li *ngIf="control.state">
+            <a routerLink="/perfil" class="waves-effect"><i class="material-icons">account_box</i>Perfil</a>
+        </li>
+        <li><div class="divider"></div></li>
+        <li>
+            <a class="subheader"><i class="material-icons">info</i>Info: (88) 98158-4026</a>
+        </li>
+        <li><div class="divider"></div></li>
+        <li>
+            <a routerLink="/shop" class="waves-effect"><i class="material-icons">shopping_basket</i>Comprar Ingressos</a>
+        </li>
+        <li *ngIf="control.state">
+            <a routerLink="/buy"><i class="material-icons">receipt</i>Meus Ingressos</a>
+        </li>
+        <li *ngIf="control.state">
+            <a routerLink="/checkin" class="waves-effect"><i class="material-icons">event_available</i>Check-in</a>
+        </li>
+        <li *ngIf="!control.state">
+            <a routerLink="/login" class="waves-effect"><i class="material-icons">account_box</i>Entrar</a>
+        </li>
+        <li *ngIf="control.state" class="red" (click)="logOut()">
+            <a routerLink="/login" class="waves-effect logOut"><i class="material-icons logOut">close</i>Sair</a>
+        </li>
+    </ul>
+</div>

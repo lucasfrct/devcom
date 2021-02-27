@@ -1,0 +1,145 @@
+<style>
+
+    .sign-container {
+        padding-top: 60px;
+    }
+
+    .sign-form {
+        padding-top: 0 !important;
+    }
+
+    .sign-title {
+        font-size: 2.3em;
+        display: block;
+        padding-bottom: 1rem;
+    }
+
+    .sign-links > * {
+        margin: 8px 0;
+    }
+
+    .sign-code {
+        max-width: 480px;
+    }
+</style>
+
+<section class="sign-container row">
+    
+    <form class="form sign-form col s12 m10 offset-m1 l8 offset-l2" (ngSubmit)="onSubmit(user)">
+        
+        <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
+        
+        <legend class="sign-title">Sign</legend>
+        
+        <div class="row">
+            
+            <div class="input-field col s12 m6 {{(control.alerts.name) ? 'alert' : ''}}">
+                <input id="name" type="text" class="validate" name="name" [(ngModel)]="user.name">
+                <label for="name">Nome:</label>
+            </div>
+            
+            <div class="input-field col s12 m6 {{(control.alerts.surname) ? 'alert' : ''}}">
+                <input id="surname" type="text" class="validate" name="surname" [(ngModel)]="user.surname"> 
+                <label for="surname">Sobrenome:</label>
+            </div>
+
+        </div>
+        
+        <div class="row">
+            
+            <div class="input-field col s6 m6 {{(control.alerts.telephone) ? 'alert' : ''}}">
+                <input id="telephone" type="tel" class="validate" name="telephone" [(ngModel)]="user.telephone">
+                <label for="telephone">Telefone:</label>
+            </div>
+
+            <div class="input-field col s6 m6 {{(control.alerts.bi) ? 'alert' : ''}}">
+                <input id="bi" type="text" class="validate" name="bi" [(ngModel)]="user.bi">
+                <label for="bi">RG:</label>
+            </div>
+        </div>
+        
+        <div class="row">
+            
+            <div class="input-field col s12 m12 {{(control.alerts.email) ? 'alert' : ''}}">
+                <input id="email" type="email" class="validade" name="email" [(ngModel)]="user.email">
+                <label for="email">E-mail</label>
+            </div>
+
+        </div>
+        
+        <div class="row">
+            
+            <div class="input-field col s10 m5 {{(control.alerts.password) ? 'alert' : ''}}">
+                <input id="password" type="{{control.password}}" class="validate" name="password" [(ngModel)]="user.password">
+                <label for="password">Palavra Passe</label>
+            </div>
+
+            <div class="input-field col s10 m5 {{(control.alerts.password) ? 'alert' : ''}}">
+                <input id="mirror" type="{{control.password}}" class="validade" name="mirror" [(ngModel)]="control.mirror">
+                <label for="mirror">Repetir a Senha</label>
+            </div>
+
+            <div class="input-field col s2 m2" (click)="ToggleEye()">
+                <i class="material-icons prefix">{{control.eye}}</i>
+            </div>
+
+        </div>
+        
+        <div class="row">
+
+            <div class="progress {{(control.bar) ? 'active' : '' }}"><div class="indeterminate"></div></div>
+            
+            <span class="alert col s12">
+                <em *ngFor="let alert of control.notifications"> {{alert}}</em>
+            </span>
+
+            <button 
+                id="sign" 
+                type="submit" 
+                class="btn btn-large waves-effect waves-light col s12 m8 l4"
+            >Cadastrar</button>
+
+        </div>
+        
+        <div class="row sign-links"><br>
+            <a routerLink="/login" >Já tenho uma conta</a><br><br>
+            <a id="" (click)="onSendSMS(user)">Entrar com telefone</a>
+         </div>
+
+    </form>
+
+    <div class="modal" [modalControl]="control.modal">
+        
+        <div class="modal-content">
+            <h4>Cadastro</h4>
+            <p>{{control.message}}</p>
+        </div>
+
+        <div class="modal-footer">
+            <a class="modal-close waves-effect waves-green btn red" (click)="control.modal=false">fechar</a>
+        </div>
+
+    </div>
+
+    <div class="modal sign-code" [modalControl]="control.modalCode">
+        
+        <div class="modal-content">
+            
+            <h4>Inserir código SMS</h4>
+
+            <p>{{control.message}}</p>
+            <p>Uma mensagem SMS foi enviada para seu número, favor inserir o código abaixo</p>
+
+            <div class="input-field">
+                <input name="code" type="text" id="code" [(ngModel)]="user.code" placeholder="XXXXX">
+                <label for="code">insira o código aqui</label>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn green" (click)="onSendCode(user)">Validar</button>
+        </div>
+    </div>
+
+</section>

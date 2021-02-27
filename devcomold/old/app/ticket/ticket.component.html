@@ -1,0 +1,223 @@
+<style>
+
+    .ticket .ticket-inner,
+    .ticket .ticket-front,
+    .ticket .ticket-back,
+    .ticket .ticket-del, 
+    .ticket .ticket-logo,
+    .ticket .ticket-title,
+    .ticket .ticket-seat,
+    .ticket .ticket-date,
+    .ticket .ticket-edition,
+    .ticket .ticket-owner,
+    .ticket .ticket-address,
+    .ticket .ticket-qr-code,
+    .ticket .ticket-btn {
+        margin: 0;
+        padding: 0;
+        padding-top: 0.1rem;
+        padding-bottom: 0.2rem;
+    }
+
+    .ticket,
+    .ticket .ticket-inner {
+        box-sizing: border-box;
+        display: block;
+        min-height: 180px;
+        position: relative;
+        clear: both;
+    }
+
+    .ticket::after,
+    .ticket .ticket-inner::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    .ticket {
+        border: solid 1px #CCC;
+        padding: 0.2rem;
+        margin: 0px auto 0px auto;
+        text-align: left;
+        -webkit-perspective: 1000px;
+        -moz-perspective: 1000px;
+        perspective: 1000px;
+    }
+
+    .ticket .ticket-inner {
+        position: relative;
+        text-align: center;
+        -webkit-transition: transform 0.8s;
+        -moz-transition: transform 0.8s;
+        transition: transform 0.8s;
+        -webkit-transform-style: preserve-3d;
+        -moz-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+    }
+
+    .ticket.active .ticket-inner,
+    .ticket.active .ticket-qr-code {
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
+
+    .ticket .ticket-front,
+    .ticket .ticket-back {
+        backface-visibility: hidden;
+        text-align: left;
+        display: block;
+        min-height: 160px;
+        background-color: transparent;
+        position: absolute;
+        width: 100%;
+        padding: 0.2rem;
+    }
+
+    .ticket .ticket-back {
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
+
+    .ticket .ticket-front .ticket-del {
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        margin-right: 7px;
+        margin-left: -8px;
+    }
+
+    .ticket .ticket-front .ticket-logo {
+        max-height: 60px;
+        height: 56px;
+    }
+
+    .ticket .ticket-front .ticket-logo img {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .ticket .ticket-title {
+        padding: 0.1rem 0.2rem 0.1rem 0.5rem;
+    }
+
+    .ticket .ticket-front .ticket-seat {
+        text-align: right;
+    }
+
+    .ticket .ticket-front .ticket-seat > * {
+        display: inline-block;
+        text-align: right;
+        margin: 0 2px;
+        font-size: 0.9em;
+    }
+
+    .ticket .ticket-front .ticket-date {
+        font-size: 0.9em;
+    }
+
+    .ticket .ticket-front .ticket-date > * {
+        display: block;
+    }
+
+    .ticket .ticket-front .ticket-edition {
+        text-align: right;
+        font-size: 0.7em;
+    }
+
+    .ticket .ticket-front .ticket-edition > * {
+        display:  inline-block;
+        vertical-align: top;
+    }
+
+    .ticket .ticket-front .ticket-owner {
+        font-size: 1.1em;
+    }
+
+    .ticket .ticket-front .ticket-address {
+        font-size: 0.8em;
+        padding-bottom: 0.3rem;
+    }
+
+    .ticket .ticket-front .ticket-btn,
+    .ticket .ticket-back .ticket-btn {
+        z-index: 100;
+    }
+
+    .ticket .ticket-front .ticket-btn {
+        margin-top: -42px;
+    }
+
+    .ticket .ticket-back .ticket-btn {
+        margin-top: -6px;
+    } 
+
+</style>
+
+<section class="ticket row {{(control.qrcode) ? 'active' : '' }}">
+    
+    <div class="ticket-inner col s12">
+        
+        <div class="ticket-front col s12">
+            <i 
+                class="ticket-del col s1 material-icons right" 
+                *ngIf="control.displayDelete" 
+                (click)="deleteTicket()"
+            >delete</i>
+
+            <figure class="ticket-logo col s4">
+                <img style="object-fit: cover;" class="rigth" src="{{ticket.event.logoUrl}}">
+            </figure>
+
+            <h6 class="ticket-title col s7">{{ticket.event.name}}</h6>
+            
+            <small class="ticket-seat col s12">
+                <span>Assento: <b>{{ticket.seat.session}}</b></span>
+                <span>Tipo: <b>{{ticket.seat.type}}</b></span>
+            </small>
+
+            <div class="ticket-date col s7">
+                <span>{{ticket.event.date}}</span>
+                <span>Início: <b>{{ticket.event.hour}}</b></span>
+            </div>
+
+            <div class="ticket-edition col s5">
+                <span>TR: <b>{{ticket.edition.circulation}}</b></span> 
+                <span>N: <b>{{ticket.edition.serial}}</b></span>
+            </div>
+
+            <div class="ticket-owner col s12">
+                <strong>Nome: {{ticket.owner}}</strong>
+            </div>
+
+            <div class="ticket-address col s12">
+                <span>Local: <b>{{ticket.event.address}}</b></span>
+            </div>
+
+            <div class="ticket-btn col s4 right" *ngIf="control.displayQr">
+                <button class="btn waves-efect col s12" (click)="visibleQRCode()">QR Code</button>
+            </div>
+
+        </div>
+
+        <div class="ticket-back col s12">
+            <!-- [qrdata]="ticket.tid"  -->
+            <qrcode 
+                [qrdata]="'https://dope-muzik.firebaseapp.com/?checkin=Teste%20de%20QR%20Code'" 
+                [width]="110" 
+                [errorCorrectionLevel]="'M'"
+                *ngIf="control.displayQr"
+            ></qrcode>
+            
+            <div class="ticket-btn col s12" *ngIf="control.displayQr">
+                <button class="btn waves-efect col s12" (click)="visibleQRCode()">Ingresso</button>
+            </div>
+        </div>
+
+    </div>
+    
+</section>

@@ -1,0 +1,67 @@
+html form{
+    background-color: rgba(0,0,0,0.03);
+    box-shadow: 2px 2px 20px 5px rgba(0,0,0,0.15);
+}
+
+html .form {
+    max-width: 960px;
+    border: solid 1px #CCC;
+    box-sizing: border-box;
+    padding: 2rem !important;
+    width: 100%;
+}
+
+html .form .progress {
+    position: relative;
+    visibility: hidden !important;
+}
+
+html .form .progress.active {
+    visibility: visible !important;
+}
+
+html .form .alert {
+    display: block;
+    margin: 1rem 0 2rem 0;
+}
+
+html .form .alert em {
+    display: block;
+    color: red;
+}
+
+html .form .input-field.alert {
+    border-left: solid 5px #F00;
+    border-bottom: solid 1px #F00;
+}
+
+html .material-icons,
+html .form .material-icons {
+    cursor: pointer;
+}
+
+html .form .material-icons {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#toast-container {
+    top: auto !important;
+    right: auto !important;
+    bottom: 10%;
+    left: 5%;
+}
+
+@media (max-width: 576px) { 
+    #toast-container {
+        left: 0;
+    }
+ }
+
+.sidenav {
+    z-index: 1000 !important;
+}
+
+.sidenav-overlay {
+    z-index: 900   !important;
+}
