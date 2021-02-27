@@ -1,11 +1,18 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "f23eb859-8412-4af7-b9d1-b1dff38e1a5c"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dope-muzik": {
+    "devcom": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -13,12 +20,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/dope-muzik",
+            "outputPath": "dist/devcom",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -39,22 +46,20 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ]
             }
@@ -63,18 +68,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "dope-muzik:build"
+            "browserTarget": "devcom:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "dope-muzik:build:production"
+              "browserTarget": "devcom:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dope-muzik:build"
+            "browserTarget": "devcom:build"
           }
         },
         "test": {
@@ -111,15 +116,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "dope-muzik:serve"
+            "devServerTarget": "devcom:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "dope-muzik:serve:production"
+              "devServerTarget": "devcom:serve:production"
             }
           }
         }
       }
-    }},
-  "defaultProject": "dope-muzik"
+    }
+  },
+  "defaultProject": "devcom"
 }
