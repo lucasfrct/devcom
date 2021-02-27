@@ -29,7 +29,9 @@ export class FirebaseInitService {
     private firebase: any;
     private reply = { code: "", message: "", user: null, error: null}
 
-    public constructor() { this.firebase = onInitFirebase(this.firebaseConfig) }
+    public constructor() { 
+        //this.firebase = onInitFirebase(this.firebaseConfig) 
+    }
     
     public scope(callback: any) { this.firebase.auth().onAuthStateChanged(callback) }
     

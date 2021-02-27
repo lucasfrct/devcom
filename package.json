@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --host 127.0.0.1 --port 3000",
-    "build": "ng build",
+    "build": "ng build && firebase deploy",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -21,7 +21,9 @@
     "@angular/platform-browser-dynamic": "~11.2.3",
     "@angular/router": "~11.2.3",
     "@mdi/font": "^5.9.55",
+    "@smip/ngx-materialize": "^0.3.0",
     "materialize-angular": "^0.7.10",
+    "materialize-css": "^1.0.0",
     "ngx-materialize": "^6.1.3",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

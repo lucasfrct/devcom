@@ -9,23 +9,24 @@ import { FirebaseLoginService } from './../firebase/firebase.login.service'
 export class HeaderComponent implements OnInit {
     
     private Login: any
+
     public control = {
         state: false
     }
-
+    
     constructor(Login: FirebaseLoginService) { 
-        this.Login = Login
+           //this.Login = Login
     }
 
     ngOnInit(): void {
-        this.Login.check((state: any)=> {
+        /*this.Login.check((state: any)=> {
             this.control.state = state
-        })
+        })*/
     }
 
-    
     public logOut() {
-        this.Login.denied()
+        //this.Login.denied()
     }
+
 
 }

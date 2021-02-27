@@ -1,30 +1,29 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgxMaterialize } from '@smip/ngx-materialize';
 
 //ANGULAR 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-
-// Directive
-//import { SidenavDirective } from './sidenav/sidenav.directive'
 
 // components
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
+import { HomeComponent } from './home/home.component'
+import { FooterComponent } from './footer/footer.component'
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-  ],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent, HeaderComponent]
+    declarations: [
+        HeaderComponent,
+        HomeComponent,
+        FooterComponent
+    ],
+    imports: [
+        CommonModule,
+        BrowserModule,
+        AppRoutingModule,
+        NgxMaterialize
+    ],
+    providers: [],
+    bootstrap: [HeaderComponent, HomeComponent, FooterComponent]
 })
 export class AppModule { }
