@@ -7,7 +7,10 @@ Trata-se de um projeto de venda de ingressos para eventos. Nela um organizador d
  - [x] Angluar 11.2.2
  - [x] Firebase 9.5.0
  - [x] Materialize 1.0.0
- ## Capturas de tela
+## Capturas de tela
+### Slide principal
 ![devcom](src/assets/images/demo/01.PNG)
+### Carrossel dos eventos mais relevantes
 ![devcom](src/assets/images/demo/02.PNG)
+### Classificação dos eventos
 ![devcom](src/assets/images/demo/03.PNG)
