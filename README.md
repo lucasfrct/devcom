@@ -8,6 +8,6 @@ Trata-se de um projeto de venda de ingressos para eventos. Nela um organizador d
  - [x] Firebase 9.5.0
  - [x] Materialize 1.0.0
  ## Capturas de tela
-![devcom](src/assets/images/demo/01)
-![devcom](src/assets/images/demo/02)
-![devcom](src/assets/images/demo/03)
+![devcom](src/assets/images/demo/01.PNG)
+![devcom](src/assets/images/demo/02.PNG)
+![devcom](src/assets/images/demo/03.PNG)
